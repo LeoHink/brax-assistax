@@ -23,6 +23,8 @@ from flax import struct
 import jax
 from jax import numpy as jp
 
+from pixels import PixelState
+
 
 def wrap(
     env: Env,
@@ -264,4 +266,26 @@ class DisabilityWrapper(Wrapper):
 
 
 class PixelWrapper(PipelineEnv):
-    pass
+    def __init__(self, env: brax.Env, hw: int, frame_stack: int, return_float32: bool):
+        super().__init__(sys=env.sys, backend=env.backend)
+        self.env = env
+        self.seed = None  # TODO: does the env hold a seed?
+        self.hw = hw
+        self.frame_stack = frame_stack
+        self.return_float32 = return_float32
+        self._reset_fn = jax.vmap(env.reset)
+        self._step_fn = jax.vmap(env.step)
+
+    @property
+    def action_size(self) -> int:
+        return self.env.action_size
+
+    @property
+    def observation_size(self) -> Tuple[int]:
+        return (self.hw, self.hw, 3 * self.frame_stack)
+
+    def reset(self, rng: jp.ndarray) -> PixelState:
+        pass
+
+    def step(self, states: jp.ndarray, actions: jp.ndarray) -> PixelState:
+        pass
