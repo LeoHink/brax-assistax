@@ -18,7 +18,7 @@
 from typing import Callable, Dict, Optional, Tuple, Any
 
 from brax.base import System
-from brax.envs.base import Env, State, Wrapper
+from brax.envs.base import Env, PipelineEnv, State, Wrapper
 from flax import struct
 import jax
 from jax import numpy as jp
@@ -219,7 +219,9 @@ class DomainRandomizationVmapWrapper(Wrapper):
             env = self._env_fn(sys=sys)
             return env.step(r, s, a)
 
-        res = jax.vmap(step, in_axes=[self._in_axes, 0, 0, 0])(self._sys_v, rng, state, action)
+        res = jax.vmap(step, in_axes=[self._in_axes, 0, 0, 0])(
+            self._sys_v, rng, state, action
+        )
         return res
 
 
@@ -233,14 +235,18 @@ class DisabilityWrapper(Wrapper):
     ):
         super().__init__(env)
         self.disability_jnt_idx = cfg["joint_idx"]
-        self.disability_mask = jp.zeros(self.env.action_size, bool).at[self.disability_jnt_idx].set(True)
+        self.disability_mask = (
+            jp.zeros(self.env.action_size, bool).at[self.disability_jnt_idx].set(True)
+        )
         self.joint_restriction_factor = cfg.get("joint_restriction_factor", 1.0)
         self.joint_strength = cfg.get("joint_strength", 1.0)
         self.tremor_magnitude = cfg.get("tremor_magnitude", 0.0)
         orig_joint_range = self.env.unwrapped.sys.jnt_range[self.disability_jnt_idx]
         new_joint_range = self.joint_restriction_factor * orig_joint_range
         self.env.unwrapped.sys = self.env.unwrapped.sys.replace(
-            jnt_range=self.env.unwrapped.sys.jnt_range.at[self.disability_jnt_idx].set(new_joint_range)
+            jnt_range=self.env.unwrapped.sys.jnt_range.at[self.disability_jnt_idx].set(
+                new_joint_range
+            )
         )
 
     def step(self, rng: jax.Array, state: State, action: jax.Array) -> State:
@@ -251,8 +257,11 @@ class DisabilityWrapper(Wrapper):
 
     def _modify_action(self, rng: jax.Array, action: jax.Array) -> jax.Array:
         tremor_action = self.joint_strength * (
-            action
-            + self.tremor_magnitude*jax.random.uniform(rng)
+            action + self.tremor_magnitude * jax.random.uniform(rng)
         )
         tremor_action = jp.where(self.disability_mask, tremor_action, action)
         return tremor_action
+
+
+class PixelWrapper(PipelineEnv):
+    pass
