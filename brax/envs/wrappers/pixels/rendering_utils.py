@@ -128,8 +128,8 @@ _GROUND: jnp.ndarray = grid(hw, [200, 200, 200])
 CAMERA_TARGET = 0
 CAM_EYE = 0
 # Alter the offset to alter the position of the camera relative to CAM_EYE geom
-CAM_OFF = jnp.array([2.5, 2.5, 3.0])
-CAM_UP = jnp.array([0.0, 0.0, 1.0])
+CAM_OFF = jnp.array([1.7, 1.7, 1.5])
+CAM_UP = jnp.array([0.0, 1.0, 0.2])
 # The purpose of CAM_Z is to have a constant location along the z-axis for the camera
 # This is useful if the goems may move up/down (e.g., locomotion envs)
 CAM_Z = 3.5
@@ -180,7 +180,7 @@ def get_target(state: brax.State) -> jnp.ndarray:
     """Gets target of camera. I.e., the center of the camera's viewport"""
     # This function is within the vmap context of _get_cameras
     return jnp.array(
-        [state.x.pos[CAMERA_TARGET, 0], state.x.pos[CAMERA_TARGET, 1], 0.2]
+        [state.x.pos[CAMERA_TARGET, 0], state.x.pos[CAMERA_TARGET, 1], 0.6]
     )
     # if env_name in ["reacher", "ant", "pusher", "swimmer"]:
     #    return jnp.array(
@@ -243,6 +243,12 @@ def _vmap_build(
         raise NotImplementedError("Have not impl HFIELD yet.")
     # Sphere
     elif geom_id == 2:
+        # sphere geom_rbound = geom_size[0]
+        print(f"======== SPHERE =========")
+        print(f"geom_rbound: {sys.mj_model.geom_rbound[geom_num]}")
+        print(f"geom_size: {sys.mj_model.geom_size[geom_num]}")
+        print("==========================")
+        # is sys.mj_model.geom_rbound == sys.mj_model.geom_size[0]?
         radius = sys.mj_model.geom_rbound[geom_num]
         model = create_capsule(
             radius=radius,
@@ -253,24 +259,38 @@ def _vmap_build(
         )
     # Capsule
     elif geom_id == 3:
-        print(f"CAPSULE")
+        # capsule geom_rbound = geom_size[0] + geom_size[1]
+        # capsule geom_size[0] and geom_size[1] is not always same
+        # capsule geom_size[2] is always 0
+        print(f"======== CAPSULE =========")
+        print(f"geom_rbound: {sys.mj_model.geom_rbound[geom_num]}")
+        print(f"geom_size: {sys.mj_model.geom_size[geom_num]}")
+        print("==========================")
+
         # geom_rbound is the radius of the "bounding sphere". This means the half_height
         # should just be the radius, right? If so, then what is radius?
         bs_radius = sys.mj_model.geom_rbound[geom_num]
-        print(f"capsule size: {sys.mj_model.geom_size[geom_num]}")
         # length = sys.mj_model.geom_l
 
         # When using "fromto", only need to provide a single number for size: the
         # radius of the object. in panda.xml, 0.04 or 0.04
         # sys.mj_model.geom_size[geom_num] = [0.07 0.07 0.  ]
+
+        # The "half_height" determines the length of the cylinder between the two
+        # half-spheres. I.g., half_height=0 is just a sphere with a given radius
+        # geom_size[0] is radius
+        # geom_size[1] * 2 is height in THREE.CylinderGeometry
         model = create_capsule(
-            radius=sys.mj_model.geom_size[geom_num][1] / 2,
-            half_height=bs_radius,
+            radius=sys.mj_model.geom_size[geom_num][0],
+            half_height=sys.mj_model.geom_size[geom_num][1],
             up_axis=UpAxis.Z,
             diffuse_map=tex,
             specular_map=specular_map,
         )
-
+    elif geom_id == 4:
+        raise NotImplementedError("Have not implemented ELLIPSOID yet.")
+    elif geom_id == 5:
+        raise NotImplementedError("Have no implemented CYLINDER yet.")
     elif geom_id == 6:
         model = create_cube(
             half_extents=sys.geom_size[geom_num],
@@ -399,7 +419,7 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
         link_idx = sys.geom_bodyid[idx] - 1
 
         # TODO: temporary for dev. remove when done
-        if geom_id in [1, 2, 3, 6]:  # [0, 1, 2, 3]:
+        if geom_id in [0, 1, 2, 3, 4, 5, 6]:  # [0, 1, 2, 3]:
             model, rot, off = _vmap_build(
                 sys,
                 pipeline_states,
@@ -494,7 +514,10 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
             f"x.pos: {x.pos.shape} // {x.rot.shape} // {obj.off.shape}, {obj.rot.shape}"
         )
         # rotate((3,), (4,))
+        # obj.off is local position offset rel. to body
+        # x.rot is gotten from xquat in mjx.System: https://github.com/google/brax/blob/main/brax/mjx/pipeline.py#L75
         pos = x.pos[i] + math.rotate(obj.off, x.rot[i])
+        # obj.rot is: local orientation offset of geom rel. to body
         rot = math.quat_mul(x.rot[i], obj.rot)
         instance = obj.instance
         instance = instance.replace_with_position(pos)
