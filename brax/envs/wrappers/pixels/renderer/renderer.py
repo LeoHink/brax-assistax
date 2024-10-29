@@ -198,6 +198,7 @@ class Renderer:
     @staticmethod
     @jaxtyped
     @add_tracing_name
+    # @partial(jax.jit, static_argnames=("width", "height"))
     def create_buffers(
         width: int,
         height: int,
@@ -448,7 +449,6 @@ class Renderer:
             is_leaf=lambda x: not isinstance(x, LightParameters),
         )
         # assert isinstance(light, LightParameters), f"{light}"
-
         buffers: Buffers[Tuple[Canvas]] = cls.create_buffers(
             width=width,
             height=height,

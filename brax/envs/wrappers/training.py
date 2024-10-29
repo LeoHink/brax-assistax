@@ -23,7 +23,8 @@ from flax import struct
 import jax
 from jax import numpy as jp
 
-from pixels import PixelState
+from .pixels.rendering_utils import PixelState
+import wrappers.pixels.rendering_utils as ru
 
 
 def wrap(
@@ -266,15 +267,17 @@ class DisabilityWrapper(Wrapper):
 
 
 class PixelWrapper(PipelineEnv):
-    def __init__(self, env: brax.Env, hw: int, frame_stack: int, return_float32: bool):
+    def __init__(self, env: Env, hw: int, frame_stack: int, return_float32: bool):
         super().__init__(sys=env.sys, backend=env.backend)
         self.env = env
         self.seed = None  # TODO: does the env hold a seed?
         self.hw = hw
         self.frame_stack = frame_stack
         self.return_float32 = return_float32
-        self._reset_fn = jax.vmap(env.reset)
-        self._step_fn = jax.vmap(env.step)
+
+        # The VmapWrapper is already handling this. Will likely need to remove
+        # self._reset_fn = jax.vmap(env.reset)
+        # self._step_fn = jax.vmap(env.step)
 
     @property
     def action_size(self) -> int:
@@ -285,7 +288,32 @@ class PixelWrapper(PipelineEnv):
         return (self.hw, self.hw, 3 * self.frame_stack)
 
     def reset(self, rng: jp.ndarray) -> PixelState:
-        pass
+        raw_state = self.env.reset(rng)
+        # before = self.env.sys.mj_model.geom_pos
+        # self.env.step(
+        #    jax.random.split(rng, raw_state.obs.shape[0]),
+        #    raw_state,
+        #    jax.random.uniform(rng, (raw_state.obs.shape[0], self.env.action_size)),
+        # )
+        # after = self.env.sys.mj_model.geom_pos
+        # print(f"delta: {(before - after).sum()}")
+        # qqq
+        frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+
+        if not self.return_float32:
+            frames = (frames * 255).astype(jp.uint8)
+
+        # TODO: add frame stacking here
+        return PixelState(
+            raw_state.pipeline_state,
+            raw_state.obs,
+            frames,
+            raw_state.reward,
+            raw_state.done,
+            rng,
+            raw_state.metrics,
+            raw_state.info,
+        )
 
     def step(self, states: jp.ndarray, actions: jp.ndarray) -> PixelState:
         pass

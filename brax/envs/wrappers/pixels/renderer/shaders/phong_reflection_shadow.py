@@ -30,7 +30,7 @@ from ..types import (
     Vec4f,
 )
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+# jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
 
 
 class PhongReflectionShadowTextureExtraInput(NamedTuple):
@@ -226,11 +226,11 @@ class PhongReflectionShadowTextureShader(
         light_dir: Vec3f = normalise(extra.light_dir_eye)
 
         # Phong Reflection Model
-        diffuse: Float[
-            Array, ""
-        ] = jnp.maximum(  # pyright: ignore[reportUnknownMemberType]
-            lax.dot(normal, light_dir),  # pyright: ignore[reportUnknownMemberType]
-            0,
+        diffuse: Float[Array, ""] = (
+            jnp.maximum(  # pyright: ignore[reportUnknownMemberType]
+                lax.dot(normal, light_dir),  # pyright: ignore[reportUnknownMemberType]
+                0,
+            )
         )
         # If using standard reflection formula
         # `light_dir - 2 * diffuse * normal`, need to use
@@ -240,11 +240,11 @@ class PhongReflectionShadowTextureShader(
         )
         # assert isinstance(reflected_light, Vec3f)
 
-        specular: Float[
-            Array, ""
-        ] = lax.pow(  # pyright: ignore[reportUnknownMemberType]
-            lax.max(reflected_light[2], 0.0),  # pyright: ignore
-            extra.specular_map[uv[0], uv[1]],
+        specular: Float[Array, ""] = (
+            lax.pow(  # pyright: ignore[reportUnknownMemberType]
+                lax.max(reflected_light[2], 0.0),  # pyright: ignore
+                extra.specular_map[uv[0], uv[1]],
+            )
         )
 
         # compute colour

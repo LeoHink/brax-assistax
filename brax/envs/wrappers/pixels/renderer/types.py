@@ -40,7 +40,8 @@ __all__ = [
     "Buffers",
 ]
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+# according to the jax changelog: "The deprecated config options jax_array and jax_jit_pjit_api_merge, which did nothing, have been removed. These options have been true by default for many releases."
+# jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
 
 BoolV: TypeAlias = Bool[Array, ""]
 """JAX Array with single bool value.""" ""

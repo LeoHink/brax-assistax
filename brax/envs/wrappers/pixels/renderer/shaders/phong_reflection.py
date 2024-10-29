@@ -29,7 +29,7 @@ from ..types import (
     Vec4f,
 )
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+# jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
 
 
 class PhongReflectionTextureExtraInput(NamedTuple):
@@ -188,11 +188,11 @@ class PhongReflectionTextureShader(
         light_dir: Vec3f = normalise(extra.light_dir_eye)
 
         # Phong Reflection Model
-        diffuse: Float[
-            Array, ""
-        ] = jnp.maximum(  # pyright: ignore[reportUnknownMemberType]
-            lax.dot(normal, light_dir),  # pyright: ignore[reportUnknownMemberType]
-            0,
+        diffuse: Float[Array, ""] = (
+            jnp.maximum(  # pyright: ignore[reportUnknownMemberType]
+                lax.dot(normal, light_dir),  # pyright: ignore[reportUnknownMemberType]
+                0,
+            )
         )
         # as `light_dir * -1` should be used here, if
         # using `light_dir - 2 * diffuse * normal`
