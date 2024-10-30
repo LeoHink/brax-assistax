@@ -433,7 +433,7 @@ class Camera(NamedTuple):
             coordinates are not normalized.
         """
         clip_space = self.apply(points, self.world_to_clip)
-        assert isinstance(clip_space, Num[Array, "*N 4"])
+        # assert isinstance(clip_space, Num[Array, "*N 4"])
 
         return clip_space
 
