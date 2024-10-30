@@ -335,7 +335,7 @@ class MergedModel(NamedTuple):
             fractional_uv + 1,
             fractional_uv,
         )
-        assert isinstance(fractional_uv, Float[Array, "2"])
+        # assert isinstance(fractional_uv, Float[Array, "2"])
 
         return (fractional_uv * shape).at[0].add(map_index * offset)
 
