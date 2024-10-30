@@ -60,7 +60,7 @@
     <mesh file="hand_4.obj"/>
     <mesh file="finger_0.obj"/>
     <mesh file="finger_1.obj"/>
-    <material name="off_white" rgba="0.901961 0.921569 0.929412 1"/>
+    <material name="off_white" rgba="0.101961 0.121569 0.129412 1"/>
     <material class="panda" name="white" rgba="1 1 1 1"/>
     <material class="panda" name="black" rgba="0.25 0.25 0.25 1"/>
     <material class="panda" name="green" rgba="0 1 0 1"/>
