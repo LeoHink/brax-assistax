@@ -390,10 +390,10 @@ class ModelObject(NamedTuple):
             # assert isinstance(orientation, Vec4f), f"{orientation}"
             rotation_matrix = transform_matrix_from_rotation(orientation)
 
-        assert isinstance(
-            rotation_matrix,
-            Float[Array, "3 3"],
-        ), f"{rotation_matrix}"
+        # assert isinstance(
+        #    rotation_matrix,
+        #    Float[Array, "3 3"],
+        # ), f"{rotation_matrix}"
 
         return self._replace(
             transform=self.transform.at[:3, :3].set(rotation_matrix)  # pyright: ignore
