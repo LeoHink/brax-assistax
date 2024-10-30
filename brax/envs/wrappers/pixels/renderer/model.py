@@ -529,7 +529,7 @@ def merge_objects(objects: Sequence[ModelObject]) -> MergedModel:
                 jnp.linalg.inv(transform).T,  # pyright: ignore
             ),
         )
-        assert isinstance(world, Float[Array, "N 3"])
+        # assert isinstance(world, Float[Array, "N 3"])
 
         return world
 
