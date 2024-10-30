@@ -222,7 +222,7 @@ class PhongReflectionTextureShader(
             extra.ambient * texture_colour
             + (extra.diffuse * diffuse + extra.specular * specular) *
             # intensity * light colour * texture colour
-            extra.light.colour * texture_colour
+            jnp.concatenate([extra.light.colour, jnp.array([1.0])], -1) * texture_colour
         )
 
         return (
