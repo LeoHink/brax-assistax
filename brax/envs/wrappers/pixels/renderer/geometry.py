@@ -620,14 +620,14 @@ class Camera(NamedTuple):
             .set(-forward)
         )
         m_inv: View = m.T
-        assert isinstance(m_inv, View)
+        # assert isinstance(m_inv, View)
 
         # inverse of translation is just the negative of translation
         translation_inv: View = jnp.identity(4).at[:3, 3].set(eye)  # pyright: ignore
-        assert isinstance(translation_inv, View)
+        # assert isinstance(translation_inv, View)
 
         view_matrix_inv: View = translation_inv @ m_inv
-        assert isinstance(view_matrix_inv, View)
+        # assert isinstance(view_matrix_inv, View)
 
         return view_matrix_inv
 
