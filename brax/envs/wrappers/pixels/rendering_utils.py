@@ -461,7 +461,7 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
         link_idx = sys.geom_bodyid[idx] - 1
 
         # TODO: temporary for dev. remove when done
-        if geom_id in [0, 1, 2, 3, 4, 5, 6, 7]:  # [0, 1, 2, 3]:
+        if geom_id in [0, 1, 2, 3, 4, 5, 6]:  # [0, 1, 2, 3]:
             model, rot, off = _vmap_build(
                 sys,
                 pipeline_states,
