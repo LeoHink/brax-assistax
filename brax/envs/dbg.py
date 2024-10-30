@@ -79,7 +79,7 @@ keys = jax.random.split(key, obs.pixels.shape[0])
 action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
 _step_fn = jax.jit(env.step)
 
-for _ in tqdm(range(100)):
+for _ in tqdm(range(10)):
     _, key = jax.random.split(key)
     obs = _step_fn(keys, obs, action)
     frames.append(np.array(obs.pixels[0])[None])
