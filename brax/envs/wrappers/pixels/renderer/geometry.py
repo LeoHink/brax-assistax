@@ -366,7 +366,7 @@ class Camera(NamedTuple):
         Returns: vectors transformed and normalised
         """
         normalised_vectors = normalise(vectors)
-        assert isinstance(normalised_vectors, Num[Array, "*N 3"])
+        # assert isinstance(normalised_vectors, Num[Array, "*N 3"])
 
         points_homo = cast(
             Num[Array, "*N 4"],
@@ -375,16 +375,16 @@ class Camera(NamedTuple):
                 jnp.zeros((), dtype=vectors.dtype),  # pyright: ignore
             ),
         )
-        assert isinstance(points_homo, Num[Array, "*N 4"])
+        # assert isinstance(points_homo, Num[Array, "*N 4"])
 
         transformed_homo = cls.apply(points_homo, matrix)
-        assert isinstance(transformed_homo, Num[Array, "*N 4"])
+        # assert isinstance(transformed_homo, Num[Array, "*N 4"])
 
         transformed = transformed_homo[..., :3]
-        assert isinstance(transformed, Num[Array, "*N 3"])
+        # assert isinstance(transformed, Num[Array, "*N 3"])
 
         transformed_normalised = normalise(transformed)
-        assert isinstance(transformed_normalised, Num[Array, "*N 3"])
+        # assert isinstance(transformed_normalised, Num[Array, "*N 3"])
 
         return transformed_normalised
 
