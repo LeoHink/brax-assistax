@@ -147,8 +147,8 @@ def to_homogeneous(
 ) -> Float[Array, "*batch dim+1"]:
     """Transform the coordinates to homogeneous coordinates by append a batch
     of `value`s (default 1.) in the last axis."""
-    if not isinstance(value, Float[Array, "*batch"]):
-        value = jnp.array(value)  # pyright: ignore[reportUnknownMemberType]
+    # if not isinstance(value, Float[Array, "*batch"]):
+    value = jnp.array(value)  # pyright: ignore[reportUnknownMemberType]
 
     target_dtype = jax.dtypes.result_type(coordinates)  # pyright: ignore
     paddings: Float[Array, "*batch 1"] = jnp.broadcast_to(  # pyright: ignore
