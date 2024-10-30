@@ -140,7 +140,7 @@ with jax.ensure_compile_time_eval():
     )
 
 
-@jaxtyped
+# @jaxtyped
 def create_cube(
     half_extents: Float[Array, "3"],
     texture_scaling: Float[Array, "2"],

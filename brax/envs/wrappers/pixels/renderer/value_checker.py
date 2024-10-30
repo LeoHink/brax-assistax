@@ -7,7 +7,7 @@ from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 from .types import BoolV, IntV
 
 
-@jaxtyped
+# @jaxtyped
 def index_in_bound(
     indices: Integer[Array, "*any"],
     bound: Union[int, IntV, Integer[Array, "2"]],

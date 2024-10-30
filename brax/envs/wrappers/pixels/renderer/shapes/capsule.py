@@ -1961,7 +1961,7 @@ class UpAxis(enum.IntEnum):
     Z = 2
 
 
-@jaxtyped
+# @jaxtyped
 def create_capsule(
     radius: FloatV,
     half_height: FloatV,

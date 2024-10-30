@@ -38,7 +38,7 @@ class Shadow(NamedTuple):
     """Camera from world space to shadow map's screen space."""
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(
         jax.jit,  # pyright: ignore[reportUnknownMemberType]
         static_argnames=("loop_unroll",),
@@ -124,7 +124,7 @@ class Shadow(NamedTuple):
 
         return shadow
 
-    @jaxtyped
+    # @jaxtyped
     @add_tracing_name
     def get(self, position: Vec2f) -> FloatV:
         """Get shadow depth at `position`.

@@ -108,7 +108,7 @@ class PhongReflectionShadowTextureShader(
     """
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     @override
@@ -150,7 +150,7 @@ class PhongReflectionShadowTextureShader(
         )
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     @override
@@ -171,7 +171,7 @@ class PhongReflectionShadowTextureShader(
         return varying
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     @override
@@ -271,7 +271,7 @@ class PhongReflectionShadowTextureShader(
         )
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     @override

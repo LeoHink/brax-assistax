@@ -100,7 +100,7 @@ class DtypeInfo(NamedTuple, Generic[_DtypeT]):
     dtype: Type
 
     @classmethod
-    @jaxtyped
+    # @jaxtyped
     # cannot be jitted as `dtype` will not be a valid JAX type
     def create(cls, dtype: Type[_DtypeT]) -> "DtypeInfo[_DtypeT]":
         with jax.ensure_compile_time_eval():

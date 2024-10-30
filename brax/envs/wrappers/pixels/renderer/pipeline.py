@@ -74,7 +74,7 @@ class PerPrimitive(NamedTuple):
     """inverse of the matrix described above (of [x, y, w])."""
 
     @classmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, static_argnames=("cls",), inline=True)
     @add_tracing_name
     def create(cls, per_vertex: PerVertex) -> "PerPrimitive":
@@ -116,7 +116,7 @@ class PerPrimitive(NamedTuple):
 T = TypeVar("T", bound=Tuple[Any, ...])
 
 
-@jaxtyped
+# @jaxtyped
 @partial(
     jit,
     static_argnames=("shader", "loop_unroll"),
@@ -141,7 +141,7 @@ def _postprocessing(
             int, int(buffers[0].shape[0])
         )
 
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def _per_pixel(coord: Vec2i) -> Tuple[MixerOutput, MixedExtraT]:
@@ -157,7 +157,7 @@ def _postprocessing(
             Float[Array, "kept_primitives 3"],  #
         ]
 
-        @jaxtyped
+        # @jaxtyped
         @partial(jit, inline=True)
         @add_tracing_name
         def _per_primitive_preprocess(
@@ -361,7 +361,7 @@ def _postprocessing(
 
     # END OF `_per_pixel`
 
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def _per_row(
@@ -396,7 +396,7 @@ def _postprocessing(
 
     # END OF `_per_row`
 
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, donate_argnums=(1,), inline=True)
     @add_tracing_name
     def merge_buffers(
@@ -460,7 +460,7 @@ def _postprocessing(
     return buffers
 
 
-@jaxtyped
+# @jaxtyped
 @partial(
     jit,
     static_argnames=("shader", "loop_unroll"),
@@ -495,7 +495,7 @@ def render(
         # assert isinstance(vertices_count, int)
         # assert isinstance(gl_InstanceID, ID)
 
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def vertex_processing(gl_VertexID: IntV) -> Tuple[PerVertex, VaryingT]:

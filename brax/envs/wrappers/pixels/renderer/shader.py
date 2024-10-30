@@ -96,7 +96,7 @@ class Shader(ABC, Generic[ShaderExtraInputT, VaryingT, MixedExtraT]):
     """
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     @abstractmethod
@@ -153,7 +153,7 @@ class Shader(ABC, Generic[ShaderExtraInputT, VaryingT, MixedExtraT]):
         raise NotImplementedError("vertex shader not implemented")
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def primitive_chooser(
@@ -251,7 +251,7 @@ class Shader(ABC, Generic[ShaderExtraInputT, VaryingT, MixedExtraT]):
         )
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def interpolate(
@@ -290,7 +290,7 @@ class Shader(ABC, Generic[ShaderExtraInputT, VaryingT, MixedExtraT]):
         return varying
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def fragment(
@@ -333,7 +333,7 @@ class Shader(ABC, Generic[ShaderExtraInputT, VaryingT, MixedExtraT]):
         return PerFragment(use_default_depth=TRUE_ARRAY), varying
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def mix(

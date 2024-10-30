@@ -72,7 +72,7 @@ class PhongTextureShader(
     """Phong Shading with simple parallel lighting and texture."""
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def vertex(
@@ -104,7 +104,7 @@ class PhongTextureShader(
         )
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def fragment(
@@ -164,7 +164,7 @@ class PhongTextureShader(
         )
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def mix(

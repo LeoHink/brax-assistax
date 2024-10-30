@@ -135,7 +135,7 @@ class ShadowParameters(NamedTuple):
 
 class Renderer:
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(jit, inline=True)
     @add_tracing_name
     def create_camera_from_parameters(camera: CameraParameters) -> Camera:
@@ -196,7 +196,7 @@ class Renderer:
         return _camera
 
     @staticmethod
-    @jaxtyped
+    # @jaxtyped
     @add_tracing_name
     # @partial(jax.jit, static_argnames=("width", "height"))
     def create_buffers(
@@ -244,7 +244,7 @@ class Renderer:
         return buffers
 
     @classmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(
         jit,
         static_argnames=("cls", "loop_unroll"),
@@ -391,7 +391,7 @@ class Renderer:
             return buffers
 
     @classmethod
-    @jaxtyped
+    # @jaxtyped
     @partial(
         jit,
         static_argnames=("cls", "width", "height", "loop_unroll"),
