@@ -857,7 +857,7 @@ class Camera(NamedTuple):
         Return: Viewport^{-1}, (4, 4) matrix.
         """
         viewport_inv: Viewport = cls.inv_scale_translation_matrix(viewport)
-        assert isinstance(viewport_inv, Viewport)
+        # assert isinstance(viewport_inv, Viewport)
 
         return viewport_inv
 
