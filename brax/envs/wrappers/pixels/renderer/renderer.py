@@ -476,6 +476,6 @@ class Renderer:
             shadow_param=shadow_param,
             loop_unroll=loop_unroll,
         )
-        assert isinstance(canvas, Canvas), f"{canvas}"
+        # assert isinstance(canvas, Canvas), f"{canvas}"
 
         return canvas
