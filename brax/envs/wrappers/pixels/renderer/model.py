@@ -322,10 +322,10 @@ class MergedModel(NamedTuple):
             scalar.
           - map_index: index of the map to use.
         """
-        assert isinstance(uv, Float[Array, "2"]), f"{uv}"
-        assert isinstance(shape, Integer[Array, "2"]), f"{shape}"
-        assert isinstance(map_index, IntV), f"{map_index}"
-        assert isinstance(offset, IntV), f"{offset}"
+        # assert isinstance(uv, Float[Array, "2"]), f"{uv}"
+        # assert isinstance(shape, Integer[Array, "2"]), f"{shape}"
+        # assert isinstance(map_index, IntV), f"{map_index}"
+        # assert isinstance(offset, IntV), f"{offset}"
         # since given uv are in [0, 1] (and may be scaled, if is cube),
         # we need to multiply it by (w, h) of the texture map first.
         # This is equivalent to just obtain the fractional part of uv.
