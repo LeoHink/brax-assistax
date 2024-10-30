@@ -212,17 +212,11 @@ class PhongReflectionTextureShader(
         )
 
         # compute colour
-        print(f"extra.ambient: {extra.ambient.shape}")
-        print(f"texture_colour: {texture_colour.shape}")
-        print(f"extra.diffuse: {extra.diffuse.shape}")
-        print(f"extra.specular: {extra.specular.shape}")
-        print(f"specular: {specular.shape}")
-        print(f"extra.light.colour: {extra.light.colour.shape}")
         colour: Colour = (
             extra.ambient * texture_colour
             + (extra.diffuse * diffuse + extra.specular * specular) *
             # intensity * light colour * texture colour
-            jnp.concatenate([extra.light.colour, jnp.array([1.0])], -1) * texture_colour
+            extra.light.colour * texture_colour
         )
 
         return (
