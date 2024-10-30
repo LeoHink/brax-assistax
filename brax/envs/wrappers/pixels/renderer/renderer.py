@@ -406,7 +406,7 @@ class Renderer:
         width: int,
         height: int,
         colour_default: Colour = jnp.array(  # pyright: ignore[reportUnknownMemberType, reportCallInDefaultInitializer]
-            (1.0, 1.0, 1.0),
+            (1.0, 1.0, 1.0, 0.0),
             dtype=jnp.single,
         ),
         zbuffer_default: NumV = jnp.array(  # pyright: ignore[reportUnknownMemberType, reportCallInDefaultInitializer]
