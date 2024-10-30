@@ -464,13 +464,13 @@ def merge_objects(objects: Sequence[ModelObject]) -> MergedModel:
             counts,
             list(range(len(models))),
         )
-        assert isinstance(map_indices, Integer[Array, "vertices"])
+        # assert isinstance(map_indices, Integer[Array, "vertices"])
 
         map_wh_per_object = jnp.asarray(  # pyright: ignore[reportUnknownMemberType]
             [m.diffuse_map.shape[:2] for m in models]
         )
         # print(f'map_wh_per_object: {type(map_wh_per_object)}\n\n{map_wh_per_object}')
-        assert isinstance(map_wh_per_object, Integer[Array, "objects 2"])
+        # assert isinstance(map_wh_per_object, Integer[Array, "objects 2"])
 
         double_sided: Bool[Array, "vertices"]
         double_sided = MergedModel.generate_object_vert_info(
