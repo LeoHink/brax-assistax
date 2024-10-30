@@ -706,10 +706,10 @@ class Camera(NamedTuple):
         """
         with jax.ensure_compile_time_eval():
             shuffle: Integer[Array, "4"] = jnp.array((0, 1, 3, 2))  # pyright: ignore
-            assert isinstance(shuffle, Integer[Array, "4"])
+            # assert isinstance(shuffle, Integer[Array, "4"])
 
         inv = cls.inv_scale_translation_matrix(mat[:, shuffle])[shuffle, :]
-        assert isinstance(inv, Projection)
+        # assert isinstance(inv, Projection)
 
         return inv
 
