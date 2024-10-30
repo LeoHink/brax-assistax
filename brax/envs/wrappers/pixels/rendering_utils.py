@@ -450,7 +450,7 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
     for idx, geom_id in enumerate(sys.mj_model.geom_type):
         print(f"geom_id: {geom_id}")
         tex = sys.mj_model.geom_rgba[idx, :3].reshape((1, 1, 3))
-        tex = sys.mj_model.geom_rgba[idx, :4].reshape((1, 1, 4))
+        tex = jnp.concatenate([tex, jnp.array(0.0).reshape(1, 1, 1)], -1)
         # reference: https://github.com/erwincoumans/tinyrenderer/blob/89e8adafb35ecf5134e7b17b71b0f825939dc6d9/model.cpp#L215
         specular_map = jax.lax.full(tex.shape[:2], 2.0)
 
