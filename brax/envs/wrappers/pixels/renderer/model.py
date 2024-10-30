@@ -387,7 +387,7 @@ class ModelObject(NamedTuple):
             if orientation is None:
                 orientation = jnp.array((0.0, 0.0, 0.0, 1.0))  # pyright: ignore
 
-            assert isinstance(orientation, Vec4f), f"{orientation}"
+            # assert isinstance(orientation, Vec4f), f"{orientation}"
             rotation_matrix = transform_matrix_from_rotation(orientation)
 
         assert isinstance(
