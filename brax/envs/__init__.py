@@ -118,6 +118,6 @@ def create(
     if disability:
         env = training.DisabilityWrapper(env, disability)
     if pixel_obs:
-        env = training.PixelWrapper(env)
+        env = training.PixelWrapper(env, **pixel_obs)
 
     return env
