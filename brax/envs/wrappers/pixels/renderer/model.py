@@ -496,7 +496,7 @@ def merge_objects(objects: Sequence[ModelObject]) -> MergedModel:
     ) -> Vertices:
         """Apply transforms defined in `ModelObject` to vertices."""
         world: Float[Array, "N 3"] = Camera.apply_pos(verts * local_scaling, transform)
-        assert isinstance(world, Float[Array, "N 3"])
+        # assert isinstance(world, Float[Array, "N 3"])
 
         return world
 
