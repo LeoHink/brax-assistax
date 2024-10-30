@@ -331,6 +331,7 @@ def _vmap_build(
         print(f"vertices: {vertices.shape}")
         print(f"faces: {faces.shape}")
         material_id = sys.mj_model.geom_matid[geom_num]
+        tex = sys.mat_rgba[material_id]
         tm = trimesh.Trimesh(vertices=vertices, faces=faces)
         model = RendererMesh.create(
             verts=tm.vertices,
@@ -412,8 +413,6 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
     Returns:
 
     """
-    print(f"NMATERIALS: {sys.mj_model.nmat}")
-    qqq
 
     objs: list[Obj] = []
 
