@@ -332,7 +332,7 @@ def _vmap_build(
         print(f"faces: {faces.shape}")
         print(f"BEFORE: {tex.shape}")
         material_id = sys.mj_model.geom_matid[geom_num]
-        tex = sys.mat_rgba[material_id][:3].reshape(1, 1, 3)
+        tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         print(f"AFTER: {tex.shape}")
         tm = trimesh.Trimesh(vertices=vertices, faces=faces)
         model = RendererMesh.create(
