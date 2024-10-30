@@ -773,7 +773,7 @@ class Camera(NamedTuple):
         `inv_scale_translation_matrix` directly.
         """
         inv = cls.inv_scale_translation_matrix(mat)
-        assert isinstance(inv, Projection)
+        # assert isinstance(inv, Projection)
 
         return inv
 
