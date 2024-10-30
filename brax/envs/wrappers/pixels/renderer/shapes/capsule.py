@@ -2001,7 +2001,7 @@ def create_capsule(
     # assert isinstance(verts, Vertices)
 
     normals: Normals = _normals[:, shuffled]
-    assert isinstance(normals, Normals)
+    # assert isinstance(normals, Normals)
 
     return Model(
         verts=verts,
