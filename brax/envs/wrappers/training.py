@@ -310,10 +310,27 @@ class PixelWrapper(PipelineEnv):
             frames,
             raw_state.reward,
             raw_state.done,
-            rng,
+            jax.random.split(rng, raw_state.obs.shape[0]),
             raw_state.metrics,
             raw_state.info,
         )
 
-    def step(self, states: jp.ndarray, actions: jp.ndarray) -> PixelState:
-        pass
+    def step(
+        self, rng: jp.ndarray, states: jp.ndarray, actions: jp.ndarray
+    ) -> PixelState:
+        raw_state = self.env.step(rng, states, actions)
+        frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+        if not self.return_float32:
+            frames = (frames * 255).astype(jp.uint8)
+
+        # TODO: add frame stacking here
+        return PixelState(
+            raw_state.pipeline_state,
+            raw_state.obs,
+            frames,
+            raw_state.reward,
+            raw_state.done,
+            rng,
+            raw_state.metrics,
+            raw_state.info,
+        )
