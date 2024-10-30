@@ -294,7 +294,9 @@ def _vmap_build(
     elif geom_id == 6:
         model = create_cube(
             half_extents=sys.geom_size[geom_num],
-            diffuse_map=tex,
+            diffuse_map=jnp.concatenate(
+                [tex, jnp.array([0.0]).reshape(1, 1, 1)], axis=-1
+            ),
             texture_scaling=jnp.array(16.0),
             specular_map=specular_map,
         )
