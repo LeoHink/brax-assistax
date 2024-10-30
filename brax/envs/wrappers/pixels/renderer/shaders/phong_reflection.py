@@ -202,7 +202,7 @@ class PhongReflectionTextureShader(
             * normal
             - light_dir
         )
-        assert isinstance(reflected_light, Vec3f)
+        # assert isinstance(reflected_light, Vec3f)
 
         specular: FloatV = lax.pow(  # pyright: ignore[reportUnknownMemberType]
             lax.max(  # pyright: ignore[reportUnknownMemberType]
