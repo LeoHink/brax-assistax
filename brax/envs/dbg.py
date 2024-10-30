@@ -41,30 +41,57 @@ from PIL import Image
 import numpy as np
 from tqdm import tqdm
 import imageio
+import wandb
+import os
+import json
+
+os.environ["WANDB_DIR"] = "./wandb"
+os.environ["WANDB_CACHE_DIR"] = "./wandb"
+os.environ["WANDB_CONFIG_DIR"] = "./wandb"
+os.environ["WANDB_DATA_DIR"] = "./wandb"
+
+# print(f"dir: {os.listdir('../../')}")
+
+"""LOGGING"""
+with open("../../wandb.txt", "r") as f:
+    API_KEY = json.load(f)["api_key"]
+
+wandb.init(
+    project="testing-assistax",
+    entity="trevor-mcinroe",
+    name="pls",
+)
+
 
 env = envs.create(
     "scratchitch",
     batch_size=3,
-    pixel_obs={"hw": 128, "frame_stack": 1, "return_float32": False},
+    pixel_obs={"hw": 512, "frame_stack": 1, "return_float32": False},
 )
 print(f"sys: {env.sys.mj_model.ngeom} // {env.sys.mj_model.nbody}")
 
 
 key = jax.random.PRNGKey(0)
 obs = env.reset(key)
-
-frames = [obs.pixels[0]]
+frames = [np.array(obs.pixels[0])[None]]
 
 keys = jax.random.split(key, obs.pixels.shape[0])
 action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
 _step_fn = jax.jit(env.step)
 
 for _ in tqdm(range(100)):
+    _, key = jax.random.split(key)
     obs = _step_fn(keys, obs, action)
-    frames.append(obs.pixels[0])
+    frames.append(np.array(obs.pixels[0])[None])
+    action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
 
-imageio.mimsave("./random_actions.mp4", frames, fps=10)
-qqq
+
+wandb.log(
+    {"video": wandb.Video(np.concatenate(frames, 0).transpose(0, 3, 1, 2), fps=24)}
+)
+# qqq
+# imageio.mimsave("./random_actions.mp4", frames, fps=10)
+# qqq
 
 for i in range(10):
     im = np.array(obs.pixels[i])  # .transpose(2, 0, 1)

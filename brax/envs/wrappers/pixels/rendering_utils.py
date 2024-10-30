@@ -298,6 +298,48 @@ def _vmap_build(
             texture_scaling=jnp.array(16.0),
             specular_map=specular_map,
         )
+    elif geom_id == 7:
+        # nmeshvert: 399342
+        # geom_dataid: (106,)
+        # mesh_vertadr: (57,)
+        # Get vertices:
+        # (1) get the idx at which this particular mesh's idx begins and ends
+        # (2) use (1) to query mj_model.mesh_vert[begin:end]
+
+        # we can use "geom_dataid: id of geom's mesh/hfield" to determine the mesh idx
+        # as well as if the mesh is the last mesh. geom_dataid: (n_geoms,)
+        mesh_idx = sys.mj_model.geom_dataid[geom_num]
+        last_mesh = (mesh_idx + 1) >= sys.mj_model.nmesh
+        vert_idx_start = sys.mj_model.mesh_vertadr[mesh_idx]
+        vert_idx_end = (
+            sys.mj_model.mesh_vertadr[mesh_idx + 1]
+            if not last_mesh
+            else sys.mj_model.mesh_vert.shape[0]
+        )
+        # mesh_vert (399342, 3)
+        vertices = sys.mesh_vert[vert_idx_start:vert_idx_end]
+
+        # Get faces
+        face_idx_start = sys.mj_model.mesh_faceadr[mesh_idx]
+        face_idx_end = (
+            sys.mj_model.mesh_faceadr[mesh_idx + 1]
+            if not last_mesh
+            else sys.mj_model.mesh_face.shape[0]
+        )
+        faces = sys.mj_model.mesh_face[face_idx_start:face_idx_end]
+
+        print(f"vertices: {vertices.shape}")
+        print(f"faces: {faces.shape}")
+        tm = trimesh.Trimesh(vertices=vertices, faces=faces)
+        model = RendererMesh.create(
+            verts=tm.vertices,
+            norms=tm.vertex_normals,
+            uvs=jnp.zeros((tm.vertices.shape[0], 2), dtype=int),
+            faces=tm.faces,
+            diffuse_map=tex,
+        )
+    else:
+        raise NotImplementedError(f"Geom of ID {geom_id} not implemented nor known.")
 
     # Lets give this a funny shout... Trying to copy how they do it in the .js file
     # https://github.com/google/brax/blob/main/brax/visualizer/js/system.js#L223
@@ -419,7 +461,7 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
         link_idx = sys.geom_bodyid[idx] - 1
 
         # TODO: temporary for dev. remove when done
-        if geom_id in [0, 1, 2, 3, 4, 5, 6]:  # [0, 1, 2, 3]:
+        if geom_id in [0, 1, 2, 3, 4, 5, 6, 7]:  # [0, 1, 2, 3]:
             model, rot, off = _vmap_build(
                 sys,
                 pipeline_states,
