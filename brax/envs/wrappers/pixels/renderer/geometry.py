@@ -510,22 +510,22 @@ class Camera(NamedTuple):
         """
 
         scale_inv = jnp.diag(1.0 / jnp.diag(scale_translation_mat))  # pyright: ignore
-        assert isinstance(scale_inv, Float[Array, "4 4"])
+        # assert isinstance(scale_inv, Float[Array, "4 4"])
 
         # scale_translation = scale @ translation;
         # thus  translation = scale_inv @ scale @ translation
         #                   = scale_inv @ scale_translation
         translation: Float[Array, "4 4"] = scale_inv @ scale_translation_mat
-        assert isinstance(translation, Float[Array, "4 4"])
+        # assert isinstance(translation, Float[Array, "4 4"])
 
         # inverse of translation: negative of translation
         translation_inv = (
             jnp.identity(4).at[:3, 3].set(-translation[:3, 3])  # pyright: ignore
         )
-        assert isinstance(translation_inv, Float[Array, "4 4"])
+        # assert isinstance(translation_inv, Float[Array, "4 4"])
 
         scale_translation_inv = translation_inv @ scale_inv
-        assert isinstance(scale_translation_inv, Float[Array, "4 4"])
+        # assert isinstance(scale_translation_inv, Float[Array, "4 4"])
 
         return scale_translation_inv
 
