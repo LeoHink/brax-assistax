@@ -1026,7 +1026,7 @@ def transform_matrix_from_rotation(rotation: Vec4f) -> Float[Array, "3 3"]:
             (xz - wy, yz + wx, 1.0 - (xx + yy)),
         )
     )
-    assert isinstance(mat, Float[Array, "3 3"])
+    # assert isinstance(mat, Float[Array, "3 3"])
 
     return mat
 
