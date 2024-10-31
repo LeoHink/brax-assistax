@@ -121,7 +121,7 @@ def sample_surface(
     return samples, face_index
 
 
-def volume_mesh(mesh, count: Integer) -> NDArray[float64]:
+def volume_mesh(mesh, count: Integer) -> NDArray:
     """
     Use rejection sampling to produce points randomly
     distributed in the volume of a mesh.
@@ -147,7 +147,7 @@ def volume_mesh(mesh, count: Integer) -> NDArray[float64]:
 
 def volume_rectangular(
     extents, count: Integer, transform: Optional[ArrayLike] = None
-) -> NDArray[float64]:
+) -> NDArray:
     """
     Return random samples inside a rectangular volume,
     useful for sampling inside oriented bounding boxes.
@@ -225,7 +225,7 @@ def sample_surface_even(
     return points, index[mask]
 
 
-def sample_surface_sphere(count: int) -> NDArray[float64]:
+def sample_surface_sphere(count: int) -> NDArray:
     """
     Correctly pick random points on the surface of a unit sphere
 
