@@ -1248,9 +1248,13 @@ class Trimesh(Geometry3D):
         print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
         mask = np.asanyarray(mask)
         print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
-        if mask.dtype.name == "bool" and mask.mean() == 1:
-            # mask removes no faces so exit early
-            return
+
+        # TODO: is this branch necessary or can we skip? Would be greast if we could
+        # skip this, as it would require `mask` to be static_arg*, which would likely
+        # cause too many compilation calls, thereby slowing down the runs...
+        # if mask.dtype.name == "bool" and mask.mean() == 1:
+        #    # mask removes no faces so exit early
+        #    return
 
         # try to save face normals before dumping cache
         cached_normals = self._cache["face_normals"]
@@ -1273,6 +1277,7 @@ class Trimesh(Geometry3D):
             # apply the mask to the attribute
             self.face_attributes[key] = value[mask]
 
+        qqq
         # actually apply the mask
         self.faces = faces[mask]
 
