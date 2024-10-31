@@ -1248,8 +1248,7 @@ class Trimesh(Geometry3D):
         print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
         mask = np.asanyarray(mask)
         print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
-        qqq
-        if mask.dtype.name == "bool" and mask.all():
+        if mask.dtype.name == "bool" and mask.mean() == 1:
             # mask removes no faces so exit early
             return
 
