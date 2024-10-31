@@ -215,7 +215,7 @@ def ray_triangle_id(
     # triangle create one here
     if tree is None:
         print(f"Having to create a tree...")
-        qqq
+        qq
         tree = triangles_mod.bounds_tree(triangles)
 
     # find the list of likely triangles and which ray they
