@@ -111,7 +111,7 @@ def face_adjacency(faces=None, mesh=None, return_edges=False):
     return adjacency
 
 
-def face_neighborhood(mesh) -> NDArray[int64]:
+def face_neighborhood(mesh) -> NDArray:
     """
     Find faces that share a vertex i.e. 'neighbors' faces.
     Relies on the fact that an adjacency matrix at a power p
