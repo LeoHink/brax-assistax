@@ -1245,8 +1245,10 @@ class Trimesh(Geometry3D):
         # if the mesh is already empty we can't remove anything
         if self.is_empty:
             return
-
+        print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
         mask = np.asanyarray(mask)
+        print(f"mask: {type(mask)} // {mask.dtype} // {mask.shape}")
+        qqq
         if mask.dtype.name == "bool" and mask.all():
             # mask removes no faces so exit early
             return
