@@ -196,11 +196,11 @@ class Trimesh(Geometry3D):
         # this attribute is explicitly passed anywhere, so maybe we're okay to ignore?
 
         self.permutate = permutate.Permutator(self)
-        print(f"did the Permutator successfully.")
-        qqq
 
         # convenience class for nearest point queries
         self.nearest = proximity.ProximityQuery(self)
+        print("did ProximityQuery successfully...")
+        qqq
 
         # update the mesh metadata with passed metadata
         self.metadata = {}
