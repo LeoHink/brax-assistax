@@ -428,7 +428,7 @@ class Trimesh(Geometry3D):
         if values is None:
             return
         # make sure candidate face normals are C-contiguous float
-        values = np.asanyarray(values, order="C", dtype=float64)
+        values = np.asanyarray(values, dtype=float64)
         # face normals need to correspond to faces
         if len(values) == 0 or values.shape != self.faces.shape:
             log.debug("face_normals incorrect shape, ignoring!")
@@ -487,7 +487,9 @@ class Trimesh(Geometry3D):
         if values is None:
             # remove any stored data and store an empty array
             values = np.empty(shape=(0, 3), dtype=float64)
-        self._data["vertices"] = np.asanyarray(values, order="C", dtype=float64)
+        # self._data["vertices"] = np.asanyarray(values, order="C", dtype=float64)
+        # We can rely on jax's compiler to lay out our data in a good "order"
+        self._data["vertices"] = np.asanyarray(values, dtype=float64)
 
     @caching.cache_decorator
     def vertex_normals(self) -> NDArray:
@@ -525,7 +527,9 @@ class Trimesh(Geometry3D):
           Unit normal vectors for each vertex
         """
         if values is not None:
-            values = np.asanyarray(values, order="C", dtype=float64)
+            # We can rely on jax's compiler to lay out our data in a good "order"
+            # values = np.asanyarray(values, order="C", dtype=float64)
+            values = np.asanyarray(values, dtype=float64)
             if values.shape == self.vertices.shape:
                 # check to see if they assigned all zeros
                 if np.ptp(values) < tol.merge:
@@ -2462,7 +2466,8 @@ class Trimesh(Geometry3D):
           Homogeneous transformation matrix
         """
         # get c-order float64 matrix
-        matrix = np.asanyarray(matrix, order="C", dtype=float64)
+        # matrix = np.asanyarray(matrix, order="C", dtype=float64)
+        matrix = np.asanyarray(matrix, dtype=float64)
 
         # only support homogeneous transformations
         if matrix.shape != (4, 4):
