@@ -29,7 +29,6 @@ from .renderer import (
 # import trimesh
 from .trimesh_jax import Trimesh
 
-qqq
 from .geom_primitives import Capsule, Box, Sphere, Plane, Convex, Mesh
 
 
@@ -337,7 +336,10 @@ def _vmap_build(
         material_id = sys.mj_model.geom_matid[geom_num]
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         print(f"AFTER: {tex.shape}")
-        tm = trimesh.Trimesh(vertices=vertices, faces=faces)
+        tm = Trimesh(vertices=vertices, faces=faces)
+
+        print(f"successfully init the Trimesh object.")
+        qqq
         model = RendererMesh.create(
             verts=tm.vertices,
             norms=tm.vertex_normals,
