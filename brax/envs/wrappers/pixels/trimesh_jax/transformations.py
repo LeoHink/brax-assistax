@@ -201,9 +201,10 @@ True
 
 import jax.numpy as np
 from jax.typing import ArrayLike, NDArray
+from jax import Array as NDArray
 
 _IDENTITY = np.eye(4)
-_IDENTITY.flags["WRITEABLE"] = False
+# _IDENTITY.flags["WRITEABLE"] = False
 
 
 def identity_matrix():
