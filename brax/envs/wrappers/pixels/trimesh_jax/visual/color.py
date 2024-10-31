@@ -56,9 +56,6 @@ class ColorVisuals(Visuals):
         self._data = caching.DataStore()
         self._cache = caching.Cache(id_function=self._data.__hash__)
 
-        print(f"did the cache correctly.")
-        qqq
-
         self.defaults = {
             "material_diffuse": np.array([102, 102, 102, 255], dtype=np.uint8),
             "material_ambient": np.array([64, 64, 64, 255], dtype=np.uint8),
@@ -69,10 +66,14 @@ class ColorVisuals(Visuals):
         try:
             if face_colors is not None:
                 self.face_colors = face_colors
+            print(f"set face_colors correctly")
             if vertex_colors is not None:
                 self.vertex_colors = vertex_colors
+            print(f"set vertex_colors correctly")
+            qqq
         except ValueError:
             util.log.warning("unable to convert colors!")
+            qqq
 
     @caching.cache_decorator
     def transparency(self):
