@@ -48,7 +48,8 @@ TOL_MERGE = 1e-8
 _STRICT = False
 
 _IDENTITY = np.eye(4, dtype=np.float64)
-_IDENTITY.flags["WRITEABLE"] = False
+# TODO: determine if making this mutable actually has consqeuences?
+# _IDENTITY.flags["WRITEABLE"] = False
 
 
 def has_module(name: str) -> bool:
