@@ -176,18 +176,19 @@ class Trimesh(Geometry3D):
         if face_normals is not None:
             self.face_normals = face_normals
 
-        print(f"did face_normals correctly")
         # (n, 3) float of vertex normals, can be created from face normals
         if vertex_normals is not None:
             self.vertex_normals = vertex_normals
-        print(f"did vertex_normals correctly")
-        qqq
         # embree is a much, much faster raytracer written by Intel
         # if you have pyembree installed you should use it
         # although both raytracers were designed to have a common API
         if ray.has_embree and use_embree:
+            print(f"in ray_pyembree branch")
+            qqq
             self.ray = ray.ray_pyembree.RayMeshIntersector(self)
         else:
+            print(f"in ray_triangle branch")
+            qqq
             # create a ray-mesh query object for the current mesh
             # initializing is very inexpensive and object is convenient to have.
             # On first query expensive bookkeeping is done (creation of r-tree),
