@@ -377,7 +377,7 @@ class Scene(Geometry3D):
         return np.array([corners.min(axis=0), corners.max(axis=0)], dtype=np.float64)
 
     @caching.cache_decorator
-    def extents(self) -> Optional[NDArray[float64]]:
+    def extents(self) -> Optional[NDArray]:
         """
         Return the axis aligned box size of the current scene
         or None if the scene is empty.
@@ -408,7 +408,7 @@ class Scene(Geometry3D):
         return float((extents**2).sum() ** 0.5)
 
     @caching.cache_decorator
-    def centroid(self) -> Optional[NDArray[float64]]:
+    def centroid(self) -> Optional[NDArray]:
         """
         Return the center of the bounding box for the scene.
 
@@ -527,7 +527,7 @@ class Scene(Geometry3D):
         )
 
     @caching.cache_decorator
-    def triangles(self) -> NDArray[float64]:
+    def triangles(self) -> NDArray:
         """
         Return a correctly transformed polygon soup of the
         current scene.
@@ -726,7 +726,7 @@ class Scene(Geometry3D):
         """
         self.graph[self.camera.name] = matrix
 
-    def camera_rays(self) -> Tuple[NDArray[float64], NDArray[float64], NDArray[int64]]:
+    def camera_rays(self) -> Tuple[NDArray, NDArray, NDArray]:
         """
         Calculate the trimesh.scene.Camera origin and ray
         direction vectors. Returns one ray per pixel as set
