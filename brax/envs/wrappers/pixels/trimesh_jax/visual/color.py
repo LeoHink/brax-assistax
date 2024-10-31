@@ -66,14 +66,10 @@ class ColorVisuals(Visuals):
         try:
             if face_colors is not None:
                 self.face_colors = face_colors
-            print(f"set face_colors correctly")
             if vertex_colors is not None:
                 self.vertex_colors = vertex_colors
-            print(f"set vertex_colors correctly")
-            qqq
         except ValueError:
             util.log.warning("unable to convert colors!")
-            qqq
 
     @caching.cache_decorator
     def transparency(self):

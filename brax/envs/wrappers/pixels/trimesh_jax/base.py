@@ -170,7 +170,8 @@ class Trimesh(Geometry3D):
             )
         else:
             self.visual = visual
-
+        print(f"did self.visual correctly")
+        qqq
         # normals are accessed through setters/properties and are regenerated
         # if dimensions are inconsistent, but can be set by the constructor
         # to avoid a substantial number of cross products
