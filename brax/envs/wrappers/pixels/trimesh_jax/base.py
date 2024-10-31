@@ -183,24 +183,21 @@ class Trimesh(Geometry3D):
         # if you have pyembree installed you should use it
         # although both raytracers were designed to have a common API
         if ray.has_embree and use_embree:
-            print(f"in ray_pyembree branch")
-            qqq
             self.ray = ray.ray_pyembree.RayMeshIntersector(self)
         else:
-            print(f"in ray_triangle branch")
             # create a ray-mesh query object for the current mesh
             # initializing is very inexpensive and object is convenient to have.
             # On first query expensive bookkeeping is done (creation of r-tree),
             # and is cached for subsequent queries
             self.ray = ray.ray_triangle.RayMeshIntersector(self)
-            print("did ray sucessfully!")
-            qqq
         # a quick wayadto get permuted versions of the current mesh
         # The file for the below class has many calls to numpy.random.permute(), which
         # has a very different API to the jax.random.permute(). It doesn't look like
         # this attribute is explicitly passed anywhere, so maybe we're okay to ignore?
 
         self.permutate = permutate.Permutator(self)
+        print(f"did the Permutator successfully.")
+        qqq
 
         # convenience class for nearest point queries
         self.nearest = proximity.ProximityQuery(self)

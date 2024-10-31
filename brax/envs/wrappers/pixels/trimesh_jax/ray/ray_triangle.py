@@ -214,7 +214,9 @@ def ray_triangle_id(
     # if we didn't get passed an r-tree for the bounds of each
     # triangle create one here
     if tree is None:
-        print(f"Having to create a tree...")
+        print(
+            f"In trimesh_jax.ray.ray_triangle.ray_triangle_id(), creating a tree. This is an untested branch."
+        )
         qqq
         tree = triangles_mod.bounds_tree(triangles)
 
