@@ -187,10 +187,10 @@ class MassProperties:
     volume: float
 
     # the (3,) center of mass
-    center_mass: NDArray[float64]
+    center_mass: NDArray
 
     # the (3, 3) inertia tensor
-    inertia: Optional[NDArray[float64]] = None
+    inertia: Optional[NDArray] = None
 
     def __getitem__(self, item):
         # add for backwards compatibility
