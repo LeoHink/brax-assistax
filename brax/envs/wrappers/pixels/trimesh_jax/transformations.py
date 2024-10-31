@@ -2088,10 +2088,12 @@ def planar_matrix(offset=None, theta=None, point=None, scale=None):
     s = np.sin(theta)
     c = np.cos(theta)
 
-    T[0, :2] = [c, s]
-    T[1, :2] = [-s, c]
-    T[:2, 2] = offset
-
+    # T[0, :2] = [c, s]
+    T = T.at[0, :2].set([c, s])
+    # T[1, :2] = [-s, c]
+    T = T.at[1, :2].set([-s, c])
+    # T[:2, 2] = offset
+    T = T.at[:2, 2].set(offset)
     if point is not None:
         T = transform_around(matrix=T, point=point)
 
