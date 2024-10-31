@@ -25,7 +25,10 @@ from .renderer import (
     create_cube,
     transpose_for_display,
 )
-import trimesh
+
+# import trimesh
+
+from pixels import trimesh
 
 from .geom_primitives import Capsule, Box, Sphere, Plane, Convex, Mesh
 
