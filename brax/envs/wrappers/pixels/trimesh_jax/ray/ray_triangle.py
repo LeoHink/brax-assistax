@@ -219,8 +219,6 @@ def ray_triangle_id(
         )
         qqq
         tree = triangles_mod.bounds_tree(triangles)
-    print(f"in the right spot...")
-    qqq
     # find the list of likely triangles and which ray they
     # correspond with, via rtree queries
     ray_candidates, ray_id = ray_triangle_candidates(
