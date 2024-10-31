@@ -165,14 +165,10 @@ class Trimesh(Geometry3D):
 
         # hold visual information about the mesh (vertex and face colors)
         if visual is None:
-            print(f"Inside of visual is none")
-            qqq
             self.visual = create_visual(
                 face_colors=face_colors, vertex_colors=vertex_colors, mesh=self
             )
         else:
-            print(f"else")
-            qqq
             self.visual = visual
 
         # normals are accessed through setters/properties and are regenerated

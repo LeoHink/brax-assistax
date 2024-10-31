@@ -56,6 +56,9 @@ class ColorVisuals(Visuals):
         self._data = caching.DataStore()
         self._cache = caching.Cache(id_function=self._data.__hash__)
 
+        print(f"did the cache correctly.")
+        qqq
+
         self.defaults = {
             "material_diffuse": np.array([102, 102, 102, 255], dtype=np.uint8),
             "material_ambient": np.array([64, 64, 64, 255], dtype=np.uint8),
