@@ -21,7 +21,7 @@ except BaseException:
 
 # a 90 degree rotation
 _flip = transformations.planar_matrix(theta=np.pi / 2)
-_flip.flags.writeable = False
+# _flip.flags.writeable = False
 
 
 def oriented_bounds_2D(points, qhull_options="QbB"):
@@ -72,7 +72,9 @@ def oriented_bounds_2D(points, qhull_options="QbB"):
     y = np.dot(perp_vectors, hull_points.T)
 
     # reduce the projections to maximum and minimum per edge vector
-    bounds = np.column_stack((x.min(axis=1), y.min(axis=1), x.max(axis=1), y.max(axis=1)))
+    bounds = np.column_stack(
+        (x.min(axis=1), y.min(axis=1), x.max(axis=1), y.max(axis=1))
+    )
 
     # calculate the extents and area for each edge vector pair
     extents = np.diff(bounds.reshape((-1, 2, 2)), axis=1).reshape((-1, 2))
@@ -191,7 +193,9 @@ def oriented_bounds(obj, angle_digits=1, ordered=True, normal=None, coplanar_tol
             else:
                 raise ValueError("Points are not (n,3) or (n,2)!")
         else:
-            raise ValueError("Oriented bounds must be passed a mesh or a set of points!")
+            raise ValueError(
+                "Oriented bounds must be passed a mesh or a set of points!"
+            )
     except QhullError:
         # Try to recover from Qhull error if due to mesh being less than 3
         # dimensional
@@ -213,11 +217,15 @@ def oriented_bounds(obj, angle_digits=1, ordered=True, normal=None, coplanar_tol
         # convert face normals to spherical coordinates on the upper hemisphere
         # the vector_hemisphere call effectively merges negative but otherwise
         # identical vectors
-        spherical_coords = util.vector_to_spherical(util.vector_hemisphere(hull_normals))
+        spherical_coords = util.vector_to_spherical(
+            util.vector_hemisphere(hull_normals)
+        )
         # the unique_rows call on merge angles gets unique spherical directions to check
         # we get a substantial speedup in the transformation matrix creation
         # inside the loop by converting to angles ahead of time
-        spherical_unique = grouping.unique_rows(spherical_coords, digits=angle_digits)[0]
+        spherical_unique = grouping.unique_rows(spherical_coords, digits=angle_digits)[
+            0
+        ]
         matrices = [
             transformations.spherical_matrix(*s).T
             for s in spherical_coords[spherical_unique]
@@ -316,7 +324,9 @@ def oriented_bounds(obj, angle_digits=1, ordered=True, normal=None, coplanar_tol
         # apply the order to the extents
         min_extents = min_extents[order]
 
-    log.debug("oriented_bounds checked %d vectors in %0.4fs", len(matrices), now() - tic)
+    log.debug(
+        "oriented_bounds checked %d vectors in %0.4fs", len(matrices), now() - tic
+    )
 
     return to_origin, min_extents
 
