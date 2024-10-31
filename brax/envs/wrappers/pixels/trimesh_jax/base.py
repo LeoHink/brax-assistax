@@ -270,6 +270,7 @@ class Trimesh(Geometry3D):
             # if faces or vertices have been removed, normals are validated before
             # being returned so there is no danger of inconsistent dimensions
             self.remove_infinite_values()
+            
             self.merge_vertices(merge_tex=merge_tex, merge_norm=merge_norm)
             self._cache.clear(exclude={"face_normals", "vertex_normals"})
 
@@ -1266,6 +1267,7 @@ class Trimesh(Geometry3D):
             faces = self._cache["faces"]
 
         # apply to face_attributes
+        self.face_attributes = jax.tree_map(lambda x, y: x[])
         count = len(self.faces)
         for key, value in self.face_attributes.items():
             try:
