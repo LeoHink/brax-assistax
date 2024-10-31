@@ -213,12 +213,9 @@ class Trimesh(Geometry3D):
         self.vertex_attributes = {}
         # use update to copy items
         if face_attributes is not None:
-            print(f"not none face_attributes")
             self.face_attributes.update(face_attributes)
         if vertex_attributes is not None:
-            print(f"not none vertex_attributes")
             self.vertex_attributes.update(vertex_attributes)
-        qqq
         # process will remove NaN and Inf values and merge vertices
         # if validate, will remove degenerate and duplicate faces
         if process or validate:
