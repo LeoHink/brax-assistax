@@ -5,8 +5,8 @@ curvature.py
 Query mesh curvature.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import util
 
 try:
@@ -48,7 +48,9 @@ def vertex_defects(mesh):
                      Vertex defect at the every vertex
     """
     angle_sum = np.array(mesh.face_angles_sparse.sum(axis=1)).flatten()
-    defect = (2 * np.pi) - angle_sum
+    # defect = (2 * np.pi) - angle_sum
+    # Is this level of precision okay?
+    defect = (2 * 3.141592653589793) - angle_sum
     return defect
 
 
@@ -191,6 +193,8 @@ def sphere_ball_intersection(R, r):
     """
     x = (2 * R**2 - r**2) / (2 * R)  # x coord of plane
     if x >= -R:
-        return 2 * np.pi * R * (R - x)
+        return 2 * 3.141592653589793 * R * (R - x)
+        # return 2 * np.pi * R * (R - x)
     if x < -R:
-        return 4 * np.pi * R**2
+        return 4 * 3.141592653589793 * R**2
+        # return 4 * np.pi * R**2

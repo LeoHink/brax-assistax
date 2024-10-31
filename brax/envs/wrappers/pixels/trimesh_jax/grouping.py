@@ -5,8 +5,8 @@ grouping.py
 Functions for grouping values and rows.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import util
 from .constants import log, tol
 from .typed import ArrayLike, Integer, NDArray, Optional
@@ -213,6 +213,10 @@ def hashable_rows(data: ArrayLike, digits=None) -> NDArray:
             return hashable
 
     # reshape array into magical data type that is weird but works with unique
+    print(
+        f"You are in grouping.hashable_rows() and are about to create a `void` datatype contiguous array!"
+    )
+    qqq
     dtype = np.dtype((np.void, as_int.dtype.itemsize * as_int.shape[1]))
     # make sure result is contiguous and flat
     result = np.ascontiguousarray(as_int).view(dtype).reshape(-1)
@@ -712,7 +716,9 @@ def clusters(points, radius):
     return groups
 
 
-def blocks(data, min_len=2, max_len=np.inf, wrap=False, digits=None, only_nonzero=False):
+def blocks(
+    data, min_len=2, max_len=np.inf, wrap=False, digits=None, only_nonzero=False
+):
     """
     Find the indices in an array of contiguous blocks
     of equal values.

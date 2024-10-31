@@ -5,8 +5,8 @@ remesh.py
 Deal with re- triangulation of existing meshes.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import graph, grouping, util
 from .constants import tol
 from .geometry import faces_to_edges

@@ -27,7 +27,8 @@ import zipfile
 from collections.abc import Mapping
 from io import BytesIO, StringIO
 
-import numpy as np
+# import numpy as np
+import jax.numpy as np
 
 # create a default logger
 log = logging.getLogger("trimesh")
@@ -1510,7 +1511,12 @@ def concatenate(a, b=None):
 
 
 def submesh(
-    mesh, faces_sequence, repair=True, only_watertight=False, min_faces=None, append=False
+    mesh,
+    faces_sequence,
+    repair=True,
+    only_watertight=False,
+    min_faces=None,
+    append=False,
 ):
     """
     Return a subset of a mesh.

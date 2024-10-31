@@ -7,7 +7,8 @@ Provide methods for quickly hashing and comparing meshes.
 
 from hashlib import sha256
 
-import numpy as np
+# import numpy as np
+import jax.numpy as np
 
 from . import util
 from .constants import tol

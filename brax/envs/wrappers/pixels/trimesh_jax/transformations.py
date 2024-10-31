@@ -1,6 +1,6 @@
 # transformations.py
 
-# Modified for inclusion in the `trimesh` library
+# Modified for inclusion in the `trimesh` library, as well as here
 # https://github.com/mikedh/trimesh
 # -----------------------------------------------------------------------
 #
@@ -196,8 +196,11 @@ True
 
 """
 
-import numpy as np
-from numpy.typing import ArrayLike, NDArray
+# import numpy as np
+# from numpy.typing import ArrayLike, NDArray
+
+import jax.numpy as np
+from jax.typing import ArrayLike, NDArray
 
 _IDENTITY = np.eye(4)
 _IDENTITY.flags["WRITEABLE"] = False
@@ -863,7 +866,9 @@ def decompose_matrix(matrix):
     return scale, shear, angles, translate, perspective
 
 
-def compose_matrix(scale=None, shear=None, angles=None, translate=None, perspective=None):
+def compose_matrix(
+    scale=None, shear=None, angles=None, translate=None, perspective=None
+):
     """Return transformation matrix from sequence of transformations.
 
     This is the inverse of the decompose_matrix function.

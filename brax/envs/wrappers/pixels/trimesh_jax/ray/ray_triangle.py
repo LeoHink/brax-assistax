@@ -2,8 +2,8 @@
 A basic slow implementation of ray- triangle queries.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from .. import caching, grouping, intersections, util
 from .. import triangles as triangles_mod
 from ..constants import tol
@@ -263,7 +263,8 @@ def ray_triangle_id(
     # the plane intersection is inside the triangle if all barycentric
     # coordinates are between 0.0 and 1.0
     hit = np.logical_and(
-        (barycentric > -tol.zero).all(axis=1), (barycentric < (1 + tol.zero)).all(axis=1)
+        (barycentric > -tol.zero).all(axis=1),
+        (barycentric < (1 + tol.zero)).all(axis=1),
     )
 
     # the result index of the triangle is a candidate with a valid
@@ -364,7 +365,9 @@ def ray_bounds(ray_origins, ray_directions, bounds, buffer_dist=1e-5):
     # find the primary axis of the vector
     axis = np.abs(ray_directions).argmax(axis=1)
     axis_bound = bounds.reshape((2, -1)).T[axis]
-    axis_ori = np.array([ray_origins[i][a] for i, a in enumerate(axis)]).reshape((-1, 1))
+    axis_ori = np.array([ray_origins[i][a] for i, a in enumerate(axis)]).reshape(
+        (-1, 1)
+    )
     axis_dir = np.array([ray_directions[i][a] for i, a in enumerate(axis)]).reshape(
         (-1, 1)
     )

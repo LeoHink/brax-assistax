@@ -5,8 +5,8 @@ boolean.py
 Do boolean operations on meshes using either Blender or Manifold.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import exceptions, interfaces
 from .typed import Iterable, Optional
 
@@ -166,7 +166,9 @@ def boolean_manifold(
     from . import Trimesh
 
     result_mesh = result_manifold.to_mesh()
-    out_mesh = Trimesh(vertices=result_mesh.vert_properties, faces=result_mesh.tri_verts)
+    out_mesh = Trimesh(
+        vertices=result_mesh.vert_properties, faces=result_mesh.tri_verts
+    )
 
     return out_mesh
 

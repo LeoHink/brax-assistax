@@ -25,8 +25,8 @@ Goals
 import colorsys
 import copy
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from .. import caching, util
 from ..constants import tol
 from ..grouping import unique_rows
@@ -225,6 +225,10 @@ class ColorVisuals(Visuals):
             return
 
         # make sure passed values are numpy array
+        print(
+            f"We have arrived in color.ColorVisuals.vertex_colors(), and are about to call np.asanyarray on {values}"
+        )
+        qqq
         values = np.asanyarray(values)
         # Ensure the color shape is sane
         if self.mesh is not None and not (

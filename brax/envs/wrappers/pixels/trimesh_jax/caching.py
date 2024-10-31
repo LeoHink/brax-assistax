@@ -26,7 +26,8 @@ import time
 from functools import wraps
 from hashlib import sha256 as _sha256
 
-import numpy as np
+# import numpy as np
+import jax.numpy as np
 
 from .constants import log
 from .util import is_sequence
@@ -47,6 +48,7 @@ if sys.version_info >= (3, 9):
 
     def hash_fallback(item):
         return int(_blake2b(item, usedforsecurity=False).hexdigest(), 16)
+
 else:
     # fallback to sha256
     hash_fallback = sha256
@@ -93,9 +95,12 @@ def tracked_array(array, dtype=None):
     if array is None:
         array = []
     # make sure it is contiguous then view it as our subclass
-    tracked = np.ascontiguousarray(array, dtype=dtype).view(TrackedArray)
+    # `ascontiguousarray` is not impl in jax, as it is irrelevant to jax's functionality
+    # tracked = np.ascontiguousarray(array, dtype=dtype).view(TrackedArray)
     # should always be contiguous here
-    assert tracked.flags["C_CONTIGUOUS"]
+    # assert tracked.flags["C_CONTIGUOUS"]
+
+    tracked = np.array(array).view(TrackedArray)
 
     return tracked
 
@@ -191,6 +196,8 @@ class TrackedArray(np.ndarray):
         Return a numpy scalar if array is 0d.
         See https://github.com/numpy/numpy/issues/5819
         """
+        print(f"You have called caching.TrackedArray.__array_wrap__()!")
+        qqq
         if out_arr.ndim:
             return np.ndarray.__array_wrap__(self, out_arr, context, *args, **kwargs)
         # Match numpy's behavior and return a numpy dtype scalar

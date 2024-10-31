@@ -8,8 +8,11 @@ Library for importing, exporting and doing simple operations on triangular meshe
 import copy
 import warnings
 
-import numpy as np
-from numpy import float64, int64, ndarray
+# import numpy as np
+# from numpy import float64, int64, ndarray
+
+import jax.numpy as np
+from jax.numpy import float64, int64, ndarray
 
 from . import (
     boolean,
@@ -43,7 +46,17 @@ from .exchange.export import export_mesh
 from .parent import Geometry3D
 from .scene import Scene
 from .triangles import MassProperties
-from .typed import Any, ArrayLike, Dict, List, NDArray, Number, Optional, Sequence, Union
+from .typed import (
+    Any,
+    ArrayLike,
+    Dict,
+    List,
+    NDArray,
+    Number,
+    Optional,
+    Sequence,
+    Union,
+)
 from .visual import ColorVisuals, TextureVisuals, create_visual
 
 try:
@@ -136,10 +149,14 @@ class Trimesh(Geometry3D):
         # regenerated from self._data, but may be slow to calculate.
         # In order to maintain consistency
         # the cache is cleared when self._data.__hash__() changes
-        self._cache = caching.Cache(id_function=self._data.__hash__, force_immutable=True)
+        self._cache = caching.Cache(
+            id_function=self._data.__hash__, force_immutable=True
+        )
         if initial_cache is not None:
             self._cache.update(initial_cache)
 
+        print(f"Successfully creates the DataStore and the Cache")
+        qqq
         # check for None only to avoid warning messages in subclasses
 
         # (n, 3) float array of vertices
@@ -179,6 +196,10 @@ class Trimesh(Geometry3D):
             self.ray = ray.ray_triangle.RayMeshIntersector(self)
 
         # a quick way to get permuted versions of the current mesh
+        # The file for the below class has many calls to numpy.random.permute(), which
+        # has a very different API to the jax.random.permute(). It doesn't look like
+        # this attribute is explicitly passed anywhere, so maybe we're okay to ignore?
+
         self.permutate = permutate.Permutator(self)
 
         # convenience class for nearest point queries
@@ -421,7 +442,9 @@ class Trimesh(Geometry3D):
             return
 
         # make sure the first few normals match the first few triangles
-        check, valid = triangles.normals(self.vertices.view(np.ndarray)[self.faces[:20]])
+        check, valid = triangles.normals(
+            self.vertices.view(np.ndarray)[self.faces[:20]]
+        )
         compare = np.zeros((len(valid), 3))
         compare[valid] = check
         if not np.allclose(compare, values[:20]):
@@ -582,7 +605,9 @@ class Trimesh(Geometry3D):
         # use the centroid of each triangle weighted by
         # the area of the triangle to find the overall centroid
         try:
-            centroid = np.average(self.triangles_center, weights=self.area_faces, axis=0)
+            centroid = np.average(
+                self.triangles_center, weights=self.area_faces, axis=0
+            )
         except BaseException:
             # if all triangles are zero-area weights will not work
             centroid = self.triangles_center.mean(axis=0)
@@ -1158,7 +1183,11 @@ class Trimesh(Geometry3D):
         # make sure mask is a numpy array
         mask = np.asanyarray(mask)
 
-        if (mask.dtype.name == "bool" and mask.all()) or len(mask) == 0 or self.is_empty:
+        if (
+            (mask.dtype.name == "bool" and mask.all())
+            or len(mask) == 0
+            or self.is_empty
+        ):
             # mask doesn't remove any vertices so exit early
             return
 
@@ -1476,7 +1505,9 @@ class Trimesh(Geometry3D):
         radii : (len(self.face_adjacency), ) float
           Approximate radius formed by triangle pair
         """
-        radii, self._cache["face_adjacency_span"] = graph.face_adjacency_radius(mesh=self)
+        radii, self._cache["face_adjacency_span"] = graph.face_adjacency_radius(
+            mesh=self
+        )
         return radii
 
     @caching.cache_decorator
@@ -1784,7 +1815,9 @@ class Trimesh(Geometry3D):
         edges = self.edges_sorted.reshape((-1, 6))
         # get the edges for each facet
         edges_facet = [edges[i].reshape((-1, 2)) for i in self.facets]
-        edges_boundary = [i[grouping.group_rows(i, require_count=1)] for i in edges_facet]
+        edges_boundary = [
+            i[grouping.group_rows(i, require_count=1)] for i in edges_facet
+        ]
         return edges_boundary
 
     @caching.cache_decorator

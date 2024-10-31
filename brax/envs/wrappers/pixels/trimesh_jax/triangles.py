@@ -7,8 +7,8 @@ Functions for dealing with triangle soups in (n, 3, 3) float form.
 
 from dataclasses import dataclass
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import util
 from .constants import tol
 from .points import point_plane_distance
@@ -335,7 +335,9 @@ def windings_aligned(triangles, normals_compare):
     """
     triangles = np.asanyarray(triangles, dtype=np.float64)
     if not util.is_shape(triangles, (-1, 3, 3), allow_zeros=True):
-        raise ValueError(f"triangles must have shape (n, 3, 3), got {triangles.shape!s}")
+        raise ValueError(
+            f"triangles must have shape (n, 3, 3), got {triangles.shape!s}"
+        )
     normals_compare = np.asanyarray(normals_compare, dtype=np.float64)
 
     calculated, valid = normals(triangles)
@@ -527,8 +529,12 @@ def points_to_barycentric(triangles, points, method="cramer"):
         denominator = diagonal_dot(n, n)
 
         barycentric = np.zeros((len(triangles), 3), dtype=np.float64)
-        barycentric[:, 2] = diagonal_dot(np.cross(edge_vectors[:, 0], w), n) / denominator
-        barycentric[:, 1] = diagonal_dot(np.cross(w, edge_vectors[:, 1]), n) / denominator
+        barycentric[:, 2] = (
+            diagonal_dot(np.cross(edge_vectors[:, 0], w), n) / denominator
+        )
+        barycentric[:, 1] = (
+            diagonal_dot(np.cross(w, edge_vectors[:, 1]), n) / denominator
+        )
         barycentric[:, 0] = 1 - barycentric[:, 1] - barycentric[:, 2]
         return barycentric
 

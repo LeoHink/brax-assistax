@@ -5,8 +5,8 @@ sample.py
 Randomly sample surface and volume of meshes.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import transformations, util
 from .typed import ArrayLike, Integer, NDArray, Number, Optional, float64
 from .visual import uv_to_interpolated_color
@@ -173,7 +173,9 @@ def volume_rectangular(
     return samples
 
 
-def sample_surface_even(mesh, count: Integer, radius: Optional[Number] = None, seed=None):
+def sample_surface_even(
+    mesh, count: Integer, radius: Optional[Number] = None, seed=None
+):
     """
     Sample the surface of a mesh, returning samples which are
     VERY approximately evenly spaced. This is accomplished by

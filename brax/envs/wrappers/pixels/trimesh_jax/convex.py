@@ -9,8 +9,8 @@ Convex is defined as:
 3) (of a polygon) having only interior angles measuring less than 180
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import triangles, util
 from .constants import tol
 
@@ -61,7 +61,9 @@ def convex_hull(obj, qhull_options="QbB Pp Qt", repair=True):
     try:
         hull = ConvexHull(points, qhull_options=qhull_options)
     except QhullError:
-        util.log.debug("Failed to compute convex hull: retrying with `QJ`", exc_info=True)
+        util.log.debug(
+            "Failed to compute convex hull: retrying with `QJ`", exc_info=True
+        )
         # try with "joggle" enabled
         hull = ConvexHull(points, qhull_options="QJ")
 

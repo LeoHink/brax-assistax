@@ -5,8 +5,8 @@ intersections.py
 Primarily mesh-plane intersections (slicing).
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import geometry, grouping, util
 from . import transformations as tf
 from . import triangles as tm
@@ -121,9 +121,9 @@ def mesh_plane(
         point_intersect, valid = plane_lines(
             plane_origin, plane_normal, vertices[edge_thru.T], line_segments=False
         )
-        lines = np.column_stack((vertices[vertex_plane[valid]], point_intersect)).reshape(
-            (-1, 2, 3)
-        )
+        lines = np.column_stack(
+            (vertices[vertex_plane[valid]], point_intersect)
+        ).reshape((-1, 2, 3))
         return lines
 
     def handle_on_edge(signs, faces, vertices):
@@ -605,7 +605,9 @@ def slice_faces_plane(
         # Extract the single vertex for each triangle inside the plane and get the
         # inside vertices (CCW order)
         tri_int_inds = np.where(cut_signs_tri == -1)[1]
-        tri_int_verts = cut_faces_tri[range(num_tris), tri_int_inds].reshape(num_tris, 1)
+        tri_int_verts = cut_faces_tri[range(num_tris), tri_int_inds].reshape(
+            num_tris, 1
+        )
 
         # Fill out new triangles with the intersection points as vertices
         new_tri_faces = np.append(
@@ -729,7 +731,8 @@ def slice_mesh_plane(
 
     # We copy the UV coordinates if available
     has_uv = (
-        hasattr(mesh.visual, "uv") and np.shape(mesh.visual.uv) == (len(mesh.vertices), 2)
+        hasattr(mesh.visual, "uv")
+        and np.shape(mesh.visual.uv) == (len(mesh.vertices), 2)
     ) and not cap
     uv = mesh.visual.uv.copy() if has_uv else None
 

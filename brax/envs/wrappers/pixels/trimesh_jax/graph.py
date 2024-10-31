@@ -11,8 +11,8 @@ Currently uses networkx or scipy.sparse.csgraph backend.
 import collections
 import warnings
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import exceptions, grouping, util
 from .constants import log, tol
 from .geometry import faces_to_edges
@@ -365,7 +365,10 @@ def split(mesh, only_watertight=True, adjacency=None, engine=None, **kwargs) -> 
         min_len = 1
 
     components = connected_components(
-        edges=adjacency, nodes=np.arange(len(mesh.faces)), min_len=min_len, engine=engine
+        edges=adjacency,
+        nodes=np.arange(len(mesh.faces)),
+        min_len=min_len,
+        engine=engine,
     )
     meshes = mesh.submesh(components, only_watertight=only_watertight, **kwargs)
     return meshes

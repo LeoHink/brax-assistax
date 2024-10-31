@@ -8,8 +8,8 @@ Results validated against known geometries and checked for
 internal consistency.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from trimesh import util
 
 

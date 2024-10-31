@@ -5,8 +5,8 @@ registration.py
 Functions for registering (aligning) point clouds with meshes.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import bounds, transformations, util
 from .geometry import weighted_vertex_normals
 from .points import PointCloud, plane_fit
@@ -516,7 +516,8 @@ def nricp_amberg(
         data[1::2] = -1
         if do_weight:
             edge_lengths = np.linalg.norm(
-                mesh.vertices[mesh.edges[:, 0]] - mesh.vertices[mesh.edges[:, 1]], axis=-1
+                mesh.vertices[mesh.edges[:, 0]] - mesh.vertices[mesh.edges[:, 1]],
+                axis=-1,
             )
             data *= np.repeat(1 / edge_lengths, 2)
         return sparse.coo_matrix((data, (rows, cols)), shape=(nE, nV))
@@ -898,7 +899,9 @@ def nricp_sumner(
         minus_inv_sum = -Vinv.sum(axis=1)
         Vinv_flat = Vinv.reshape(nV, 9)
         data = np.concatenate((minus_inv_sum, Vinv_flat), axis=-1).flatten()
-        return sparse.coo_matrix((data, (rows, cols)), shape=(3 * nV, size), dtype=float)
+        return sparse.coo_matrix(
+            (data, (rows, cols)), shape=(3 * nV, size), dtype=float
+        )
 
     def _build_tetrahedrons(mesh):
         # UUtility function for constructing the frames

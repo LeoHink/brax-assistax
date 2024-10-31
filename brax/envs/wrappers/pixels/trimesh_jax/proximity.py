@@ -5,8 +5,8 @@ proximity.py
 Query mesh- point proximity.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import util
 from .constants import log_time, tol
 from .grouping import group_min
@@ -254,12 +254,16 @@ def signed_distance(mesh, points):
         points[nonzero]
         - (
             normals[nonzero].T
-            * np.einsum("ij,ij->i", points[nonzero] - closest[nonzero], normals[nonzero])
+            * np.einsum(
+                "ij,ij->i", points[nonzero] - closest[nonzero], normals[nonzero]
+            )
         ).T
     )
 
     # Determine if the projection lies within the closest triangle
-    barycentric = points_to_barycentric(mesh.triangles[triangle_id[nonzero]], projection)
+    barycentric = points_to_barycentric(
+        mesh.triangles[triangle_id[nonzero]], projection
+    )
     ontriangle = ~(
         ((barycentric < -tol.merge) | (barycentric > 1 + tol.merge)).any(axis=1)
     )

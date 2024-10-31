@@ -1,5 +1,5 @@
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import util
 from .constants import log
 from .typed import NDArray
@@ -83,7 +83,8 @@ def align_vectors(a, b, return_angle=False):
         # clip to avoid floating point error
         angle = np.arccos(np.clip(dot, -1.0, 1.0))
         if dot < -1e-5:
-            angle += np.pi
+            # angle += np.pi
+            angle += 3.141592653589793
         return matrix, angle
 
     return matrix
@@ -264,7 +265,9 @@ def vertex_face_indices(vertex_count, faces, faces_sparse):
         flat = faces.flatten()
         for v in range(vertex_count):
             # assign the data in order
-            sort[starts[v] : starts[v] + counts[v]] = (np.where(flat == v)[0] // 3)[::-1]
+            sort[starts[v] : starts[v] + counts[v]] = (np.where(flat == v)[0] // 3)[
+                ::-1
+            ]
         padded[padded == 0] = sort
     return padded
 

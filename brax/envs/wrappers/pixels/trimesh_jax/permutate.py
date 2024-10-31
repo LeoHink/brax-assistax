@@ -5,8 +5,8 @@ permutate.py
 Randomly deform meshes in different ways.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import transformations, util
 from . import triangles as triangles_module
 

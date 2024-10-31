@@ -5,8 +5,8 @@ repair.py
 Fill holes and fix winding and normals of meshes.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import graph, triangles
 from .constants import log
 from .geometry import faces_to_edges
@@ -403,7 +403,9 @@ def stitch(mesh, faces=None, insert_vertices=False):
         # create a triangle between our new centroid vertex
         # and each one of the boundary curves
         fan = [
-            np.column_stack((np.ones(len(p) - 1, dtype=int) * (count + i), p[:-1], p[1:]))
+            np.column_stack(
+                (np.ones(len(p) - 1, dtype=int) * (count + i), p[:-1], p[1:])
+            )
             for i, p in enumerate(points)
         ]
     else:
