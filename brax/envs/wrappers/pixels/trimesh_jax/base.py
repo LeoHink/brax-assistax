@@ -170,18 +170,18 @@ class Trimesh(Geometry3D):
             )
         else:
             self.visual = visual
-        print(f"did self.visual correctly")
-        qqq
         # normals are accessed through setters/properties and are regenerated
         # if dimensions are inconsistent, but can be set by the constructor
         # to avoid a substantial number of cross products
         if face_normals is not None:
             self.face_normals = face_normals
 
+        print(f"did face_normals correctly")
         # (n, 3) float of vertex normals, can be created from face normals
         if vertex_normals is not None:
             self.vertex_normals = vertex_normals
-
+        print(f"did vertex_normals correctly")
+        qqq
         # embree is a much, much faster raytracer written by Intel
         # if you have pyembree installed you should use it
         # although both raytracers were designed to have a common API
