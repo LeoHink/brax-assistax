@@ -101,9 +101,11 @@ def tracked_array(array, dtype=None):
     # assert tracked.flags["C_CONTIGUOUS"]
 
     # tracked = np.array(array).view(TrackedArray)
-    tracked = TrackedArray(np.array(array))
-    print(f"that worked")
-    qqq
+    # tracked = TrackedArray(np.array(array))
+    # print(f"that worked")
+    # qqq
+    # TODO: how important are all of the properties?
+    tracked = np.array(array)
     return tracked
 
 
