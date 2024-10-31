@@ -203,6 +203,9 @@ import jax.numpy as np
 from jax.typing import ArrayLike
 from jax import Array as NDArray
 
+# there are many calls to numpy.asanyarray, but AFAIK, these are completely unnecessary?
+np.asanyarray = np.array
+
 _IDENTITY = np.eye(4)
 # _IDENTITY.flags["WRITEABLE"] = False
 
