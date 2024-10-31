@@ -100,8 +100,10 @@ def tracked_array(array, dtype=None):
     # should always be contiguous here
     # assert tracked.flags["C_CONTIGUOUS"]
 
-    tracked = np.array(array).view(TrackedArray)
-
+    # tracked = np.array(array).view(TrackedArray)
+    tracked = TrackedArray(np.array(array))
+    print(f"that worked")
+    qqq
     return tracked
 
 
