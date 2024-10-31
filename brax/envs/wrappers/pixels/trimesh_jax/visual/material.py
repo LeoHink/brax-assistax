@@ -708,7 +708,7 @@ class PBRMaterial(Material):
         )
 
 
-def empty_material(color: Optional[NDArray[np.uint8]] = None) -> SimpleMaterial:
+def empty_material(color: Optional[NDArray] = None) -> SimpleMaterial:
     """
     Return an empty material set to a single color
 
@@ -727,7 +727,7 @@ def empty_material(color: Optional[NDArray[np.uint8]] = None) -> SimpleMaterial:
     return SimpleMaterial(image=color_image(color=color))
 
 
-def color_image(color: Optional[NDArray[np.uint8]] = None):
+def color_image(color: Optional[NDArray] = None):
     """
     Generate an image with one color.
 
@@ -998,7 +998,9 @@ def pack(
             occlusion = [get_occlusion_texture(materials[g[0]]) for g in mat_idx]
 
             unpadded_sizes = []
-            for textures in zip(images, metallic_roughness, emissive, normals, occlusion):
+            for textures in zip(
+                images, metallic_roughness, emissive, normals, occlusion
+            ):
                 # remove None textures
                 textures = [tex for tex in textures if tex is not None]
                 tex_sizes = np.stack([np.array(tex.size) for tex in textures])
