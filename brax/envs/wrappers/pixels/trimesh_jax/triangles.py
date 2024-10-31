@@ -373,9 +373,12 @@ def bounds_tree(triangles):
     if not util.is_shape(triangles, (-1, 3, 3)):
         raise ValueError("Triangles must be (n, 3, 3)!")
 
+    print(f"TRIANGLES: {type(triangles)} // {triangles.shape}")
     # the (n,6) interleaved bounding box for every triangle
     triangle_bounds = np.column_stack((triangles.min(axis=1), triangles.max(axis=1)))
     tree = util.bounds_tree(triangle_bounds)
+    print(f"TREE: {type(tree)} // {tree.shape}")
+    qqq
     return tree
 
 
