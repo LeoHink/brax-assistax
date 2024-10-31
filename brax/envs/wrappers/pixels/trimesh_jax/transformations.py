@@ -200,7 +200,7 @@ True
 # from numpy.typing import ArrayLike, NDArray
 
 import jax.numpy as np
-from jax.typing import ArrayLike, Array as NDArray
+from jax.typing import ArrayLike, ArrayLike as NDArray
 
 _IDENTITY = np.eye(4)
 # _IDENTITY.flags["WRITEABLE"] = False
