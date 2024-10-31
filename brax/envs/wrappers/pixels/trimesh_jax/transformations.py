@@ -2151,7 +2151,7 @@ def spherical_matrix(theta, phi, axes="sxyz"):
 
 def transform_points(
     points: ArrayLike, matrix: ArrayLike, translate: bool = True
-) -> NDArray[np.float64]:
+) -> NDArray:
     """
     Returns points rotated by a homogeneous
     transformation matrix.
