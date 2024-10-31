@@ -27,7 +27,7 @@ from .renderer import (
 )
 
 # import trimesh
-import trimesh_jax
+from .trimesh_jax import Trimesh
 
 qqq
 from .geom_primitives import Capsule, Box, Sphere, Plane, Convex, Mesh
