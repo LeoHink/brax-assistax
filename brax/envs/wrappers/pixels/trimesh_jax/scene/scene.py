@@ -24,9 +24,7 @@ from . import cameras, lighting
 from .transforms import SceneGraph
 
 # the types of objects we can create a scene from
-GeometryInput = Union[
-    Geometry, Sequence[Geometry], NDArray[Geometry], Dict[str, Geometry]
-]
+GeometryInput = Union[Geometry, Sequence[Geometry], NDArray, Dict[str, Geometry]]
 
 
 class Scene(Geometry3D):
@@ -584,7 +582,9 @@ class Scene(Geometry3D):
         identifiers
           {Identifier hash: key in self.geometry}
         """
-        identifiers = {mesh.identifier_hash: name for name, mesh in self.geometry.items()}
+        identifiers = {
+            mesh.identifier_hash: name for name, mesh in self.geometry.items()
+        }
         return identifiers
 
     @caching.cache_decorator
