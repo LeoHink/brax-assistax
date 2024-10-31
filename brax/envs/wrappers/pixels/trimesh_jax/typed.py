@@ -17,7 +17,8 @@ from typing import (
 # from numpy.typing import ArrayLike, NDArray
 
 from jax.numpy import float64, floating, int64, integer, unsignedinteger
-from jax.typing import ArrayLike, ArrayLike as NDArray
+from jax.typing import ArrayLike
+from jax import Array as NDArray
 
 if version_info >= (3, 9):
     # use PEP585 hints on newer python
