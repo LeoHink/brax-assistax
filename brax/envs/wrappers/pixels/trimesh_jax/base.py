@@ -212,8 +212,6 @@ class Trimesh(Geometry3D):
         self.face_attributes = {}
         self.vertex_attributes = {}
         # use update to copy items
-        print(f"face_attributes: {face_attributes}")
-        qqq
         if face_attributes is not None:
             self.face_attributes.update(face_attributes)
         if vertex_attributes is not None:
@@ -1271,6 +1269,10 @@ class Trimesh(Geometry3D):
 
         # apply to face_attributes
         # self.face_attributes = jax.tree_map(lambda x, y: x[])
+
+        # We actually never have face attributes, so we can completely skip this, yeah?
+        print(f"face attributes in place: {self.face_attributes}")
+        qqq
         count = len(self.faces)
         for key, value in self.face_attributes.items():
             try:
