@@ -2192,9 +2192,6 @@ class Trimesh(Geometry3D):
         """
         if hasattr(self, "_visual"):
             return self._visual
-        else:
-            print("do not have visual property")
-            qqq
         return None
 
     @visual.setter
