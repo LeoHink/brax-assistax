@@ -1272,20 +1272,20 @@ class Trimesh(Geometry3D):
 
         # We actually never have face attributes, so we can completely skip this, yeah?
         # Yes, confirmed that this is empty
-        count = len(self.faces)
-        for key, value in self.face_attributes.items():
-            try:
-                # covers un-len'd objects as well
-                if len(value) != count:
-                    raise TypeError()
-            except TypeError:
-                continue
-            # apply the mask to the attribute
-            self.face_attributes[key] = value[mask]
+        # count = len(self.faces)
+        # for key, value in self.face_attributes.items():
+        #    try:
+        #        # covers un-len'd objects as well
+        #        if len(value) != count:
+        #            raise TypeError()
+        #    except TypeError:
+        #        continue
+        #    # apply the mask to the attribute
+        #    self.face_attributes[key] = value[mask]
 
-        qqq
         # actually apply the mask
         self.faces = faces[mask]
+        qqq
 
         # apply to face colors
         self.visual.update_faces(mask)
