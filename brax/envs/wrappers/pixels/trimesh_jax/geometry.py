@@ -325,7 +325,7 @@ def mean_vertex_normals(vertex_count, faces, face_normals, sparse=None, **kwargs
 
 
 def weighted_vertex_normals(
-    vertex_count, faces, face_normals, face_angles, use_loop=False
+    vertex_count, faces, face_normals, face_angles, use_loop=True
 ):
     """
     Compute vertex normals from the faces that contain that vertex.
@@ -377,14 +377,20 @@ def weighted_vertex_normals(
 
         return summed
 
-    # normals should be unit vectors
-    face_ok = (face_normals**2).sum(axis=1) > 0.5
-    # don't consider faces with invalid normals
-    faces = faces[face_ok]
-    face_normals = face_normals[face_ok]
-    face_angles = face_angles[face_ok]
+    # Based on some visual inspection, subsetting these faces makes no difference
+    # in the scratchitch scene. So... let's skip for now, I guess!
+
+    ## normals should be unit vectors
+    # face_ok = (face_normals**2).sum(axis=1) > 0.5
+    ## don't consider faces with invalid normals
+    # faces = faces[face_ok]
+    # face_normals = face_normals[face_ok]
+    # face_angles = face_angles[face_ok]
 
     if not use_loop:
+        raise NotImplementedError(
+            f"We have opted to avoid using sparse matrices for the moment."
+        )
         try:
             return util.unitize(summed_sparse())
         except BaseException:
