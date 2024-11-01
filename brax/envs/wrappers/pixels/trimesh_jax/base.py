@@ -2205,6 +2205,8 @@ class Trimesh(Geometry3D):
         visual : ColorVisuals or TextureVisuals
           Contains visual information about the mesh
         """
+        print("in the @visual.setter def visual() in jax version.")
+        qqq
         value.mesh = self
         self._visual = value
 
