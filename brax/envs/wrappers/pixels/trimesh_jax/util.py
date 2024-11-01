@@ -110,11 +110,11 @@ def unitize(vectors, check_valid=False, threshold=None):
         # also dot with ones is faser than .sum(axis=1)
         norm = np.sqrt(np.dot(vectors * vectors, np.array([1.0] * vectors.shape[1])))
         # non-zero norms
-        # valid = norm > threshold
+        valid = norm > threshold
         # in-place reciprocal of nonzero norms
         # norm[valid] **= -1
         # norm = norm.at[valid].set(norm ** -1)
-        norm = np.where(norm > threshold, norm**-1, norm)
+        norm = np.where(valid, norm**-1, norm)
         # multiply by reciprocal of norm
         unit = vectors * norm.reshape((-1, 1))
 
