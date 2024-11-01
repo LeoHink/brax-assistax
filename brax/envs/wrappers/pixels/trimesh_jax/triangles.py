@@ -113,13 +113,19 @@ def angles(triangles):
     # run the cosine and per-row dot product
     result = np.zeros((len(triangles), 3), dtype=np.float64)
     # clip to make sure we don't float error past 1.0
-    result[:, 0] = np.arccos(np.clip(diagonal_dot(u, v), -1, 1))
-    result[:, 1] = np.arccos(np.clip(diagonal_dot(-u, w), -1, 1))
-    # the third angle is just the remaining
-    result[:, 2] = np.pi - result[:, 0] - result[:, 1]
+    # result[:, 0] = np.arccos(np.clip(diagonal_dot(u, v), -1, 1))
+    result = result.at[:, 0].set(np.arccos(np.clip(diagonal_dot(u, v), -1, 1)))
 
+    # result[:, 1] = np.arccos(np.clip(diagonal_dot(-u, w), -1, 1))
+    result = result.at[:, 1].set(np.arccos(np.clip(diagonal_dot(-u, w), -1, 1)))
+
+    # the third angle is just the remaining
+    # result[:, 2] = np.pi - result[:, 0] - result[:, 1]
+    result = result.at[:, 2].set(np.pi - result[:, 0] - result[:, 1])
     # a triangle with any zero angles is degenerate
     # so set all of the angles to zero in that case
+    print(f"did all of the angles")
+    qqq
     result[(result < tol.merge).any(axis=1), :] = 0.0
 
     return result
