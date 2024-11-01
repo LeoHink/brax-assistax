@@ -394,6 +394,13 @@ class Trimesh(Geometry3D):
             triangles=self.triangles, crosses=self.triangles_cross
         )
 
+
+
+        # It would appear that (for at least some of) the meshes we are using return
+        # false for valid.all(). Due to the restrictions of jax, we have removed
+        # the indexing triangles.normals()
+        padded = np.zeros((len(self.triangles), 3), dtype=float64)
+        normals np.where(valid, normals, padded)
         print(f"did the triangles...")
         qqq
 

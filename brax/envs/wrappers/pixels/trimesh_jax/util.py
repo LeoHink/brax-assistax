@@ -130,7 +130,9 @@ def unitize(vectors, check_valid=False, threshold=None):
         raise ValueError("vectors must be (n, ) or (n, d)!")
 
     if check_valid:
-        return unit[valid], valid
+        # Removing the indexing (unit[valid])
+        return unit, valid
+        # return unit[valid], valid
     return unit
 
 
