@@ -378,27 +378,32 @@ class Cache:
         value of id_function and delete all stored items if
         the value of id_function has changed.
         """
+        # AFAIK, there is no situation for which we are changing the values wihtin the
+        # cache. We are relying on the mesh provider to provide a mesh for which there
+        # are no issues. Can we just skip this?
+        pass
+
         # if we are in a lock don't check anything
-        if self._lock != 0:
-            return
+        # if self._lock != 0:
+        #    return
 
-        # check the hash of our data
-        id_new = self._id_function()
+        ## check the hash of our data
+        # id_new = self._id_function()
 
-        # things changed
-        if id_new != self.id_current:
-            if len(self.cache) > 0:
-                log.debug(
-                    "%d items cleared from cache: %s",
-                    len(self.cache),
-                    str(list(self.cache.keys())),
-                )
-            # hash changed, so dump the cache
-            # do it manually rather than calling clear()
-            # as we are internal logic and can avoid function calls
-            self.cache = {}
-            # set the id to the new data hash
-            self.id_current = id_new
+        ## things changed
+        # if id_new != self.id_current:
+        #    if len(self.cache) > 0:
+        #        log.debug(
+        #            "%d items cleared from cache: %s",
+        #            len(self.cache),
+        #            str(list(self.cache.keys())),
+        #        )
+        #    # hash changed, so dump the cache
+        #    # do it manually rather than calling clear()
+        #    # as we are internal logic and can avoid function calls
+        #    self.cache = {}
+        #    # set the id to the new data hash
+        #    self.id_current = id_new
 
     def clear(self, exclude=None):
         """
@@ -448,8 +453,7 @@ class Cache:
         cached : object, or None
           Object that was stored
         """
-        # I'm not so sure this verification is necessary?
-        # self.verify()
+        self.verify()
         if key in self.cache:
             return self.cache[key]
         return None
