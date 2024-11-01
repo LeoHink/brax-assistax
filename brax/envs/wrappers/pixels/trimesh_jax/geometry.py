@@ -1,5 +1,6 @@
 # import numpy as np
 import jax.numpy as np
+from jax import vmap
 from . import util
 from .constants import log
 from .typed import NDArray
