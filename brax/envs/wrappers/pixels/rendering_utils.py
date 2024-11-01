@@ -339,8 +339,6 @@ def _vmap_build(
 
         tm = Trimesh(vertices=vertices, faces=faces)
 
-        print(f"successfully init the Trimesh object.")
-        qqq
         model = RendererMesh.create(
             verts=tm.vertices,
             norms=tm.vertex_normals,
