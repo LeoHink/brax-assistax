@@ -70,6 +70,7 @@ class ColorVisuals(Visuals):
                 self.vertex_colors = vertex_colors
         except ValueError:
             util.log.warning("unable to convert colors!")
+            qqq
 
     @caching.cache_decorator
     def transparency(self):
