@@ -461,10 +461,12 @@ def index_sparse(columns, indices, data=None, dtype=None):
     if dtype is not None:
         data = data.astype(dtype)
 
-    # I don't think we need to make this into a sparse matrix...
-    print(f"BEFORE SPARSE DATA: {data.shape} // {data.dtype}")
-    qqq
-    # assemble into sparse matrix
-    matrix = scipy.sparse.coo_matrix((data, (row, col)), shape=shape, dtype=data.dtype)
+    # I don't think we need to make this into a sparse matrix... AFAIK, the main point
+    # of using a sparse matrix is to save on memory, since many values are 0s.
+    return data
+    # print(f"BEFORE SPARSE DATA: {data.shape} // {data.dtype}")
+    # qqq
+    ## assemble into sparse matrix
+    # matrix = scipy.sparse.coo_matrix((data, (row, col)), shape=shape, dtype=data.dtype)
 
-    return matrix
+    # return matrix
