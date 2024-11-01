@@ -365,10 +365,20 @@ def weighted_vertex_normals(
 
     def summed_loop():
         summed = np.zeros((vertex_count, 3), np.float64)
+
+        # can probably vmap over this loop,
+        # keep static dim: zero-out non-relevant values per face_idx & inface_idxs.
+        # sum together after the vmap is over
+        # face_idxs:  (7,) // [6645 6646 6649 6675 6687 6688 6698]
+        # inface_idxs: (7,) // [1 2 1 2 1 2 2]
         for vertex_idx in np.arange(vertex_count):
             # loop over all vertices
             # compute normal contributions from surrounding faces
             # obviously slower than with the sparse matrix
+
+            # (N, 3)
+            # face_angles: (6840, 3)
+            # surround: (5,)
             face_idxs, inface_idxs = np.where(faces == vertex_idx)
             surrounding_angles = face_angles[face_idxs, inface_idxs]
             summed[vertex_idx] = np.dot(
@@ -376,6 +386,28 @@ def weighted_vertex_normals(
             )
 
         return summed
+
+    def vectorized_summed_loop(vertex_idx):
+        # locked_in
+        summed = np.zeros((vertex_count, 3), np.float64)
+
+        face_idxs, inface_idxs = np.where(faces == vertex_idx)
+
+        bool_mask = faces == vertex_idx
+        face_angles_masked = np.where(bool_mask, face_angles, 0.0)
+        face_normals_masked = np.where(bool_mask, face_normals, 0.0)
+
+        first_vec = face_angles_masked / face_angles_masked.sum()
+        # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
+
+        # vec = first_vec.T @ face_normals
+        vec = face_normals.T @ first_vec
+        # out is (3,)
+        # print(f"mask: {bool_mask.shape}")
+        # vec = vec[bool_mask]
+        return vec.sum(-1).reshape(
+            3,
+        )
 
     # Based on some visual inspection, subsetting these faces makes no difference
     # in the scratchitch scene. So... let's skip for now, I guess!
@@ -391,11 +423,12 @@ def weighted_vertex_normals(
         raise NotImplementedError(
             f"We have opted to avoid using sparse matrices for the moment."
         )
-        try:
-            return util.unitize(summed_sparse())
-        except BaseException:
-            log.warning("unable to use sparse matrix, falling back!", exc_info=True)
+        # try:
+        #    return util.unitize(summed_sparse())
+        # except BaseException:
+        #    log.warning("unable to use sparse matrix, falling back!", exc_info=True)
     # we either crashed or were asked to loop
+    # summ: (3736, 3)
     summed = util.unitize(summed_loop())
     print(f"did the loop without error.")
     qqq
