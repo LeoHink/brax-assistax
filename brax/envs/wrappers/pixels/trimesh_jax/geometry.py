@@ -389,7 +389,7 @@ def weighted_vertex_normals(
 
     def vectorized_summed_loop(vertex_idx):
         # locked_in
-        summed = np.zeros((vertex_count, 3), np.float64)
+        # summed = np.zeros((vertex_count, 3), np.float64)
 
         face_idxs, inface_idxs = np.where(faces == vertex_idx)
 
@@ -409,6 +409,9 @@ def weighted_vertex_normals(
             3,
         )
 
+    out = vmap(vectorized_summed_loop, in_axes=0)(np.arange(vertex_count))
+    print(f"out: {out.shape}")
+    qqq
     # Based on some visual inspection, subsetting these faces makes no difference
     # in the scratchitch scene. So... let's skip for now, I guess!
 
