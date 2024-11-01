@@ -868,6 +868,10 @@ class Trimesh(Geometry3D):
         # use of advanced indexing on our tracked arrays will
         # trigger a change flag which means the hash will have to be
         # recomputed. We can escape this check by viewing the array.
+        print(f"In self.triangles")
+        print(f"vertices: {self.vertices.shape}")
+        print(f"faces for indexing: {self.faces.shape}")
+        qqq
         return self.vertices.view(np.ndarray)[self.faces]
 
     @caching.cache_decorator
