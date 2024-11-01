@@ -396,6 +396,9 @@ def weighted_vertex_normals(
         except BaseException:
             log.warning("unable to use sparse matrix, falling back!", exc_info=True)
     # we either crashed or were asked to loop
+    summed = util.unitize(summed_loop())
+    print(f"did the loop without error.")
+    qqq
     return util.unitize(summed_loop())
 
 
