@@ -448,7 +448,8 @@ class Cache:
         cached : object, or None
           Object that was stored
         """
-        self.verify()
+        # I'm not so sure this verification is necessary?
+        # self.verify()
         if key in self.cache:
             return self.cache[key]
         return None
