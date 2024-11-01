@@ -461,6 +461,9 @@ def index_sparse(columns, indices, data=None, dtype=None):
     if dtype is not None:
         data = data.astype(dtype)
 
+    # I don't think we need to make this into a sparse matrix...
+    print(f"BEFORE SPARSE DATA: {data.shape} // {data.dtype}")
+    qqq
     # assemble into sparse matrix
     matrix = scipy.sparse.coo_matrix((data, (row, col)), shape=shape, dtype=data.dtype)
 
