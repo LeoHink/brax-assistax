@@ -391,7 +391,7 @@ def weighted_vertex_normals(
         # locked_in
         # summed = np.zeros((vertex_count, 3), np.float64)
 
-        face_idxs, inface_idxs = np.where(faces == vertex_idx)
+        # face_idxs, inface_idxs = np.where(faces == vertex_idx)
 
         bool_mask = faces == vertex_idx
         face_angles_masked = np.where(bool_mask, face_angles, 0.0)
