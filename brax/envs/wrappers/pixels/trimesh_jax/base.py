@@ -394,6 +394,9 @@ class Trimesh(Geometry3D):
             triangles=self.triangles, crosses=self.triangles_cross
         )
 
+        print(f"did the triangles...")
+        qqq
+
         # if all triangles are valid shape is correct
         if valid.all():
             # put calculated face normals into cache manually
