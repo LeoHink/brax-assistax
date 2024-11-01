@@ -401,21 +401,19 @@ class Trimesh(Geometry3D):
         # repeat is required
         padded = np.zeros((len(self.triangles), 3), dtype=float64)
         normals = np.where(valid.reshape(-1, 1).repeat(3, axis=-1), normals, padded)
-        print(f"did the triangles...")
-        qqq
 
         # if all triangles are valid shape is correct
-        if valid.all():
-            # put calculated face normals into cache manually
-            self._cache["face_normals"] = normals
-            return normals
+        # if valid.all():
+        #    # put calculated face normals into cache manually
+        #    self._cache["face_normals"] = normals
+        #    return normals
 
-        # make a padded list of normals for correct shape
-        padded = np.zeros((len(self.triangles), 3), dtype=float64)
-        padded[valid] = normals
+        ## make a padded list of normals for correct shape
+        # padded = np.zeros((len(self.triangles), 3), dtype=float64)
+        # padded[valid] = normals
 
         # put calculated face normals into cache manually
-        self._cache["face_normals"] = padded
+        self._cache["face_normals"] = normals  # padded
 
         return padded
 
