@@ -397,8 +397,10 @@ class Trimesh(Geometry3D):
         # It would appear that (for at least some of) the meshes we are using return
         # false for valid.all(). Due to the restrictions of jax, we have removed
         # the indexing triangles.normals()
+        # both normals and padded (N, 3) while valid is (N,), so a reshape and
+        # repeat is required
         padded = np.zeros((len(self.triangles), 3), dtype=float64)
-        normals = np.where(valid, normals, padded)
+        normals = np.where(valid.reshape(-1, 1).repeat(3, axis=-1), normals, padded)
         print(f"did the triangles...")
         qqq
 
