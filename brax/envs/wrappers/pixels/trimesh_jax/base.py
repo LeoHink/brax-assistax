@@ -874,8 +874,7 @@ class Trimesh(Geometry3D):
         # qqq
 
         # To match the np version, this should end up being (6840, 3, 3)
-        print(f"here: {self.vertices[self.faces].shape}")
-        qqq
+        # Checked out! Is gut.
         return self.vertices[self.faces]
         # return self.vertices.view(np.ndarray)[self.faces]
 
