@@ -336,6 +336,9 @@ def _vmap_build(
         material_id = sys.mj_model.geom_matid[geom_num]
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         print(f"AFTER: {tex.shape}")
+
+        print(f"FACES: {faces.shape} // {jnp.isfinite(faces).sum()}")
+        qqq
         tm = Trimesh(vertices=vertices, faces=faces)
 
         print(f"successfully init the Trimesh object.")
