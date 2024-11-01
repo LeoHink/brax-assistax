@@ -82,7 +82,7 @@ def normals(triangles=None, crosses=None):
     if crosses is None:
         crosses = cross(triangles)
 
-    print(f"crosses: {type(crosses)}")
+    print(f"crosses: {type(crosses)} // {crosses.dtype} // {crosses.shape}")
     qqq
     # unitize the cross product vectors
     unit, valid = unitize(crosses, check_valid=True)
