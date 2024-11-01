@@ -1271,8 +1271,7 @@ class Trimesh(Geometry3D):
         # self.face_attributes = jax.tree_map(lambda x, y: x[])
 
         # We actually never have face attributes, so we can completely skip this, yeah?
-        print(f"face attributes in place: {self.face_attributes}")
-        qqq
+        # Yes, confirmed that this is empty
         count = len(self.faces)
         for key, value in self.face_attributes.items():
             try:
