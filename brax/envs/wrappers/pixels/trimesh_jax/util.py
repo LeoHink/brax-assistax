@@ -610,7 +610,7 @@ def diagonal_dot(a, b):
     a = np.asanyarray(a)
     # 3x faster than (a * b).sum(axis=1)
     # avoiding np.ones saves 5-10% sometimes
-    return np.dot(a * b, jnp.array([1.0] * a.shape[1]))
+    return np.dot(a * b, np.array([1.0] * a.shape[1]))
 
 
 def row_norm(data):
