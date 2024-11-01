@@ -124,9 +124,22 @@ def angles(triangles):
     result = result.at[:, 2].set(np.pi - result[:, 0] - result[:, 1])
     # a triangle with any zero angles is degenerate
     # so set all of the angles to zero in that case
-    print(f"did all of the angles")
-    qqq
-    result[(result < tol.merge).any(axis=1), :] = 0.0
+    zeros_mask = np.zeros_like(result)
+
+    # swap in zeros to begin
+    result = np.where(result < tol.merge, zeros_mask, result)
+
+    # now that we have actual zeros in place,  we can multiply across axis=-1
+    # this will give us an indicator of shape (N, 1) -- result is 0 if any angles
+    # fail the check. We can then > 0 and repeat this to shape to get a boolean mask
+    prod = (result.prod(axis=-1, keepdims=True) > 0.0).repeat(3, axis=-1)
+
+    # whereever this prod mask is True, we want to keep the original values from result,
+    # as this boolean is only ever True if **none** of the original values in result
+    # were masked to zero by  the first jnp.where(result < tol.merge)
+    result = np.where(prod, result, zeros_mask)
+
+    # result[(result < tol.merge).any(axis=1), :] = 0.0
 
     return result
 
