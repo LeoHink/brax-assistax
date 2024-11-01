@@ -270,6 +270,7 @@ class Trimesh(Geometry3D):
             # if faces or vertices have been removed, normals are validated before
             # being returned so there is no danger of inconsistent dimensions
             self.remove_infinite_values()
+            qqq
             
             self.merge_vertices(merge_tex=merge_tex, merge_norm=merge_norm)
             self._cache.clear(exclude={"face_normals", "vertex_normals"})
