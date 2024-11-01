@@ -872,6 +872,10 @@ class Trimesh(Geometry3D):
         # print(f"vertices: {self.vertices.shape}")
         # print(f"faces for indexing: {self.faces.shape}")
         # qqq
+
+        # To match the np version, this should end up being (6840, 3, 3)
+        print(f"here: {self.vertices[self.faces].shape}")
+        qqq
         return self.vertices[self.faces]
         # return self.vertices.view(np.ndarray)[self.faces]
 
