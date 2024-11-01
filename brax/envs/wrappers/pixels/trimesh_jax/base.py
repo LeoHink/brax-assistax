@@ -866,13 +866,14 @@ class Trimesh(Geometry3D):
           Points of triangle vertices
         """
         # use of advanced indexing on our tracked arrays will
-        # trigger a change flag which means the hash will have to be
+        # trigger a change flag which means the hash will have to be:w
         # recomputed. We can escape this check by viewing the array.
-        print(f"In self.triangles")
-        print(f"vertices: {self.vertices.shape}")
-        print(f"faces for indexing: {self.faces.shape}")
-        qqq
-        return self.vertices.view(np.ndarray)[self.faces]
+        # print(f"In self.triangles")
+        # print(f"vertices: {self.vertices.shape}")
+        # print(f"faces for indexing: {self.faces.shape}")
+        # qqq
+        return self.vertices[self.faces]
+        # return self.vertices.view(np.ndarray)[self.faces]
 
     @caching.cache_decorator
     def triangles_tree(self) -> Index:
