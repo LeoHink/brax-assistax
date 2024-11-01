@@ -219,7 +219,8 @@ class Trimesh(Geometry3D):
         # process will remove NaN and Inf values and merge vertices
         # if validate, will remove degenerate and duplicate faces
         if process or validate:
-            self.process(validate=validate, merge_tex=merge_tex, merge_norm=merge_norm)
+            pass
+            # self.process(validate=validate, merge_tex=merge_tex, merge_norm=merge_norm)
 
     def process(
         self,
@@ -1285,7 +1286,6 @@ class Trimesh(Geometry3D):
 
         # actually apply the mask
         self.faces = faces[mask]
-        qqq
 
         # apply to face colors
         self.visual.update_faces(mask)
