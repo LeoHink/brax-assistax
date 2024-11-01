@@ -411,8 +411,6 @@ def weighted_vertex_normals(
         )
 
     out = vmap(vectorized_summed_loop, in_axes=0)(np.arange(vertex_count))
-    print(f"out: {out.shape}")
-    qqq
     # Based on some visual inspection, subsetting these faces makes no difference
     # in the scratchitch scene. So... let's skip for now, I guess!
 
@@ -433,7 +431,7 @@ def weighted_vertex_normals(
         #    log.warning("unable to use sparse matrix, falling back!", exc_info=True)
     # we either crashed or were asked to loop
     # summ: (3736, 3)
-    summed = util.unitize(summed_loop())
+    summed = util.unitize(out)
     print(f"did the loop without error.")
     qqq
     return util.unitize(summed_loop())
