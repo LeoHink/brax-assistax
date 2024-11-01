@@ -108,7 +108,7 @@ def unitize(vectors, check_valid=False, threshold=None):
         # for (m, d) arrays take the per-row unit vector
         # using sqrt and avoiding exponents is slightly faster
         # also dot with ones is faser than .sum(axis=1)
-        norm = np.sqrt(np.dot(vectors * vectors, [1.0] * vectors.shape[1]))
+        norm = np.sqrt(np.dot(vectors * vectors, np.array([1.0]) * vectors.shape[1]))
         # non-zero norms
         valid = norm > threshold
         # in-place reciprocal of nonzero norms
