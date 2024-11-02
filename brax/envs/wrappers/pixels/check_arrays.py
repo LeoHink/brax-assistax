@@ -32,5 +32,5 @@ for mesh_idx in range(57):
             print(f"{mesh_idx}: {k}")
             print(f"\tcould not check")
             print(f"\tnp: {numpy_data.shape}, jnp: {jax_data.shape}")
-            print(f"\tnp: {numpy_data}")
-            print(f"\tjnp: {jax_data}")
+            # print(f"\tnp: {numpy_data}")
+            # print(f"\tjnp: {jax_data}")
