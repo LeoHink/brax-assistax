@@ -22,8 +22,15 @@ for mesh_idx in range(57):
         ) as f:
             jax_data = pickle.load(f)
 
-        if not np.allclose(numpy_data, jax_data):
+        try:
+            if not np.allclose(numpy_data, jax_data):
+                print(f"{mesh_idx}: {k}")
+                print(f"\tnp: {numpy_data.shape}, jnp: {jax_data.shape}")
+                print(f"\tnp: {numpy_data}")
+                print(f"\tjnp: {jax_data}")
+        except:
             print(f"{mesh_idx}: {k}")
+            print(f"\tcould not check")
             print(f"\tnp: {numpy_data.shape}, jnp: {jax_data.shape}")
             print(f"\tnp: {numpy_data}")
             print(f"\tjnp: {jax_data}")
