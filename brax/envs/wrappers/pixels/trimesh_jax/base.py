@@ -511,8 +511,6 @@ class Trimesh(Geometry3D):
           Where n == len(self.vertices)
         """
         # make sure we have faces_sparse
-        print(f"inside of @caching.cache_decorator first!")
-        qqq
         assert hasattr(self.faces_sparse, "dot")
         return geometry.weighted_vertex_normals(
             vertex_count=len(self.vertices),
@@ -531,8 +529,6 @@ class Trimesh(Geometry3D):
         values : (len(self.vertices), 3) float
           Unit normal vectors for each vertex
         """
-        print(f"inside of @vertex_normals.setter first!")
-        qqq
         if values is not None:
             # We can rely on jax's compiler to lay out our data in a good "order"
             # values = np.asanyarray(values, order="C", dtype=float64)
