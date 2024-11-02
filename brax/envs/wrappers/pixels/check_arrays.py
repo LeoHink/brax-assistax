@@ -4,7 +4,7 @@ import pickle
 
 mesh_idx = 0
 keys = ["vertices", "vertex_normals", "faces", "face_normals", "face_angles"]
-keys = ["face_angles"]
+keys = ["face_normals"]
 
 numpy_arrays = {}
 jax_arrays = {}
@@ -27,8 +27,8 @@ for mesh_idx in range(57):
             if not np.allclose(numpy_data, jax_data):
                 print(f"{mesh_idx}: {k}")
                 print(f"\tnp: {numpy_data.shape}, jnp: {jax_data.shape}")
-                print(f"\tnp: {numpy_data.sum()}")
-                print(f"\tjnp: {jax_data.sum()}")
+                print(f"\tnp: {numpy_data}")
+                print(f"\tjnp: {jax_data}")
         except:
             print(f"{mesh_idx}: {k}")
             print(f"\tcould not check")
