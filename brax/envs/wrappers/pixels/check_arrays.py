@@ -23,4 +23,7 @@ for mesh_idx in range(57):
             jax_data = pickle.load(f)
 
         if not np.allclose(numpy_data, jax_data):
-            print(f"{mesh_idx}: {k} // {(numpy_data - jax_data).sum()}")
+            print(f"{mesh_idx}: {k}")
+            print(f"\tnp: {numpy_data.shape}, jnp: {jax_data.shape}")
+            print(f"\tnp: {numpy_data}")
+            print(f"\tjnp: {jax_data}")
