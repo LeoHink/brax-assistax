@@ -396,7 +396,7 @@ def weighted_vertex_normals(
 
         bool_mask = faces == vertex_idx
         face_angles_masked = np.where(bool_mask, face_angles, 0.0)
-        face_normals_masked = np.where(bool_mask, face_normals, 0.0)
+        # face_normals_masked = np.where(bool_mask, face_normals, 0.0)
 
         first_vec = face_angles_masked / face_angles_masked.sum()
         # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
