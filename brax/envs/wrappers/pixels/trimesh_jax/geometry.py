@@ -399,6 +399,9 @@ def weighted_vertex_normals(
         # face_normals_masked = np.where(bool_mask, face_normals, 0.0)
 
         first_vec = face_angles_masked / face_angles_masked.sum()
+        first_vec = np.where(
+            np.logical_or(np.isinf(first_vec), np.isnan(first_vec)), 0.0, first_vec
+        )
         # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
 
         # vec = first_vec.T @ face_normals
