@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import pickle
 
 mesh_idx = 0
-keys = ["vertices", "vertex_normals", "faces"]
+keys = ["vertices", "vertex_normals", "faces", "face_normals", "face_angles"]
 
 numpy_arrays = {}
 jax_arrays = {}
