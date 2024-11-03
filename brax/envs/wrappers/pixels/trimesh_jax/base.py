@@ -98,6 +98,8 @@ class Trimesh:
         _data = caching.DataStore()
         _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
         class_init = cls(vertices, faces, _data, _cache)
+        class_init.set_vertices(vertices)
+        class_init.set_faces(faces)
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
@@ -340,7 +342,7 @@ class Trimesh:
         return self._data["faces"]
 
     # @faces.setter
-    def faces(self, values: Optional[ArrayLike]) -> None:
+    def set_faces(self, values: Optional[ArrayLike]) -> None:
         """
         Set the vertex indexes that make up triangular faces.
 
@@ -499,7 +501,7 @@ class Trimesh:
         return self._data["vertices"]
 
     # @vertices.setter
-    def vertices(self, values: Optional[ArrayLike]):
+    def set_vertices(self, values: Optional[ArrayLike]):
         """
         Assign vertex values to the mesh.
 
