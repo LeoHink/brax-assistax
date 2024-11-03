@@ -90,6 +90,11 @@ class Trimesh:
     vertices: Optional[ArrayLike] = None
     faces: Optional[ArrayLike] = None
 
+    @classmethod
+    def create(self):
+        print("in create!")
+        qqq
+
     # original was __init__(), which is *not* called for dataclasses
     def setup(
         self,
