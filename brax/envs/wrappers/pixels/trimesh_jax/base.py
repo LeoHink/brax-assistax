@@ -91,15 +91,15 @@ class Trimesh:
     faces: Optional[ArrayLike] = None
 
     @classmethod
-    def create(self):
-        print("in create!")
+    def create(self, vertices, faces):
+        class_init = cls(vertices, faces)
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
     def setup(
         self,
-        # vertices: Optional[ArrayLike] = None,
-        # faces: Optional[ArrayLike] = None,
+        vertices: Optional[ArrayLike] = None,
+        faces: Optional[ArrayLike] = None,
         face_normals: Optional[ArrayLike] = None,
         vertex_normals: Optional[ArrayLike] = None,
         face_colors: Optional[ArrayLike] = None,
