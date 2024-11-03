@@ -85,7 +85,7 @@ except BaseException as E:
 
 
 @flax.struct.dataclass
-class Trimesh:
+class TrimeshJAX:
     vertices: np.ndarray
     faces: np.ndarray
 

@@ -27,7 +27,7 @@ from .renderer import (
 )
 
 # import trimesh
-from .trimesh_jax import Trimesh
+from .trimesh_jax import TrimeshJAX
 
 from .geom_primitives import Capsule, Box, Sphere, Plane, Convex, Mesh
 
@@ -337,7 +337,7 @@ def _vmap_build(
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         # print(f"AFTER: {tex.shape}")
 
-        tm = Trimesh.create(vertices, faces)
+        tm = TrimeshJAX.create(vertices, faces)
         print("made the object.")
         qqq
         model = RendererMesh.create(
