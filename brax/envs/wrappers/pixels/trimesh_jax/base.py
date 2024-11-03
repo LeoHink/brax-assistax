@@ -87,10 +87,10 @@ except BaseException as E:
 # class Trimesh(Geometry3D):
 @flax.struct.dataclass
 class Trimesh:
-    vertices: np.ndarray
-    faces: np.ndarray
-    _data: caching.DataStore
-    _cache: caching.Cache
+    vertices: Optional[np.ndarray] = None
+    faces: Optional[np.ndarray] = None
+    _data: Optional[caching.DataStore] = None
+    _cache: Optional[caching.Cache] = None
     # visual: ColorVisuals
 
     @classmethod
