@@ -83,6 +83,9 @@ except BaseException as E:
 
 
 class Trimesh(Geometry3D):
+    vertices: Optional[ArrayLike] = None
+    faces: Optional[ArrayLike] = None
+
     # original was __init__(), which is *not* called for dataclasses
     def setup(
         self,
