@@ -84,9 +84,20 @@ except BaseException as E:
     Path3D = ExceptionWrapper(E)
 
 
-# class Trimesh(Geometry3D):
 @flax.struct.dataclass
 class Trimesh:
+    vertices: np.ndarray
+    faces: np.ndarray
+
+    @classmethod
+    def create(cls, vertices, faces):
+        class_init = cls(vertices, faces)
+        qqq
+
+
+# class Trimesh(Geometry3D):
+@flax.struct.dataclass
+class TrimeshOld:
     vertices: Optional[np.ndarray] = None
     faces: Optional[np.ndarray] = None
     # _data: Optional[caching.DataStore] = None
