@@ -101,7 +101,7 @@ class Trimesh:
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
-    def setup(
+    def original__init__(
         self,
         vertices: Optional[ArrayLike] = None,
         faces: Optional[ArrayLike] = None,
