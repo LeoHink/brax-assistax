@@ -30,7 +30,7 @@ class Geometry:
     """
 
     # geometry should have a dict to store loose metadata
-    metadata: Dict
+    # metadata: Dict
 
     @property
     @abc.abstractmethod
@@ -189,24 +189,24 @@ class Geometry:
 
         return scale
 
-    @property
-    def units(self) -> Optional[str]:
-        """
-        Definition of units for the mesh.
+    # @property
+    # def units(self) -> Optional[str]:
+    #    """
+    #    Definition of units for the mesh.
 
-        Returns
-        ----------
-        units : str
-          Unit system mesh is in, or None if not defined
-        """
-        return self.metadata.get("units", None)
+    #    Returns
+    #    ----------
+    #    units : str
+    #      Unit system mesh is in, or None if not defined
+    #    """
+    #    return self.metadata.get("units", None)
 
-    @units.setter
-    def units(self, value: str) -> None:
-        """
-        Define the units of the current mesh.
-        """
-        self.metadata["units"] = str(value).lower().strip()
+    # @units.setter
+    # def units(self, value: str) -> None:
+    #    """
+    #    Define the units of the current mesh.
+    #    """
+    #    self.metadata["units"] = str(value).lower().strip()
 
 
 @flax.struct.dataclass
