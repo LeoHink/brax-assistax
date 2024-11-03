@@ -405,7 +405,7 @@ def weighted_vertex_normals(
         # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
 
         # vec = first_vec.T @ face_normals
-        vec = face_normals.T @ first_vec
+        vec = np.ones_like(face_normals).T @ first_vec
         # out is (3,)
         # print(f"mask: {bool_mask.shape}")
         # vec = vec[bool_mask]
@@ -435,7 +435,7 @@ def weighted_vertex_normals(
     # we either crashed or were asked to loop
     # summ: (3736, 3)
     summed = util.unitize(out)
-    return out  # summed
+    return summed
 
 
 def index_sparse(columns, indices, data=None, dtype=None):
