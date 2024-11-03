@@ -417,7 +417,7 @@ class Trimesh(Geometry3D):
         # put calculated face normals into cache manually
         self._cache["face_normals"] = normals  # padded
 
-        return padded
+        return normals
 
     @face_normals.setter
     def face_normals(self, values: Optional[ArrayLike]) -> None:
