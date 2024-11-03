@@ -338,7 +338,8 @@ def _vmap_build(
         # print(f"AFTER: {tex.shape}")
 
         tm = Trimesh(vertices=vertices, faces=faces)
-
+        print("made the object.")
+        qqq
         model = RendererMesh.create(
             verts=tm.vertices,
             norms=tm.vertex_normals,
