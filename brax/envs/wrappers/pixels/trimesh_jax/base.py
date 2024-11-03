@@ -95,8 +95,8 @@ class Trimesh:
 
     @classmethod
     def create(cls, vertices, faces):
-        _data = caching.DataStore()
-        _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
+        # _data = caching.DataStore()
+        # _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
         # _data["vertices"] = np.asanyarray(vertices, dtype=float64)
         # _data["faces"] = np.asanyarray(faces, dtype=int64)
         class_init = cls(vertices, faces)
