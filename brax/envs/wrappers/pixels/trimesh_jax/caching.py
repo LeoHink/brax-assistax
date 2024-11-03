@@ -436,6 +436,8 @@ class Cache:
         """
         Set the current ID to the value of the ID function.
         """
+        print("in id_set()!")
+        qqq
         self.id_current = self._id_function()
 
     def __getitem__(self, key):
@@ -492,6 +494,8 @@ class Cache:
 
     def __exit__(self, *args):
         self._lock -= 1
+        print("in __exit__()!")
+        qqq
         self.id_current = self._id_function()
 
 
