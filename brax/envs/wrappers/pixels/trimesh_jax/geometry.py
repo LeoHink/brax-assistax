@@ -435,7 +435,7 @@ def weighted_vertex_normals(
     # we either crashed or were asked to loop
     # summ: (3736, 3)
     summed = util.unitize(out)
-    return summed
+    return out  # summed
 
 
 def index_sparse(columns, indices, data=None, dtype=None):
