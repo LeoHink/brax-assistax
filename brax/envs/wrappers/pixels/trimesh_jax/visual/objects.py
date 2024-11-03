@@ -6,13 +6,15 @@ Deal with objects which hold visual properties, like
 ColorVisuals and TextureVisuals.
 """
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
+import jax
 from .color import ColorVisuals, color_to_uv
 from .material import pack
 from .texture import TextureVisuals
 
 
+@jax.jit
 def create_visual(**kwargs):
     """
     Create Visuals object from keyword arguments.
@@ -34,6 +36,7 @@ def create_visual(**kwargs):
     return ColorVisuals(**kwargs)
 
 
+@jax.jit
 def concatenate(visuals, *args):
     """
     Concatenate multiple visual objects.

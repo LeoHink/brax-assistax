@@ -355,6 +355,8 @@ class Trimesh(Geometry3D):
           dtype : bool
           shape : (len(self.vertices), len(self.faces))
         """
+        print("in faces_sparse()")
+        qqq
         return geometry.index_sparse(columns=len(self.vertices), indices=self.faces)
 
     @property
@@ -1025,6 +1027,8 @@ class Trimesh(Geometry3D):
           Tree when queried with edges will return
           their index in mesh.edges_sorted
         """
+        print("in edges_sorted_tree()")
+        qqq
         return cKDTree(self.edges_sorted)
 
     @caching.cache_decorator
@@ -1038,6 +1042,8 @@ class Trimesh(Geometry3D):
         sparse: (len(self.vertices), len(self.vertices)) bool
           Sparse graph in COO format
         """
+        print("in edges_sparse()")
+        qqq
         sparse = graph.edges_to_coo(self.edges, count=len(self.vertices))
         return sparse
 
@@ -1458,6 +1464,8 @@ class Trimesh(Geometry3D):
           Tree when queried with SORTED edges will return
           their index in mesh.face_adjacency
         """
+        print("in face_adjacency_edges_tree()")
+        qqq
         return cKDTree(self.face_adjacency_edges)
 
     @caching.cache_decorator
@@ -1712,6 +1720,8 @@ class Trimesh(Geometry3D):
         tree : scipy.spatial.cKDTree
           Contains mesh.vertices
         """
+        print("in self.kdtree()")
+        qqq
         return cKDTree(self.vertices.view(np.ndarray))
 
     def remove_degenerate_faces(self, height: float = tol.merge) -> None:
@@ -3060,6 +3070,8 @@ class Trimesh(Geometry3D):
           Float sparse matrix with with shape:
           (len(self.vertices), len(self.faces))
         """
+        print("in face_angles_sparse()")
+        qqq
         angles = curvature.face_angles_sparse(self)
         return angles
 
