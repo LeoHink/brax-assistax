@@ -339,7 +339,7 @@ class Trimesh:
         """
         return self._data["faces"]
 
-    @faces.setter
+    # @faces.setter
     def faces(self, values: Optional[ArrayLike]) -> None:
         """
         Set the vertex indexes that make up triangular faces.
@@ -498,7 +498,7 @@ class Trimesh:
         # get vertices if already stored
         return self._data["vertices"]
 
-    @vertices.setter
+    # @vertices.setter
     def vertices(self, values: Optional[ArrayLike]):
         """
         Assign vertex values to the mesh.
