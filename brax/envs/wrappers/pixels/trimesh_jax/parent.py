@@ -209,6 +209,7 @@ class Geometry:
         self.metadata["units"] = str(value).lower().strip()
 
 
+@flax.struct.dataclass
 class Geometry3D(Geometry):
     """
     The `Geometry3D` object is the parent object of geometry objects
