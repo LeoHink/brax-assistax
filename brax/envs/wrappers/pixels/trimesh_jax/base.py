@@ -59,6 +59,8 @@ from .typed import (
 )
 from .visual import ColorVisuals, TextureVisuals, create_visual
 
+import flax
+
 try:
     from scipy.sparse import coo_matrix
     from scipy.spatial import cKDTree
@@ -82,7 +84,9 @@ except BaseException as E:
     Path3D = ExceptionWrapper(E)
 
 
-class Trimesh(Geometry3D):
+# class Trimesh(Geometry3D):
+@flax.struct.dataclass
+class Trimesh:
     vertices: Optional[ArrayLike] = None
     faces: Optional[ArrayLike] = None
 
