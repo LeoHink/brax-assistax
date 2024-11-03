@@ -89,8 +89,8 @@ except BaseException as E:
 class Trimesh:
     vertices: Optional[np.ndarray] = None
     faces: Optional[np.ndarray] = None
-    _data: Optional[caching.DataStore] = None
-    _cache: Optional[caching.Cache] = None
+    # _data: Optional[caching.DataStore] = None
+    # _cache: Optional[caching.Cache] = None
     # visual: ColorVisuals
 
     @classmethod
