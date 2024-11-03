@@ -330,12 +330,12 @@ def _vmap_build(
         )
         faces = sys.mj_model.mesh_face[face_idx_start:face_idx_end]
 
-        print(f"vertices: {vertices.shape}")
-        print(f"faces: {faces.shape}")
-        print(f"BEFORE: {tex.shape}")
+        # print(f"vertices: {vertices.shape}")
+        # print(f"faces: {faces.shape}")
+        # print(f"BEFORE: {tex.shape}")
         material_id = sys.mj_model.geom_matid[geom_num]
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
-        print(f"AFTER: {tex.shape}")
+        # print(f"AFTER: {tex.shape}")
 
         tm = Trimesh(vertices=vertices, faces=faces)
 
