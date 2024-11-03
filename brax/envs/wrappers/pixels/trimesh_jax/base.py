@@ -90,7 +90,7 @@ class Trimesh:
     vertices: np.ndarray
     faces: np.ndarray
     _data: caching.DataStore
-    _cache = caching.Cache
+    _cache: caching.Cache
     # visual: ColorVisuals
 
     @classmethod
