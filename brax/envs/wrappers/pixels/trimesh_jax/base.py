@@ -91,7 +91,7 @@ class Trimesh:
     faces: Optional[ArrayLike] = None
 
     @classmethod
-    def create(self, vertices, faces):
+    def create(cls, vertices, faces):
         class_init = cls(vertices, faces)
         qqq
 
