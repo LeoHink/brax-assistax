@@ -337,7 +337,7 @@ def _vmap_build(
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         # print(f"AFTER: {tex.shape}")
 
-        tm = Trimesh(vertices=vertices, faces=faces)
+        tm = Trimesh(vertices, faces)
         print("made the object.")
         qqq
         model = RendererMesh.create(
