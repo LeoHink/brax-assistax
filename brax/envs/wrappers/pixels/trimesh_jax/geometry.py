@@ -405,7 +405,7 @@ def weighted_vertex_normals(
         # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
 
         # vec = first_vec.T @ face_normals
-        vec = face_normals.T @ np.ones_like(first_vec)
+        vec = face_normals.T @ first_vec
         # out is (3,)
         # print(f"mask: {bool_mask.shape}")
         # vec = vec[bool_mask]
