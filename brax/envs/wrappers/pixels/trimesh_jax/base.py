@@ -89,8 +89,8 @@ class Trimesh(Geometry3D):
     # original was __init__(), which is *not* called for dataclasses
     def setup(
         self,
-        vertices: Optional[ArrayLike] = None,
-        faces: Optional[ArrayLike] = None,
+        # vertices: Optional[ArrayLike] = None,
+        # faces: Optional[ArrayLike] = None,
         face_normals: Optional[ArrayLike] = None,
         vertex_normals: Optional[ArrayLike] = None,
         face_colors: Optional[ArrayLike] = None,
@@ -160,7 +160,8 @@ class Trimesh(Geometry3D):
             self._cache.update(initial_cache)
 
         # check for None only to avoid warning messages in subclasses
-
+        print("HERE!")
+        qqq
         # (n, 3) float array of vertices
         self.vertices = vertices
 
