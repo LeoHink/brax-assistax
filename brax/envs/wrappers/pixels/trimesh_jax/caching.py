@@ -703,6 +703,8 @@ class DataStore(Mapping):
         """
         # only hash values that aren't None
         # or if they are arrays require length greater than zero
+        print(f"in __hash__()")
+        qqq
         return hash_fast(
             np.array(
                 [
