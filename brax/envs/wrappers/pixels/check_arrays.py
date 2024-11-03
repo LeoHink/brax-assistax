@@ -4,7 +4,7 @@ import pickle
 
 mesh_idx = 0
 keys = ["vertices", "vertex_normals", "faces", "face_normals", "face_angles"]
-keys = ["face_normals"]
+keys = ["vertex_normals"]
 
 numpy_arrays = {}
 jax_arrays = {}
