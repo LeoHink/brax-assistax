@@ -384,6 +384,8 @@ class Trimesh(Geometry3D):
 
         # if the shape of cached normals equals the shape of faces return
         if np.shape(cached) == np.shape(faces):
+            print(f"returning early!!!!")
+            qqq
             return cached
 
         # use cached triangle cross products to generate normals
