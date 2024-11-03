@@ -85,13 +85,14 @@ except BaseException as E:
 
 
 @flax.struct.dataclass
-class TrimeshJAX:
+class Trimesh:
     vertices: np.ndarray
     faces: np.ndarray
 
     @classmethod
     def create(cls, vertices, faces):
         class_init = cls(vertices, faces)
+        visual = create_visual(class_init)
         qqq
 
 

@@ -487,7 +487,9 @@ def extrude_triangulation(
     # we are creating two vertical  triangles for every 2D line segment
     # on the boundary of the 2D triangulation
     vertical = np.tile(boundary.reshape((-1, 2)), 2).reshape((-1, 2))
-    vertical = np.column_stack((vertical, np.tile([0, height, 0, height], len(boundary))))
+    vertical = np.column_stack(
+        (vertical, np.tile([0, height, 0, height], len(boundary)))
+    )
     vertical_faces = np.tile([3, 1, 2, 2, 1, 0], (len(boundary), 1))
     vertical_faces += np.arange(len(boundary)).reshape((-1, 1)) * 4
     vertical_faces = vertical_faces.reshape((-1, 3))
@@ -732,7 +734,11 @@ def box(
     kwargs["metadata"].update({"shape": "box", "extents": extents})
 
     box = Trimesh(
-        vertices=vertices, faces=faces, face_normals=face_normals, process=False, **kwargs
+        vertices=vertices,
+        faces=faces,
+        face_normals=face_normals,
+        process=False,
+        **kwargs,
     )
 
     # do the transform here to preserve face normals
@@ -1062,7 +1068,11 @@ def annulus(
     # if center radius is zero this is a cylinder
     if r_min < tol.merge:
         return cylinder(
-            radius=r_max, height=height, sections=sections, transform=transform, **kwargs
+            radius=r_max,
+            height=height,
+            sections=sections,
+            transform=transform,
+            **kwargs,
         )
     r_max = abs(float(r_max))
     # we're going to center at XY plane so take half the height
@@ -1282,7 +1292,9 @@ def camera_marker(
 
     # add a loop for the outside of the FOV then reshape
     # the whole thing into multiple line segments
-    segments = np.vstack((segments, points[[1, 2, 2, 3, 3, 4, 4, 1]])).reshape((-1, 2, 3))
+    segments = np.vstack((segments, points[[1, 2, 2, 3, 3, 4, 4, 1]])).reshape(
+        (-1, 2, 3)
+    )
 
     # add a single Path3D object for all line segments
     meshes.append(load_path(segments))
