@@ -98,6 +98,8 @@ class Trimesh:
         _data = caching.DataStore()
         _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
         class_init = cls(vertices, faces)
+        class_init._data = _data
+        class_init._cache = _cache
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
