@@ -87,12 +87,17 @@ except BaseException as E:
 # class Trimesh(Geometry3D):
 @flax.struct.dataclass
 class Trimesh:
-    vertices: Optional[ArrayLike] = None
-    faces: Optional[ArrayLike] = None
+    vertices: ArrayLike
+    faces: ArrayLike
+    _data: caching.DataStore
+    _cache = caching.Cache
+    # visual: ColorVisuals
 
     @classmethod
     def create(cls, vertices, faces):
-        class_init = cls(vertices, faces)
+        _data = caching.DataStore()
+        _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
+        class_init = cls(vertices, faces, _data, _cache)
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
