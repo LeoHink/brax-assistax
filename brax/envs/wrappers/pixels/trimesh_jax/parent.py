@@ -7,8 +7,8 @@ The base class for Trimesh, PointCloud, and Scene objects
 
 import abc
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
 from . import bounds, caching
 from . import transformations as tf
 from .caching import cache_decorator
@@ -16,8 +16,11 @@ from .constants import tol
 from .typed import Dict, Optional
 from .util import ABC
 
+import flax
 
-class Geometry(ABC):
+
+@flax.struct.dataclass
+class Geometry:
     """
     `Geometry` is the parent class for all geometry.
 
