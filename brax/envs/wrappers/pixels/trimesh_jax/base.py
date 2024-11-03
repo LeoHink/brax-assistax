@@ -89,17 +89,15 @@ except BaseException as E:
 class Trimesh:
     vertices: np.ndarray
     faces: np.ndarray
-    # _data: caching.DataStore
-    # _cache = caching.Cache
+    _data: caching.DataStore
+    _cache = caching.Cache
     # visual: ColorVisuals
 
     @classmethod
     def create(cls, vertices, faces):
         _data = caching.DataStore()
         _cache = caching.Cache(id_function=_data.__hash__, force_immutable=True)
-        class_init = cls(vertices, faces)
-        class_init._data = _data
-        class_init._cache = _cache
+        class_init = cls(vertices, faces, _data, _cache)
         qqq
 
     # original was __init__(), which is *not* called for dataclasses
