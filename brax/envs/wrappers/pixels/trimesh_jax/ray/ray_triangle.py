@@ -3,14 +3,22 @@ A basic slow implementation of ray- triangle queries.
 """
 
 # import numpy as np
+from typing import Any
 import jax.numpy as np
+import flax
+
 from .. import caching, grouping, intersections, util
 from .. import triangles as triangles_mod
 from ..constants import tol
 from .ray_util import contains_points
 
 
+@flax.struct.dataclass
 class RayMeshIntersector:
+    mesh: Any
+
+
+class RayMeshIntersectorOld:
     """
     An object to query a mesh for ray intersections.
     Precomputes an r-tree for each triangle on the mesh.

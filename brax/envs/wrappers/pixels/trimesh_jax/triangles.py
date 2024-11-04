@@ -9,6 +9,7 @@ from dataclasses import dataclass
 
 # import numpy as np
 import jax.numpy as np
+import jax
 from . import util
 from .constants import tol
 from .points import point_plane_distance
@@ -16,6 +17,7 @@ from .typed import NDArray, Optional, float64
 from .util import diagonal_dot, unitize
 
 
+@jax.jit
 def cross(triangles):
     """
     Returns the cross product of two edges from input triangles
@@ -61,6 +63,7 @@ def area(triangles=None, crosses=None, sum=False):
     return areas
 
 
+@jax.jit
 def normals(triangles=None, crosses=None):
     """
     Calculates the normals of input triangles
@@ -79,14 +82,16 @@ def normals(triangles=None, crosses=None):
     valid : (n,) bool
       Was the face nonzero area or not
     """
-    if crosses is None:
-        crosses = cross(triangles)
+    # There is no point in having this branch... Let's speed up compilation
+    # if crosses is None:
+    #   crosses = cross(triangles)
 
     # unitize the cross product vectors
     unit, valid = unitize(crosses, check_valid=True)
     return unit, valid
 
 
+@jax.jit
 def angles(triangles):
     """
     Calculates the angles of input triangles.

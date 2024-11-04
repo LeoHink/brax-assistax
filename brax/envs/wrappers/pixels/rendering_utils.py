@@ -339,14 +339,27 @@ def _vmap_build(
 
         tm = Trimesh.create(vertices, faces)
         print("made the object.")
-        qqq
+        # We need the vertex_normals, which is computed with geometry.weighted_vertex_normals()
+        # The above fn takes vertex_count (len(trimesh.vertices)),
+        # face_normals (needs computing)
+        # face_angles (needs computing)
+
+        # Face normals:
+        # (a) triangles = vertices[faces]
+        # (b) triangles_cross = triangles.cross(triangles)
+
+        face_normals, _triangles = tm.compute_face_normals_and_triangles()
+        face_angles = tm.compute_face_angles(_triangles)
+        vertex_normals = tm.compute_vertex_normals(face_normals, face_angles)
         model = RendererMesh.create(
             verts=tm.vertices,
-            norms=tm.vertex_normals,
+            norms=vertex_normals,
             uvs=jnp.zeros((tm.vertices.shape[0], 2), dtype=int),
             faces=tm.faces,
             diffuse_map=tex,
         )
+        print("made the Model!")
+        qqq
     else:
         raise NotImplementedError(f"Geom of ID {geom_id} not implemented nor known.")
 

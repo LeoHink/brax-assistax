@@ -7,6 +7,8 @@ Randomly deform meshes in different ways.
 
 # import numpy as np
 import jax.numpy as np
+import flax
+from typing import Any
 from . import transformations, util
 from . import triangles as triangles_module
 
@@ -121,7 +123,12 @@ def tessellation(mesh):
     return permutated
 
 
+@flax.struct.dataclass
 class Permutator:
+    mesh: Any
+
+
+class PermutatorOld:
     def __init__(self, mesh):
         """
         A convenience object to get permutated versions of a mesh.

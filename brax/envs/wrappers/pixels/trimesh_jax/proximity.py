@@ -7,6 +7,8 @@ Query mesh- point proximity.
 
 # import numpy as np
 import jax.numpy as np
+import flax
+from typing import Any
 from . import util
 from .constants import log_time, tol
 from .grouping import group_min
@@ -307,7 +309,12 @@ class NearestQueryResult:
         return self.normals is not None or self.interpolated_normals is not None
 
 
+@flax.struct.dataclass
 class ProximityQuery:
+    mesh: Any
+
+
+class ProximityQueryOld:
     """
     Proximity queries for the current mesh.
     """

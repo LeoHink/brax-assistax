@@ -1,17 +1,20 @@
 # import numpy as np
 import jax.numpy as np
 from jax import vmap
+import jax
+from functools import partial
 from . import util
 from .constants import log
 from .typed import NDArray
 
-try:
-    import scipy.sparse
-except BaseException as E:
-    from . import exceptions
-
-    # raise E again if anyone tries to use sparse
-    scipy = exceptions.ExceptionWrapper(E)
+# try:
+#    import scipy.sparse
+# except BaseException as E:
+#    from . import exceptions
+#
+#    # raise E again if anyone tries to use sparse
+#    scipy = exceptions.ExceptionWrapper(E)
+#
 
 
 def plane_transform(origin, normal):
@@ -325,8 +328,12 @@ def mean_vertex_normals(vertex_count, faces, face_normals, sparse=None, **kwargs
     return vertex_normals
 
 
+@partial(jax.jit, static_argnames="vertex_count")
 def weighted_vertex_normals(
-    vertex_count, faces, face_normals, face_angles, use_loop=True
+    vertex_count,
+    faces,
+    face_normals,
+    face_angles,  # , use_loop=True
 ):
     """
     Compute vertex normals from the faces that contain that vertex.
@@ -356,59 +363,49 @@ def weighted_vertex_normals(
       Vertices unreferenced by faces will be zero.
     """
 
-    def summed_sparse():
-        # use a sparse matrix of which face contains each vertex to
-        # figure out the summed normal at each vertex
-        # allow cached sparse matrix to be passed
-        # fill the matrix with vertex-corner angles as weights
-        matrix = index_sparse(vertex_count, faces, data=face_angles.ravel())
-        return matrix.dot(face_normals)
+    # def summed_sparse():
+    #    # use a sparse matrix of which face contains each vertex to
+    #    # figure out the summed normal at each vertex
+    #    # allow cached sparse matrix to be passed
+    #    # fill the matrix with vertex-corner angles as weights
+    #    matrix = index_sparse(vertex_count, faces, data=face_angles.ravel())
+    #    return matrix.dot(face_normals)
 
-    def summed_loop():
-        summed = np.zeros((vertex_count, 3), np.float64)
+    # def summed_loop():
+    #    summed = np.zeros((vertex_count, 3), np.float64)
 
-        # can probably vmap over this loop,
-        # keep static dim: zero-out non-relevant values per face_idx & inface_idxs.
-        # sum together after the vmap is over
-        # face_idxs:  (7,) // [6645 6646 6649 6675 6687 6688 6698]
-        # inface_idxs: (7,) // [1 2 1 2 1 2 2]
-        for vertex_idx in np.arange(vertex_count):
-            # loop over all vertices
-            # compute normal contributions from surrounding faces
-            # obviously slower than with the sparse matrix
+    #    # can probably vmap over this loop,
+    #    # keep static dim: zero-out non-relevant values per face_idx & inface_idxs.
+    #    # sum together after the vmap is over
+    #    # face_idxs:  (7,) // [6645 6646 6649 6675 6687 6688 6698]
+    #    # inface_idxs: (7,) // [1 2 1 2 1 2 2]
+    #    for vertex_idx in np.arange(vertex_count):
+    #        # loop over all vertices
+    #        # compute normal contributions from surrounding faces
+    #        # obviously slower than with the sparse matrix
 
-            # (N, 3)
-            # face_angles: (6840, 3)
-            # surround: (5,)
-            face_idxs, inface_idxs = np.where(faces == vertex_idx)
-            surrounding_angles = face_angles[face_idxs, inface_idxs]
-            summed[vertex_idx] = np.dot(
-                surrounding_angles / surrounding_angles.sum(), face_normals[face_idxs]
-            )
+    #        # (N, 3)
+    #        # face_angles: (6840, 3)
+    #        # surround: (5,)
+    #        face_idxs, inface_idxs = np.where(faces == vertex_idx)
+    #        surrounding_angles = face_angles[face_idxs, inface_idxs]
+    #        summed[vertex_idx] = np.dot(
+    #            surrounding_angles / surrounding_angles.sum(), face_normals[face_idxs]
+    #        )
 
-        return summed
+    #    return summed
 
     def vectorized_summed_loop(vertex_idx):
-        # locked_in
-        # summed = np.zeros((vertex_count, 3), np.float64)
-
-        # face_idxs, inface_idxs = np.where(faces == vertex_idx)
-
         bool_mask = faces == vertex_idx
         face_angles_masked = np.where(bool_mask, face_angles, 0.0)
-        # face_normals_masked = np.where(bool_mask, face_normals, 0.0)
 
         first_vec = face_angles_masked / face_angles_masked.sum()
         first_vec = np.where(
             np.logical_or(np.isinf(first_vec), np.isnan(first_vec)), 0.0, first_vec
         )
-        # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
 
-        # vec = first_vec.T @ face_normals
+        # 3 numbers per vector in second vec (5, 3) is dot prod with full 1st vec (3,)
         vec = face_normals.T @ first_vec
-        # out is (3,)
-        # print(f"mask: {bool_mask.shape}")
-        # vec = vec[bool_mask]
         return vec.sum(-1).reshape(
             3,
         )
@@ -424,15 +421,6 @@ def weighted_vertex_normals(
     # face_normals = face_normals[face_ok]
     # face_angles = face_angles[face_ok]
 
-    if not use_loop:
-        raise NotImplementedError(
-            f"We have opted to avoid using sparse matrices for the moment."
-        )
-        # try:
-        #    return util.unitize(summed_sparse())
-        # except BaseException:
-        #    log.warning("unable to use sparse matrix, falling back!", exc_info=True)
-    # we either crashed or were asked to loop
     # summ: (3736, 3)
     summed = util.unitize(out)
     return summed

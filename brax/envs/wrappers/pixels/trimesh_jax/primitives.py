@@ -10,8 +10,10 @@ and then use trimesh operations on them at any point.
 
 import abc
 
-import numpy as np
-
+# import numpy as np
+import jax.numpy as np
+import flax
+from typing import Any
 from . import caching, creation, inertia, sample, triangles, util
 from . import transformations as tf
 from .base import Trimesh
@@ -20,7 +22,7 @@ from .typed import ArrayLike, Integer, Number, Optional
 
 # immutable identity matrix for checks
 _IDENTITY = np.eye(4)
-_IDENTITY.flags.writeable = False
+# _IDENTITY.flags.writeable = False
 
 
 class Primitive(Trimesh):
@@ -316,7 +318,9 @@ class PrimitiveAttributes:
 
 
 class Cylinder(Primitive):
-    def __init__(self, radius=1.0, height=1.0, transform=None, sections=32, mutable=True):
+    def __init__(
+        self, radius=1.0, height=1.0, transform=None, sections=32, mutable=True
+    ):
         """
         Create a Cylinder Primitive, a subclass of Trimesh.
 
@@ -335,7 +339,12 @@ class Cylinder(Primitive):
         """
         super().__init__()
 
-        defaults = {"height": 10.0, "radius": 1.0, "transform": np.eye(4), "sections": 32}
+        defaults = {
+            "height": 10.0,
+            "radius": 1.0,
+            "transform": np.eye(4),
+            "sections": 32,
+        }
         self.primitive = PrimitiveAttributes(
             self,
             defaults=defaults,
@@ -489,7 +498,12 @@ class Capsule(Primitive):
         """
         super().__init__()
 
-        defaults = {"height": 1.0, "radius": 1.0, "transform": np.eye(4), "sections": 32}
+        defaults = {
+            "height": 1.0,
+            "radius": 1.0,
+            "transform": np.eye(4),
+            "sections": 32,
+        }
         self.primitive = PrimitiveAttributes(
             self,
             defaults=defaults,
@@ -975,7 +989,9 @@ class Extrusion(Primitive):
         from . import bounds
 
         # find the 2D bounding box using the polygon
-        to_origin, box = bounds.oriented_bounds_2D(self.primitive.polygon.exterior.coords)
+        to_origin, box = bounds.oriented_bounds_2D(
+            self.primitive.polygon.exterior.coords
+        )
         #  3D extents
         extents = np.append(box, abs(self.primitive.height))
         # calculate to_3D transform from 2D obb

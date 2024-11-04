@@ -24,16 +24,34 @@ Goals
 
 import colorsys
 import copy
+from typing import Any, Optional
 
 # import numpy as np
 import jax.numpy as np
+import flax
 from .. import caching, util
 from ..constants import tol
 from ..grouping import unique_rows
 from .base import Visuals
 
 
-class ColorVisuals(Visuals):
+@flax.struct.dataclass
+class DefaultsHolder:
+    material_diffuse: np.ndarray = np.array([102, 102, 102, 255], dtype=np.uint8)
+    material_ambient: np.ndarray = np.array([64, 64, 64, 255], dtype=np.uint8)
+    material_specular: np.ndarray = np.array([197, 197, 197, 255], dtype=np.uint8)
+    material_shine: float = 77.0
+
+
+@flax.struct.dataclass
+class ColorVisuals:
+    mesh: Any
+    face_colors: Optional[np.ndarray] = None
+    vertex_colors: Optional[np.ndarray] = None
+    defaults: Optional[Any] = None
+
+
+class ColorVisualsOld(Visuals):
     """
     Store color information about a mesh.
     """
