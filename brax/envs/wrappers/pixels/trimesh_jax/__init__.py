@@ -39,7 +39,12 @@ from . import (
     units,
     util,
 )
-from .base import Trimesh
+from .base import (
+    Trimesh,
+    compute_face_normals_and_triangles,
+    compute_face_angles,
+    compute_vertex_normals,
+)
 
 # general numeric tolerances
 from .constants import tol
@@ -78,6 +83,9 @@ __all__ = [
     "Trimesh",
     "Scene",
     "Trimesh",
+    "compute_face_normals_and_triangles",
+    "compute_face_angles",
+    "compute_vertex_normals",
     "__version__",
     "available_formats",
     "boolean",

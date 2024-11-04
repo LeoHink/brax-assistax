@@ -27,7 +27,13 @@ from .renderer import (
 )
 
 # import trimesh
-from .trimesh_jax import Trimesh
+from .trimesh_jax import (
+    Trimesh,
+    compute_face_normals_and_triangles,
+    compute_face_angles,
+    compute_vertex_normals,
+)
+
 
 from .geom_primitives import Capsule, Box, Sphere, Plane, Convex, Mesh
 
@@ -337,25 +343,34 @@ def _vmap_build(
         tex = sys.mat_rgba[material_id][:3].reshape((1, 1, 3))
         # print(f"AFTER: {tex.shape}")
 
-        tm = Trimesh.create(vertices, faces)
-        print("made the object.")
-        # We need the vertex_normals, which is computed with geometry.weighted_vertex_normals()
-        # The above fn takes vertex_count (len(trimesh.vertices)),
-        # face_normals (needs computing)
-        # face_angles (needs computing)
+        # I am now beginning to think that we do not need **any** of the dataclasses...
+        # We cannot jit the creation of this dataclass, which I think is slowing down
+        # the runtime (bottlenecking it, effectively).
+        face_normals, _triangles = compute_face_normals_and_triangles(vertices, faces)
+        face_angles = compute_face_angles(_triangles)
+        vertex_normals = compute_vertex_normals(
+            vertices, faces, face_normals, face_angles
+        )
 
-        # Face normals:
-        # (a) triangles = vertices[faces]
-        # (b) triangles_cross = triangles.cross(triangles)
+        # tm = Trimesh.create(vertices, faces)
+        # print("made the object.")
+        ## We need the vertex_normals, which is computed with geometry.weighted_vertex_normals()
+        ## The above fn takes vertex_count (len(trimesh.vertices)),
+        ## face_normals (needs computing)
+        ## face_angles (needs computing)
 
-        face_normals, _triangles = tm.compute_face_normals_and_triangles()
-        face_angles = tm.compute_face_angles(_triangles)
-        vertex_normals = tm.compute_vertex_normals(face_normals, face_angles)
+        ## Face normals:
+        ## (a) triangles = vertices[faces]
+        ## (b) triangles_cross = triangles.cross(triangles)
+
+        # face_normals, _triangles = tm.compute_face_normals_and_triangles()
+        # face_angles = tm.compute_face_angles(_triangles)
+        # vertex_normals = tm.compute_vertex_normals(face_normals, face_angles)
         model = RendererMesh.create(
-            verts=tm.vertices,
+            verts=vertices,
             norms=vertex_normals,
-            uvs=jnp.zeros((tm.vertices.shape[0], 2), dtype=int),
-            faces=tm.faces,
+            uvs=jnp.zeros((vertices.shape[0], 2), dtype=int),
+            faces=faces,
             diffuse_map=tex,
         )
     else:

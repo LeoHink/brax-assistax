@@ -90,6 +90,38 @@ from typing import Tuple
 #    Path3D = ExceptionWrapper(E)
 
 
+@jax.jit
+def compute_face_normals_and_triangles(
+    vertices: np.ndarray, faces: np.ndarray
+) -> Tuple[NDArray, NDArray]:
+    _triangles = vertices[faces]
+    _triangles_cross = triangles.cross(_triangles)
+    _normals, _valid = triangles.normals(_triangles, _triangles_cross)
+    _padded = np.zeros((len(_triangles), 3), dtype=float64)
+    face_normals = np.where(_valid.reshape(-1, 1).repeat(3, axis=-1), _normals, _padded)
+    return face_normals, _triangles
+
+
+@jax.jit
+def compute_face_angles(_triangles: np.ndarray) -> NDArray:
+    return triangles.angles(_triangles)
+
+
+@jax.jit
+def compute_vertex_normals(
+    vertices: np.ndarray,
+    faces: np.ndarray,
+    face_normals: np.ndarray,
+    face_angles: np.ndarray,
+) -> NDArray:
+    return geometry.weighted_vertex_normals(
+        vertex_count=len(vertices),
+        faces=faces,
+        face_normals=face_normals,
+        face_angles=face_angles,
+    )
+
+
 @flax.struct.dataclass
 class TrimeshPre:
     """There are several items (e.g., ColorVisuals, RayMeshIntersector) that need
@@ -119,6 +151,7 @@ class Trimesh:
     nearest: Optional[proximity.ProximityQuery] = None
 
     @classmethod
+    @jax.jit
     def create(cls, vertices, faces):
         class_pre = TrimeshPre(vertices, faces)
         visual = create_visual(
