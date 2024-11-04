@@ -358,8 +358,6 @@ def _vmap_build(
             faces=tm.faces,
             diffuse_map=tex,
         )
-        print("made the Model!")
-        qqq
     else:
         raise NotImplementedError(f"Geom of ID {geom_id} not implemented nor known.")
 
