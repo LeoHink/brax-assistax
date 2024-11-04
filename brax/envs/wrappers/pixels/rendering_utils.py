@@ -411,27 +411,27 @@ def _vmap_build(
 
     # Then there's this idea...
     # https://github.com/google/brax/blob/c87dcfc5094afffb149f98e48903fb39c2b7f7af/brax/contact.py#L43
-    else:
-        # off = pipeline_states.geom_xpos[geom_num]
-        # rot = math.ang_to_quat(pipeline_states.xd.ang[body_id - 1])
+    # else:
+    #    # off = pipeline_states.geom_xpos[geom_num]
+    #    # rot = math.ang_to_quat(pipeline_states.xd.ang[body_id - 1])
 
-        def local_to_global(pos1, quat1, pos2, quat2):
-            pos = pos1 + math.rotate(pos2, quat1)
-            mat = math.quat_to_3x3(math.quat_mul(quat1, quat2))
-            return pos, mat
+    #    def local_to_global(pos1, quat1, pos2, quat2):
+    #        pos = pos1 + math.rotate(pos2, quat1)
+    #        mat = math.quat_to_3x3(math.quat_mul(quat1, quat2))
+    #        return pos, mat
 
-        x = pipeline_states.x.concatenate(base.Transform.zero((1,)))
-        pos, mat = local_to_global(
-            x.pos[body_id - 1],
-            x.rot[body_id - 1],
-            sys.mj_model.geom_pos[geom_num],
-            sys.mj_model.geom_quat[geom_num],
-        )
-        print(f"pos: {pos.shape}")
-        print(f"3x3: {mat.shape}")
+    #    x = pipeline_states.x.concatenate(base.Transform.zero((1,)))
+    #    pos, mat = local_to_global(
+    #        x.pos[body_id - 1],
+    #        x.rot[body_id - 1],
+    #        sys.mj_model.geom_pos[geom_num],
+    #        sys.mj_model.geom_quat[geom_num],
+    #    )
+    #    print(f"pos: {pos.shape}")
+    #    print(f"3x3: {mat.shape}")
 
-        off = pos
-        rot = quat_from_3x3(mat)
+    #    off = pos
+    #    rot = quat_from_3x3(mat)
     return model, rot, off
 
 
