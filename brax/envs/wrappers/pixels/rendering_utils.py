@@ -628,7 +628,7 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
 _get_instances = jax.jit(
     jax.vmap(
         lambda objs, state: _with_state(
-            objs, state.x.concatenate(base.Transform.zero((1,)))
+            objs[0], state.x.concatenate(base.Transform.zero((1,)))
         ),
         in_axes=(None, 0),
     )
