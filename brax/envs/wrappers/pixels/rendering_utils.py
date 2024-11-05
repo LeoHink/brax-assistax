@@ -232,11 +232,12 @@ class Obj(NamedTuple):
     """col.transform.rot"""
 
 
-# @partial(jax.vmap, in_axes=(None, 0, None, None, None, None, None))
+@partial(jax.vmap, in_axes=(None, 0, None, None, None, None))
 # @partial(jax.jit, static_argnames=("geom_id", "geom_num", "body_id"))
 @partial(jax.jit, static_argnames=("geom_id", "geom_num"))
 def _vmap_build(
     sys: brax.System,
+    pipeline_states,
     specular_map: jnp.ndarray,
     tex: jnp.ndarray,
     geom_id: int,
@@ -504,7 +505,7 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
         if geom_id in [0, 1, 2, 3, 4, 5, 6, 7]:  # [0, 1, 2, 3]:
             model, rot, off = _vmap_build(
                 sys,
-                # pipeline_states,
+                pipeline_states,
                 specular_map,
                 tex,
                 geom_id,

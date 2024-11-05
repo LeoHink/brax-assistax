@@ -282,13 +282,13 @@ class PixelWrapper(PipelineEnv):
         self.frame_stack = frame_stack
         self.return_float32 = return_float32
 
-        if cache_objects:
-            self.cached_objects = build_objects_for_cache(self.env.sys)
-        else:
-            self.cached_objects = None
+        # if cache_objects:
+        #    self.cached_objects = build_objects_for_cache(self.env.sys)
+        # else:
+        #    self.cached_objects = None
 
-        print("cache:  {self.cached_objects}")
-        qqq
+        # print("cache:  {self.cached_objects}")
+        # qqq
         # The VmapWrapper is already handling this. Will likely need to remove
         # self._reset_fn = jax.vmap(env.reset)
         # self._step_fn = jax.vmap(env.step)
