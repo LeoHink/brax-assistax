@@ -87,15 +87,15 @@ def render_pixels(sys: brax.System, pipeline_states: brax.State, hw: int):
 
 # Perhaps we do not want to jit this function as it will only be run once. This should
 # save on compile-time overhead
-@jax.jit
 def build_objects_for_cache(sys: brax.System, n_envs: int):
     objs = _build_objects(sys, jnp.zeros((n_envs, 1)))
 
     # we now have a list of Obj()
-    # jax_objs = []
-    # for obj in objs:
+    jax_objs = []
+    for obj in objs:
+        jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
 
-    return objs
+    return jax_objs
 
 
 def get_camera(
