@@ -100,6 +100,8 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
             )
         except:
             print("This one has no verts...")
+            print(jax_objs[-1])
+            qqq
     qqq
     return jax_objs
 
