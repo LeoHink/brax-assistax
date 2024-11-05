@@ -94,37 +94,43 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     jax_objs = []
     for obj in objs:
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
-        try:
-            print(
-                f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
-            )
-        except:
-            print("This one has no verts...")
-            print(jax_objs[-1])
-            qqq
+        # try:
+        #    print(
+        #        f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
+        #    )
+        # except:
+        #    print("This one has no verts...")
+        #    print(jax_objs[-1])
+        #    qqq
 
-    test = Obj(
+    vmappable_objs = Obj(
         rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
         off=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
         link_idx=jnp.concatenate(
             [jnp.array(x.link_idx)[None] for x in jax_objs], axis=0
         ),
     )
-    print(f"test: {test.off.shape}")
-    print(f"test: {test.rot.shape}")
-    print(f"test: {test.link_idx.shape}")
-    qqq
 
-    return jax_objs
+    return jax_objs, vmappable_objs
 
 
 @partial(jax.jit, static_argnames="hw")
 def render_pixels_with_cached_objs(
-    pipeline_states: brax.State, cached_objs: Iterable[Any], hw: int
+    pipeline_states: brax.State,
+    cached_objs: Iterable[Any],
+    cached_vmappable_objs: Iterable[Any],
+    hw: int,
 ):
     batched_camera = _get_cameras(pipeline_states, hw, hw)
     batched_target = _get_targets(pipeline_states)
-    images = _render(cached_objs, pipeline_states, batched_camera, batched_target, hw)
+    images = _render_vmap(
+        cached_objs,
+        cached_vmappable_objs,
+        pipeline_states,
+        batched_camera,
+        batched_target,
+        hw,
+    )
     return images
 
 
@@ -618,9 +624,10 @@ def _inner_with_state_vmap():
     pass
 
 
-def _with_state_vmap(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
+def _with_state_vmap(
+    objs: Iterable[Obj], vmappable_objs: Iterable[Any], x: brax.Transform
+) -> list[Instance]:
     """For this process, we only need positon and orientation!"""
-    vmappable_objs = jax.tree_map(lambda x: Obj(off=x.off, rot=x.rot), objs)
     print(f"test: {vmappable_objs.rot.shape}")
     qqq
 
@@ -750,6 +757,15 @@ def render(
     return images
 
 
+def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, hw):
+    batched_instances = _get_instances_vmap(objs, vmappable_objs, states)
+    print(f"done _get_instances()")
+    print(f"hw: {hw}")
+    images = _inner_render(batched_instances, batched_camera, batched_target, hw)
+    print("done with _inner_render()")
+    return images
+
+
 # vmap'ing the camera init over the environment axis
 _get_cameras = jax.jit(
     jax.vmap(
@@ -759,3 +775,4 @@ _get_cameras = jax.jit(
 )
 _get_targets = jax.jit(jax.vmap(get_target))
 _render = jax.jit(render, static_argnames="hw")
+_render_vmap = jax.jit(render_cached, static_argnames="hw")

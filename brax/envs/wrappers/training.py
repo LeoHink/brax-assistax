@@ -285,9 +285,11 @@ class PixelWrapper(PipelineEnv):
         self.cache_objects = cache_objects
 
         if cache_objects:
-            self.cached_objects = build_objects_for_cache(self.env.sys, n_envs)
+            self.cached_objects, self.vmappable_objects = build_objects_for_cache(
+                self.env.sys, n_envs
+            )
         else:
-            self.cached_objects = None
+            self.cached_objects, self.vmappable_objects = None, None
 
         # print(f"cache:  {self.cached_objects}")
         # print(
@@ -328,7 +330,10 @@ class PixelWrapper(PipelineEnv):
         # qqq
         if self.cache_objects:
             frames = ru.render_pixels_with_cached_objs(
-                raw_state.pipeline_state, self.cached_objects, self.hw
+                raw_state.pipeline_state,
+                self.cached_objects,
+                self.vmappable_objects,
+                self.hw,
             )
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
@@ -355,7 +360,10 @@ class PixelWrapper(PipelineEnv):
 
         if self.cache_objects:
             frames = ru.render_pixels_with_cached_objs(
-                raw_state.pipeline_state, self.cached_objects, self.hw
+                raw_state.pipeline_state,
+                self.cached_objects,
+                self.vmappable_objects,
+                self.hw,
             )
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
