@@ -71,6 +71,7 @@ env = envs.create(
         "frame_stack": 1,
         "return_float32": False,
         "cache_objects": True,
+        "n_envs": 3,
     },
 )
 print(f"sys: {env.sys.mj_model.ngeom} // {env.sys.mj_model.nbody}")
