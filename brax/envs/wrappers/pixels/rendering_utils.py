@@ -695,8 +695,8 @@ def render(
 # vmap'ing the camera init over the environment axis
 _get_cameras = jax.jit(
     jax.vmap(
-        lambda sys, state, width, height: get_camera(sys, state, width, height),
-        in_axes=(None, 0, None, None),
+        lambda state, width, height: get_camera(state, width, height),
+        in_axes=(0, None, None),
     )
 )
 _get_targets = jax.jit(jax.vmap(get_target))
