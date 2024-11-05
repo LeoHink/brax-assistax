@@ -3,6 +3,8 @@ Utilities for rendering pixel observations directly on an XLA device
 """
 
 from typing import Optional, Dict, NamedTuple, Iterable, Any
+
+from jax._src.api import vmap
 from brax import base, math
 from mujoco.mjx._src.types import GeomType
 import brax
@@ -622,7 +624,11 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
 
 @partial(jax.vmap, in_axes=(0, None))
 def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
-    pass
+    pos = x.pos[vmappable_objs.link_idx] + math.rotate(
+        vmappable_objs.off, x.rot[vmappable_objs.link_idx]
+    )
+    rot = math.quat_mul(x.rot[vmappable_objs.link_idx], obj.rot)
+    return pos, rot
 
 
 def _with_state_vmap(
@@ -631,6 +637,8 @@ def _with_state_vmap(
     """For this process, we only need positon and orientation!"""
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     print(f"... {x.pos.shape} // {x.rot.shape}")
+    pos, rot = _inner_with_state_vmap(vmappable_objs, x)
+    print(f"outs: {pos.shape} //  {rot.shape}")
     qqq
 
 
