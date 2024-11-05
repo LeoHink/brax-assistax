@@ -103,9 +103,14 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
             print(jax_objs[-1])
             qqq
 
-    test = jax.tree_map(lambda x: Obj(off=x.off, rot=x.rot), jax_objs)
-
+    test = Obj(
+        rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
+        pos=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
+        link_idx=jnp.concatenate([x.link_idx for x in jax_objs], axis=0),
+    )
     print(f"test: {test.off.shape}")
+    print(f"test: {test.rot.shape}")
+    print(f"test: {test.link_idx.shape}")
     qqq
 
     return jax_objs
@@ -251,7 +256,6 @@ class Obj(NamedTuple):
     col is accessed from the batched geoms `sys.geoms`, representing one geom.
     """
 
-    instance: Instance
     """An instance to be rendered in the scene, defined by jaxrenderer."""
     link_idx: int
     """col.link_idx if col.link_idx is not None else -1"""
@@ -259,6 +263,7 @@ class Obj(NamedTuple):
     """col.transform.rot"""
     rot: jnp.ndarray
     """col.transform.rot"""
+    instance: Optional[Instance] = None
 
 
 @partial(jax.vmap, in_axes=(None, 0, None, None, None, None))
