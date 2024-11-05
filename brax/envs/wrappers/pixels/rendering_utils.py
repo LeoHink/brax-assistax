@@ -106,7 +106,9 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     test = Obj(
         rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
         pos=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
-        link_idx=jnp.concatenate([jnp.array(x.link_idx) for x in jax_objs], axis=0),
+        link_idx=jnp.concatenate(
+            [jnp.array(x.link_idx)[None] for x in jax_objs], axis=0
+        ),
     )
     print(f"test: {test.off.shape}")
     print(f"test: {test.rot.shape}")
