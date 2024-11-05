@@ -641,7 +641,7 @@ def _with_state_vmap(
     print(f"tt: {type(objs)}")
     print(f"instance: {objs[0].instance}")
     new_objs = jax.tree_map(
-        lambda *x: x[0].instance.replace_with_position(y[1]), (objs, pos, rot)
+        lambda *x: x[0].instance.replace_with_position(x[1]), (objs, pos, rot)
     )
 
     print(f"outs: {pos.shape} //  {rot.shape}")
