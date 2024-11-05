@@ -66,7 +66,12 @@ wandb.init(
 env = envs.create(
     "scratchitch",
     batch_size=3,
-    pixel_obs={"hw": 512, "frame_stack": 1, "return_float32": False},
+    pixel_obs={
+        "hw": 512,
+        "frame_stack": 1,
+        "return_float32": False,
+        "cache_objects": True,
+    },
 )
 print(f"sys: {env.sys.mj_model.ngeom} // {env.sys.mj_model.nbody}")
 

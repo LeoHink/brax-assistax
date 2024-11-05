@@ -66,7 +66,7 @@ def render_pixels(sys: brax.System, pipeline_states: brax.State, hw: int):
     # print(f'Within render pixels')
 
     # The "current_frame" arg is meant to work for the "video distractor" case
-    batched_camera = _get_cameras(sys, pipeline_states, hw, hw)
+    batched_camera = _get_cameras(pipeline_states, hw, hw)
     # print(f'after batched_camera')
 
     print(f"got the batched_camera object....")
@@ -85,14 +85,20 @@ def render_pixels(sys: brax.System, pipeline_states: brax.State, hw: int):
     return images
 
 
+# Perhaps we do not want to jit this function as it will only be run once. This should
+# save on compile-time overhead
+def build_objects_for_cache(sys: brax.System):
+    objs = _build_objects(sys, None)
+    return objs
+
+
 def get_camera(
-    sys: brax.System,
     state: brax.State,
     width: int,
     height: int,
 ) -> Camera:
     """Gets camera object."""
-    eye, up = _eye(sys, state), _up(sys)
+    eye, up = _eye(state), _up()
 
     hfov = HFOV  # orig: 58.0 -- higher == more zoomed out
     vfov = hfov * height / width
@@ -144,7 +150,7 @@ CAM_Z = 3.5
 HFOV = 40.0
 
 
-def _eye(sys: brax.System, state: brax.State) -> jnp.ndarray:
+def _eye(state: brax.State) -> jnp.ndarray:
     """
     Determines the camera location for a Brax system as a position relative to a given geom in the brax System.
     This is computed as an  "offset" from the location of the geom.
@@ -176,7 +182,7 @@ def _eye(sys: brax.System, state: brax.State) -> jnp.ndarray:
     #  return CAM_OFF
 
 
-def _up(unused_sys: brax.System) -> jnp.ndarray:
+def _up() -> jnp.ndarray:
     """Determines the up orientation of the camera."""
     # [0,1,1] [1,1,1] weird angle isometric
     # return jnp.array([0., 0., 0.])
@@ -226,16 +232,15 @@ class Obj(NamedTuple):
     """col.transform.rot"""
 
 
-@partial(jax.vmap, in_axes=(None, 0, None, None, None, None, None))
-@partial(jax.jit, static_argnames=("geom_id", "geom_num", "body_id"))
+# @partial(jax.vmap, in_axes=(None, 0, None, None, None, None, None))
+# @partial(jax.jit, static_argnames=("geom_id", "geom_num", "body_id"))
+@partial(jax.jit, static_argnames=("geom_id", "geom_num"))
 def _vmap_build(
     sys: brax.System,
-    pipeline_states: brax.State,
     specular_map: jnp.ndarray,
     tex: jnp.ndarray,
     geom_id: int,
     geom_num: int,
-    body_id: int,
 ):
     """ """
     # Plane
@@ -382,16 +387,16 @@ def _vmap_build(
     # https://github.com/google/brax/blob/c87dcfc5094afffb149f98e48903fb39c2b7f7af/brax/mjx/pipeline.py#L75C17-L75C34
 
     # x.rot, x.pos = (29, 3), (29, 4)
-    print(
-        f".x.rot: {pipeline_states.x.rot.shape} // {pipeline_states.x.rot[body_id - 1].shape}"
-    )
-    print(
-        f".x.pos: {pipeline_states.x.pos.shape} // {pipeline_states.x.pos[body_id - 1].shape}"
-    )
+    # print(
+    #    f".x.rot: {pipeline_states.x.rot.shape} // {pipeline_states.x.rot[body_id - 1].shape}"
+    # )
+    # print(
+    #    f".x.pos: {pipeline_states.x.pos.shape} // {pipeline_states.x.pos[body_id - 1].shape}"
+    # )
 
-    # (106, 3), (106, 4)
-    print(f"sys.geom_pos: {sys.mj_model.geom_pos.shape}")
-    print(f"sys.geom_quat: {sys.mj_model.geom_quat.shape}")
+    ## (106, 3), (106, 4)
+    # print(f"sys.geom_pos: {sys.mj_model.geom_pos.shape}")
+    # print(f"sys.geom_quat: {sys.mj_model.geom_quat.shape}")
 
     # rot_raw = pipeline_states.x.rot[body_id]
     # rot = jnp.array([rot_raw[1], rot_raw[2], rot_raw[3], rot_raw[0]])
@@ -399,13 +404,13 @@ def _vmap_build(
     # rot = quat_from_3x3(math.inv_3x3(pipeline_states.geom_xmat[geom_num]))
 
     # The groundplane's information is **not** within pipeline_states.x
-    if geom_id != 990:
-        # rot = quat_from_3x3(pipeline_states.geom_xmat[geom_num])
-        # off = pipeline_states.geom_xpos[geom_num]
-        # copying this thing:
-        # https://github.com/google/brax/blob/main/brax/io/json.py#L129
-        rot = sys.geom_quat[geom_num]
-        off = sys.geom_pos[geom_num]
+    # if geom_id != 990:
+    # rot = quat_from_3x3(pipeline_states.geom_xmat[geom_num])
+    # off = pipeline_states.geom_xpos[geom_num]
+    # copying this thing:
+    # https://github.com/google/brax/blob/main/brax/io/json.py#L129
+    rot = sys.geom_quat[geom_num]
+    off = sys.geom_pos[geom_num]
     # print(f"rot: {rot.shape}")
     # print(f"off: {off.shape}")
 
@@ -499,12 +504,12 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
         if geom_id in [0, 1, 2, 3, 4, 5, 6, 7]:  # [0, 1, 2, 3]:
             model, rot, off = _vmap_build(
                 sys,
-                pipeline_states,
+                # pipeline_states,
                 specular_map,
                 tex,
                 geom_id,
                 idx,
-                sys.geom_bodyid[idx],
+                # sys.geom_bodyid[idx],
             )
 
             outs = [
