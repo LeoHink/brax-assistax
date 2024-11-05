@@ -628,7 +628,7 @@ def _with_state_vmap(
     objs: Iterable[Obj], vmappable_objs: Iterable[Any], x: brax.Transform
 ) -> list[Instance]:
     """For this process, we only need positon and orientation!"""
-    print(f"test: {vmappable_objs.rot.shape}")
+    print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     qqq
 
 
@@ -676,10 +676,10 @@ _get_instances = jax.jit(
 
 _get_instances_vmap = jax.jit(
     jax.vmap(
-        lambda objs, state: _with_state_vmap(
-            objs, state.x.concatenate(base.Transform.zero((1,)))
+        lambda objs, vmappable_objs, state: _with_state_vmap(
+            objs, vmappable_objs, state.x.concatenate(base.Transform.zero((1,)))
         ),
-        in_axes=(None, 0),
+        in_axes=(None, None, 0),
     )
 )
 
