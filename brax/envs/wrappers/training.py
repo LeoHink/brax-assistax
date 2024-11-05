@@ -23,7 +23,7 @@ from flax import struct
 import jax
 from jax import numpy as jp
 
-from .pixels.rendering_utils import PixelState
+from .pixels.rendering_utils import PixelState, build_objects_for_cache
 import wrappers.pixels.rendering_utils as ru
 
 
@@ -267,7 +267,14 @@ class DisabilityWrapper(Wrapper):
 
 
 class PixelWrapper(PipelineEnv):
-    def __init__(self, env: Env, hw: int, frame_stack: int, return_float32: bool):
+    def __init__(
+        self,
+        env: Env,
+        hw: int,
+        frame_stack: int,
+        return_float32: bool,
+        cache_objects: bool,
+    ):
         super().__init__(sys=env.sys, backend=env.backend)
         self.env = env
         self.seed = None  # TODO: does the env hold a seed?
@@ -275,9 +282,21 @@ class PixelWrapper(PipelineEnv):
         self.frame_stack = frame_stack
         self.return_float32 = return_float32
 
+        if cache_objects:
+            self.cached_objects = build_objects_for_cache(self.env.sys)
+        else:
+            self.cached_objects = None
+
+        print("cache:  {self.cached_objects}")
+        qqq
         # The VmapWrapper is already handling this. Will likely need to remove
         # self._reset_fn = jax.vmap(env.reset)
         # self._step_fn = jax.vmap(env.step)
+
+        # TODO: implement mesh caching. I'm pretty sure we can literally just compute
+        # the mesh attributes a single time and cache them. We don't even need a pipeline_state
+        # from the environment to do this. This is the most expensive part. Then we can
+        # just pass the cached mesh to the rendering function!!!
 
     @property
     def action_size(self) -> int:
