@@ -282,21 +282,22 @@ class PixelWrapper(PipelineEnv):
         self.hw = hw
         self.frame_stack = frame_stack
         self.return_float32 = return_float32
+        self.cache_objects = cache_objects
 
         if cache_objects:
             self.cached_objects = build_objects_for_cache(self.env.sys, n_envs)
         else:
             self.cached_objects = None
 
-        print(f"cache:  {self.cached_objects}")
-        print(
-            f"test: {self.cached_objects[0].instance.model.specular_map.shape} // {type(self.cached_objects[0].instance.model.specular_map)}"
-        )
+        # print(f"cache:  {self.cached_objects}")
+        # print(
+        #    f"test: {self.cached_objects[0].instance.model.specular_map.shape} // {type(self.cached_objects[0].instance.model.specular_map)}"
+        # )
 
-        print(
-            f"test 2: {self.cached_objects[0].rot}  // {type(self.cached_objects[0].rot)}"
-        )
-        qqq
+        # print(
+        #    f"test 2: {self.cached_objects[0].rot}  // {type(self.cached_objects[0].rot)}"
+        # )
+        # qqq
         # The VmapWrapper is already handling this. Will likely need to remove
         # self._reset_fn = jax.vmap(env.reset)
         # self._step_fn = jax.vmap(env.step)
@@ -325,7 +326,12 @@ class PixelWrapper(PipelineEnv):
         # after = self.env.sys.mj_model.geom_pos
         # print(f"delta: {(before - after).sum()}")
         # qqq
-        frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+        if self.cache_objects:
+            frames = ru.render_pixels_with_cached_objs(
+                raw_state.pipeline_state, self.cached_objects, self.hw
+            )
+        else:
+            frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
 
         if not self.return_float32:
             frames = (frames * 255).astype(jp.uint8)
@@ -346,7 +352,14 @@ class PixelWrapper(PipelineEnv):
         self, rng: jp.ndarray, states: jp.ndarray, actions: jp.ndarray
     ) -> PixelState:
         raw_state = self.env.step(rng, states, actions)
-        frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+
+        if self.cache_objects:
+            frames = ru.render_pixels_with_cached_objs(
+                raw_state.pipeline_state, self.cached_objects, self.hw
+            )
+        else:
+            frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+
         if not self.return_float32:
             frames = (frames * 255).astype(jp.uint8)
 

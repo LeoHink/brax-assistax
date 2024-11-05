@@ -2,7 +2,7 @@
 Utilities for rendering pixel observations directly on an XLA device
 """
 
-from typing import Optional, Dict, NamedTuple, Iterable
+from typing import Optional, Dict, NamedTuple, Iterable, Any
 from brax import base, math
 from mujoco.mjx._src.types import GeomType
 import brax
@@ -90,12 +90,22 @@ def render_pixels(sys: brax.System, pipeline_states: brax.State, hw: int):
 def build_objects_for_cache(sys: brax.System, n_envs: int):
     objs = _build_objects(sys, jnp.zeros((n_envs, 1)))
 
-    # we now have a list of Obj()
+    # we now have a list of Obj(), but they are not tracedarrays
     jax_objs = []
     for obj in objs:
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
 
     return jax_objs
+
+
+@partial(jax.jit, static_argnames="hw")
+def render_pixels_with_cached_objs(
+    pipeline_states: brax.State, cached_objs: Iterable[Any], hw: int
+):
+    batched_camera = _get_cameras(pipeline_states, hw, hw)
+    batched_target = _get_targets(pipeline_states)
+    images = _render(cached_objs, pipeline_states, batched_camera, batched_target, hw)
+    return images
 
 
 def get_camera(
