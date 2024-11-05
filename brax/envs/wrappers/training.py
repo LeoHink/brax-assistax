@@ -288,7 +288,7 @@ class PixelWrapper(PipelineEnv):
         else:
             self.cached_objects = None
 
-        print("cache:  {self.cached_objects}")
+        print(f"cache:  {self.cached_objects}")
         qqq
         # The VmapWrapper is already handling this. Will likely need to remove
         # self._reset_fn = jax.vmap(env.reset)
