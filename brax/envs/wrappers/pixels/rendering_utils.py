@@ -94,7 +94,8 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     jax_objs = []
     for obj in objs:
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
-
+        print(f"{jax_objs[-1].rot.shape} // {jax_objs[-1].off.shape}")
+    qqq
     return jax_objs
 
 
