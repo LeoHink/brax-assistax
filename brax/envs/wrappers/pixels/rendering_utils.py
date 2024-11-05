@@ -92,9 +92,9 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     objs = _build_objects(sys, jnp.zeros((n_envs, 1)))
 
     # we now have a list of Obj()
-    jax_objs = []
-    for obj in objs:
-        
+    # jax_objs = []
+    # for obj in objs:
+
     return objs
 
 
