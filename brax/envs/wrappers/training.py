@@ -290,7 +290,7 @@ class PixelWrapper(PipelineEnv):
 
         print(f"cache:  {self.cached_objects}")
         print(
-            f"test: {self.cached_objects[0].instance.faces_uv.shape} // {type(self.cached_objects[0].instance.faces_uv)}"
+            f"test: {self.cached_objects[0].instance.specular_map.shape} // {type(self.cached_objects[0].specular_map.faces_uv)}"
         )
 
         print(
