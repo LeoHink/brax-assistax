@@ -605,6 +605,8 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
     #   raise RuntimeError('unexpected shape in state')
     # TODO: CAN WE JUST IGNORE THIS? DOES MJX HAVE US ALREADY G2G?
     instances: list[Instance] = []
+    print(f"Objs: {objs[0]}")
+    qqq
 
     for obj in objs:
         # instances.append(obj.instance)
@@ -628,7 +630,7 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
 _get_instances = jax.jit(
     jax.vmap(
         lambda objs, state: _with_state(
-            objs[0], state.x.concatenate(base.Transform.zero((1,)))
+            objs, state.x.concatenate(base.Transform.zero((1,)))
         ),
         in_axes=(None, 0),
     )
