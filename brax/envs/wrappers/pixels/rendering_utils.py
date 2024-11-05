@@ -102,7 +102,12 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
             print("This one has no verts...")
             print(jax_objs[-1])
             qqq
+
+    test = jax.tree_map(lambda x: Obj(off=x.off, rot=x.rot), jax_objs)
+
+    print(f"test: {test.off.shape}")
     qqq
+
     return jax_objs
 
 
@@ -602,6 +607,17 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
     return objs
 
 
+def _inner_with_state_vmap():
+    pass
+
+
+def _with_state_vmap(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
+    """For this process, we only need positon and orientation!"""
+    vmappable_objs = jax.tree_map(lambda x: Obj(off=x.off, rot=x.rot), objs)
+    print(f"test: {vmappable_objs.rot.shape}")
+    qqq
+
+
 def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
     """x must have at least 1 element. This can be ensured by calling
     `x.concatenate(base.Transform.zero((1,)))`. x is `state.x`.
@@ -638,6 +654,15 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
 _get_instances = jax.jit(
     jax.vmap(
         lambda objs, state: _with_state(
+            objs, state.x.concatenate(base.Transform.zero((1,)))
+        ),
+        in_axes=(None, 0),
+    )
+)
+
+_get_instances_vmap = jax.jit(
+    jax.vmap(
+        lambda objs, state: _with_state_vmap(
             objs, state.x.concatenate(base.Transform.zero((1,)))
         ),
         in_axes=(None, 0),
