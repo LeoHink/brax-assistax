@@ -123,7 +123,7 @@ def render_pixels_with_cached_objs(
 ):
     batched_camera = _get_cameras(pipeline_states, hw, hw)
     batched_target = _get_targets(pipeline_states)
-    images = _render_vmap(
+    images = _render_cached(
         cached_objs,
         cached_vmappable_objs,
         pipeline_states,
@@ -619,9 +619,9 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
 
     return objs
 
-
-def _inner_with_state_vmap():
-    pass
+@partial(jax.vmap, in_axes=(0, None))
+def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
+    
 
 
 def _with_state_vmap(
@@ -629,6 +629,7 @@ def _with_state_vmap(
 ) -> list[Instance]:
     """For this process, we only need positon and orientation!"""
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
+    print(f"... {x.pos.shape} // {x.rot.shape}")
     qqq
 
 
@@ -775,4 +776,4 @@ _get_cameras = jax.jit(
 )
 _get_targets = jax.jit(jax.vmap(get_target))
 _render = jax.jit(render, static_argnames="hw")
-_render_vmap = jax.jit(render_cached, static_argnames="hw")
+_render_cached = jax.jit(render_cached, static_argnames="hw")
