@@ -96,7 +96,7 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
         try:
             print(
-                f"{jax_objs[-1].instance.verts.shape} // {jax_objs[-1].instance.faces.shape}"
+                f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
             )
         except:
             print("This one has no verts...")
