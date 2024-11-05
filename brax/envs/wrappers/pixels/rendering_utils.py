@@ -87,8 +87,8 @@ def render_pixels(sys: brax.System, pipeline_states: brax.State, hw: int):
 
 # Perhaps we do not want to jit this function as it will only be run once. This should
 # save on compile-time overhead
-def build_objects_for_cache(sys: brax.System):
-    objs = _build_objects(sys, None)
+def build_objects_for_cache(sys: brax.System, n_envs: int):
+    objs = _build_objects(sys, jnp.zeros((n_envs, 1)))
     return objs
 
 
