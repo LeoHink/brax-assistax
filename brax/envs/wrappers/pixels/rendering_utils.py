@@ -627,7 +627,7 @@ def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
     pos = x.pos[vmappable_objs.link_idx] + math.rotate(
         vmappable_objs.off, x.rot[vmappable_objs.link_idx]
     )
-    rot = math.quat_mul(x.rot[vmappable_objs.link_idx], obj.rot)
+    rot = math.quat_mul(x.rot[vmappable_objs.link_idx], vmappable_objs.rot)
     return pos, rot
 
 
