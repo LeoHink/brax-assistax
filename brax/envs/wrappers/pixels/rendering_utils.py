@@ -638,7 +638,8 @@ def _with_state_vmap(
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     print(f"... {x.pos.shape} // {x.rot.shape}")
     pos, rot = _inner_with_state_vmap(vmappable_objs, x)
-
+    print(f"tt: {type(objs)}")
+    print(f"instance: {objs[0].instance}")
     new_objs = jax.tree_map(
         lambda x, y, z: x.instance.replace_with_position(y),
         *objs,
