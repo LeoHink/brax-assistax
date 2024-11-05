@@ -643,7 +643,9 @@ def _with_state_vmap(
         lambda *x, y, z: x.instance.replace_with_position(y).replace_with_orientation(
             z
         ),
-        (objs, pos, rot),
+        *objs,
+        pos,
+        rot,
     )
 
     print(f"outs: {pos.shape} //  {rot.shape}")
