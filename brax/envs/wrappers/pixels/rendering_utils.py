@@ -640,7 +640,9 @@ def _with_state_vmap(
     pos, rot = _inner_with_state_vmap(vmappable_objs, x)
 
     new_objs = jax.tree_map(
-        lambda *x, y, z: x.replace_with_position(y).replace_with_orientation(z),
+        lambda *x, y, z: x.instance.replace_with_position(y).replace_with_orientation(
+            z
+        ),
         (objs, pos, rot),
     )
 
