@@ -619,9 +619,10 @@ def _build_objects(sys: brax.System, pipeline_states: brax.State) -> list[Obj]:
 
     return objs
 
+
 @partial(jax.vmap, in_axes=(0, None))
 def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
-    
+    pass
 
 
 def _with_state_vmap(
