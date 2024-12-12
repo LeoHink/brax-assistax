@@ -85,6 +85,10 @@ keys = jax.random.split(key, obs.pixels.shape[0])
 action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
 _step_fn = jax.jit(env.step)
 
+print(f"clearing compile time...")
+for _ in range(3):
+    _step_fn(keys, obs, action)
+
 for _ in tqdm(range(100)):
     _, key = jax.random.split(key)
     obs = _step_fn(keys, obs, action)
