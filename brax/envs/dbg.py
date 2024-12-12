@@ -93,13 +93,14 @@ def _step_env_loop(carry, unused):
     action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
     obs = _step_fn(keys, obs, action)
     time_carry += ((time.time() - begin) * iterator)
-    return (key, obs, iterator + 1 - iterator, time_carry), ()
+    return (key, obs, iterator + 1 - iterator, time_carry), (time.time() - begin)
 
 start = time.time()
 print("Begin loop.")
-(_, _, iterator, time_carry), _ = jax.lax.scan(_step_env_loop, (key, obs, 0, 0.0), (), length=100)
+(_, _, iterator, time_carry), all_times = jax.lax.scan(_step_env_loop, (key, obs, 0, 0.0), (), length=100)
 print(f"Took {time.time() - start} seconds")
 print(f"{iterator} // {time_carry}")
+print(f"{all_times} // {np.sum(all_times[1:])}")
 qqq
 
 print(f"clearing compile time...")
