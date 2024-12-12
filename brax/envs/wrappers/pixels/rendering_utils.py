@@ -773,6 +773,7 @@ def render(
     batched_instances = _get_instances(objs, states)
     print(f"original batched_instances: {batched_instances}")
     print(f"type: {type(batched_instances)}")
+    print(f"num objs: {len(batched_instances)}")
     print(f"done _get_instances()")
     qqq
     print(f"hw: {hw}")
