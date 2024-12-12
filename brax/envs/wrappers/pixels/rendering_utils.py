@@ -95,8 +95,8 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     # we now have a list of Obj(), but they are not tracedarrays
     jax_objs = []
     for obj in objs:
-        print(f"bool: {obj.double_sided}")
-        print(obj.double_sided.shape)
+        print(f"bool: {obj.instance.double_sided}")
+        print(obj.instance.double_sided.shape)
         qqq
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
         # try:
