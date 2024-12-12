@@ -125,6 +125,7 @@ def render_pixels_with_cached_objs(
 ):
     batched_camera = _get_cameras(pipeline_states, hw, hw)
     batched_target = _get_targets(pipeline_states)
+    
     images = _render_cached(
         cached_objs,
         cached_vmappable_objs,
@@ -770,6 +771,8 @@ def render(
     objs, states: brax.State, batched_camera, batched_target, hw: int
 ) -> jnp.ndarray:
     batched_instances = _get_instances(objs, states)
+    print(f"original batched_instances: {batched_instances}")
+    qqq
     print(f"done _get_instances()")
     print(f"hw: {hw}")
     images = _inner_render(batched_instances, batched_camera, batched_target, hw)
