@@ -96,6 +96,8 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     jax_objs = []
     for obj in objs:
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
+        print(f"new indiv instance: {obj.instance}")
+        qqq
         # try:
         #    print(
         #        f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
@@ -104,8 +106,9 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
         #    print("This one has no verts...")
         #    print(jax_objs[-1])
         #    qqq
-
+    
     vmappable_objs = Obj(
+        instance=jnp.concatenate([x.instance[None] for x in jax_objs], axis=0),
         rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
         off=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
         link_idx=jnp.concatenate(
