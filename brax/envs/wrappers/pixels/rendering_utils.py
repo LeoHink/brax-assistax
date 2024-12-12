@@ -115,15 +115,15 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
         #    qqq
     
     vmappable_objs = Obj(
-        instance=jax.tree_map(lambda *x: jnp.concatenate([jnp.expand_dims(_x, 0) for _x in x], axis=0), *zip([i.instance for i in jax_objs]))[0],
+        #instance=jax.tree_map(lambda *x: jnp.concatenate([jnp.expand_dims(_x, 0) for _x in x], axis=0), *zip([i.instance for i in jax_objs]))[0],
         rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
         off=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
         link_idx=jnp.concatenate(
             [jnp.array(x.link_idx)[None] for x in jax_objs], axis=0
         ),
     )
-    print(f"new instances: {vmappable_objs.instance.transform.shape}")
-    qqq
+    #print(f"new instances: {vmappable_objs.instance.transform.shape}")
+    #qqq
 
     return jax_objs, vmappable_objs
 
@@ -135,6 +135,7 @@ def render_pixels_with_cached_objs(
     cached_vmappable_objs: Iterable[Any],
     hw: int,
 ):
+    # Here, cached_objs has .instances attribute while vmappable does not
     batched_camera = _get_cameras(pipeline_states, hw, hw)
     batched_target = _get_targets(pipeline_states)
     
@@ -801,6 +802,8 @@ def render(
 
 
 def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, hw):
+    print(f"here: {objs.instances}")
+    qqq
     batched_instances = _get_instances_vmap(objs, vmappable_objs, states)
     print(f"done _get_instances()")
     print(f"original batched_instances: {batched_instances}")
