@@ -630,8 +630,10 @@ def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
     )
     rot = math.quat_mul(x.rot[vmappable_objs.link_idx], vmappable_objs.rot)
     print(f"obj.instance: {vmappable_objs.instance}")
-    qqq
-    return pos, rot
+    instance = vmappable_objs.instance
+    instance = instance.replace_with_position(pos)
+    instance = instance.replace_with_orientation(rot)
+    return instance
 
 
 def _with_state_vmap(
@@ -640,7 +642,7 @@ def _with_state_vmap(
     """For this process, we only need positon and orientation!"""
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     print(f"... {x.pos.shape} // {x.rot.shape}")
-    pos, rot = _inner_with_state_vmap(vmappable_objs, x)
+    instances = _inner_with_state_vmap(vmappable_objs, x)
 
     new_objs_pos_rot = Obj(instance=None, link_idx=None, rot=rot, off=pos)
     
@@ -682,6 +684,8 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
         # obj.rot is: local orientation offset of geom rel. to body
         rot = math.quat_mul(x.rot[i], obj.rot)
         instance = obj.instance
+        print(f"ORIGINAL INSTANCE: {instance}")
+        qqq
         instance = instance.replace_with_position(pos)
         instance = instance.replace_with_orientation(rot)
         instances.append(instance)
