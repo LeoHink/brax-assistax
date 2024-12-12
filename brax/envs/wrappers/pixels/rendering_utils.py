@@ -106,7 +106,7 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
         #    qqq
     
     vmappable_objs = Obj(
-        instance=jax.tree_map(lambda x: jnp.concatenate(x[None], axis=0), *[x.instance for x in jax_objs]),
+        instance=jax.tree_map(lambda *x: jnp.concatenate(x[None], axis=0), [x.instance for x in jax_objs]),
         rot=jnp.concatenate([x.rot[None] for x in jax_objs], axis=0),
         off=jnp.concatenate([x.off[None] for x in jax_objs], axis=0),
         link_idx=jnp.concatenate(
