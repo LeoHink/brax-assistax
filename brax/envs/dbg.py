@@ -104,7 +104,7 @@ print(f"{iterator} // {time_carry}")
 
 start = time.time()
 times = []
-for _ in range(1000:):
+for _ in range(1000):
     inner = time.time()
     _, key = jax.random.split(key)
     action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
