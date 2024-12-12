@@ -653,7 +653,7 @@ def _with_state_vmap(
     print(f"... {x.pos.shape} // {x.rot.shape}")
     poss, rots = _inner_with_state_vmap(vmappable_objs, x)
     print(f"... {poss.shape} // {rots.shape}")
-    new_instances = [objs[i].instance.replace_with_position(poss[i]).replace_with_orientation(rots[i]) for i in range(poss.shape[0])]
+    new_instances = [objs.instance[i].replace_with_position(poss[i]).replace_with_orientation(rots[i]) for i in range(poss.shape[0])]
     print(f"got here, yay!")
     qqq
 
