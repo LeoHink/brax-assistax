@@ -794,7 +794,6 @@ def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, 
     print(f"original batched_instances: {batched_instances}")
     print(f"type: {type(batched_instances)}")
     print(f"num objs: {len(batched_instances)}")
-    qqq
     print(f"hw: {hw}")
     images = _inner_render(batched_instances, batched_camera, batched_target, hw)
     print("done with _inner_render()")
