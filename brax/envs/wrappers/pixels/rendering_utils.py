@@ -665,7 +665,7 @@ def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
     # TODO: CAN WE JUST IGNORE THIS? DOES MJX HAVE US ALREADY G2G?
     instances: list[Instance] = []
     print(f"Objs: {objs[0]}")
-    qqq
+    #qqq
 
     for obj in objs:
         # instances.append(obj.instance)
