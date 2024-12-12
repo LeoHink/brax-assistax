@@ -802,7 +802,7 @@ def render(
 
 
 def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, hw):
-    print(f"here: {objs[0].instances}")
+    print(f"here: {objs[0].instance}")
     qqq
     batched_instances = _get_instances_vmap(objs, vmappable_objs, states)
     print(f"done _get_instances()")
