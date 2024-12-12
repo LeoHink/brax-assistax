@@ -642,11 +642,7 @@ def _inner_with_state_vmap(vmappable_objs: Iterable[Any], x: brax.Transform):
         vmappable_objs.off, x.rot[vmappable_objs.link_idx]
     )
     rot = math.quat_mul(x.rot[vmappable_objs.link_idx], vmappable_objs.rot)
-    print(f"obj.instance: {vmappable_objs.instance}")
-    instance = vmappable_objs.instance
-    instance = instance.replace_with_position(pos)
-    instance = instance.replace_with_orientation(rot)
-    return instance
+    return pos, rot
 
 
 def _with_state_vmap(
@@ -655,7 +651,9 @@ def _with_state_vmap(
     """For this process, we only need positon and orientation!"""
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     print(f"... {x.pos.shape} // {x.rot.shape}")
-    instances = _inner_with_state_vmap(vmappable_objs, x)
+    pos, rot = _inner_with_state_vmap(vmappable_objs, x)
+    print(f"... {x.pos.shape} // {x.rot.shape}")
+    qqq
 
     new_objs_pos_rot = Obj(instance=None, link_idx=None, rot=rot, off=pos)
     
@@ -802,8 +800,6 @@ def render(
 
 
 def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, hw):
-    print(f"here: {objs[0].instance}")
-    qqq
     batched_instances = _get_instances_vmap(objs, vmappable_objs, states)
     print(f"done _get_instances()")
     print(f"original batched_instances: {batched_instances}")
