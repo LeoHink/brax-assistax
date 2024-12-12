@@ -651,9 +651,10 @@ def _with_state_vmap(
     """For this process, we only need positon and orientation!"""
     print(f"IN _WITH_STATE_VMAP(): {vmappable_objs.rot.shape}")
     print(f"... {x.pos.shape} // {x.rot.shape}")
-    pos, rot = _inner_with_state_vmap(vmappable_objs, x)
-    print(f"... {pos.shape} // {rot.shape}")
-    #new_instances = [... for i]
+    poss, rots = _inner_with_state_vmap(vmappable_objs, x)
+    print(f"... {poss.shape} // {rots.shape}")
+    new_instances = [objs.instance.replace_with_position(poss[i]).replace_with_orientation(rots[i]) for i in range(poss.shape[0])]
+    print(f"got here, yay!")
     qqq
 
     new_objs_pos_rot = Obj(instance=None, link_idx=None, rot=rot, off=pos)
