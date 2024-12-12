@@ -100,7 +100,7 @@ print("Begin loop.")
 (_, _, iterator, time_carry), all_times = jax.lax.scan(_step_env_loop, (key, obs, 0, 0.0), (), length=100)
 print(f"Took {time.time() - start} seconds")
 print(f"{iterator} // {time_carry}")
-print(f"{all_times} // {np.sum(all_times[1:])}")
+print(f"{all_times} // {sum(all_times[1:])}")
 qqq
 
 print(f"clearing compile time...")
