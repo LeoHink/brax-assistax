@@ -95,16 +95,16 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     # we now have a list of Obj(), but they are not tracedarrays
     jax_objs = []
     for obj in objs:
-        print(f"bool: {obj.instance.double_sided}")
-        print(obj.instance.double_sided.shape)
-        print(len(obj.instance.double_sided.shape) > 0)
+        #print(f"bool: {obj.instance.double_sided}")
+        #print(obj.instance.double_sided.shape)
+        #print(len(obj.instance.double_sided.shape) > 0)
         obj = Obj(link_idx=obj.link_idx, off=obj.off, rot=obj.rot, instance=obj.instance._replace(double_sided=jnp.array(obj.instance.double_sided).reshape(1,)))
         #obj = obj.replace(instance=obj.instance._replace(double_sided=jnp.array(obj.instance.double_sided).reshape(1,)))
         #obj.instance = obj.instance._replace(double_sided = jnp.array(obj.instance.double_sided).reshape(1,))
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
-        print(f"bool: {obj.instance.double_sided}")
-        print(obj.instance.double_sided.shape)
-        qqq
+        #print(f"bool: {obj.instance.double_sided}")
+        #print(obj.instance.double_sided.shape)
+        #qqq
         # try:
         #    print(
         #        f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
