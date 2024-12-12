@@ -641,16 +641,16 @@ def _with_state_vmap(
     pos, rot = _inner_with_state_vmap(vmappable_objs, x)
 
     new_objs_pos_rot = Obj(instance=None, link_idx=None, rot=rot, off=pos)
-    print(f"tt: {type(objs)}")
-    print(f"instance: {objs[0].instance}")
-    new_objs = jax.tree_map(
-        lambda x, y: x.instance.replace_with_position(y.pos), *objs, *[new_objs_pos_rot]
-    )
+    
+    #print(f"tt: {type(objs)}")
+    #print(f"instance: {objs[0].instance}")
+    #new_objs = jax.tree_map(
+    #    lambda x, y: x.instance.replace_with_position(y.pos), *objs, *[new_objs_pos_rot]
+    #)
 
-    print(f"outs: {pos.shape} //  {rot.shape}")
-    print(f"type: {type(new_objs)}")
-
-    qqq
+    #print(f"outs: {pos.shape} //  {rot.shape}")
+    #print(f"type: {type(new_objs)}")
+    return new_objs_pos_rot
 
 
 def _with_state(objs: Iterable[Obj], x: brax.Transform) -> list[Instance]:
@@ -785,6 +785,10 @@ def render(
 def render_cached(objs, vmappable_objs, states, batched_camera, batched_target, hw):
     batched_instances = _get_instances_vmap(objs, vmappable_objs, states)
     print(f"done _get_instances()")
+    print(f"original batched_instances: {batched_instances}")
+    print(f"type: {type(batched_instances)}")
+    print(f"num objs: {len(batched_instances)}")
+    qqq
     print(f"hw: {hw}")
     images = _inner_render(batched_instances, batched_camera, batched_target, hw)
     print("done with _inner_render()")
