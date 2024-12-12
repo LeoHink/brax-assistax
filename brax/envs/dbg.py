@@ -104,15 +104,15 @@ print(f"{iterator} // {time_carry}")
 
 start = time.time()
 times = []
-for _ in range(1000):
+for _ in range(1000:):
     inner = time.time()
     _, key = jax.random.split(key)
     action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
     obs = _step_fn(keys, obs, action)
-    times.append(inner - time.time())
+    times.append(time.time() - inner)
 
 print(f"Took {time.time() - start} seconds")
-print(f"times: {times} // {sum(times[1:])}")
+print(f"times: {sum(times[1:])}")
 qqq
 print(f"clearing compile time...")
 for _ in range(3):
