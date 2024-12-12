@@ -93,7 +93,7 @@ def _step_env_loop(carry, unused):
     action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
     obs = _step_fn(keys, obs, action)
     time_carry += ((time.time() - begin) * iterator)
-    return (key, obs, min(iterator + 1, 1), time_carry), ()
+    return (key, obs, iterator + 1 - iterator, time_carry), ()
 
 start = time.time()
 print("Begin loop.")
