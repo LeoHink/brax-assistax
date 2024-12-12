@@ -772,7 +772,6 @@ def render(
 ) -> jnp.ndarray:
     batched_instances = _get_instances(objs, states)
     print(f"original batched_instances: {batched_instances}")
-    qqq
     print(f"done _get_instances()")
     print(f"hw: {hw}")
     images = _inner_render(batched_instances, batched_camera, batched_target, hw)
