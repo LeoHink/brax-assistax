@@ -92,7 +92,7 @@ def _step_env_loop(carry, unused):
     obs = _step_fn(keys, obs, action)
     return (key, obs), ()
 
-from time import time
+import time
 start = time.time()
 print("Begin loop.")
 _, _ = jax.lax.scan(_step_env_loop, (key, obs), (), length=100)
