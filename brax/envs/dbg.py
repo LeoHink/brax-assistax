@@ -85,9 +85,25 @@ keys = jax.random.split(key, obs.pixels.shape[0])
 action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
 _step_fn = jax.jit(env.step)
 
+def _step_env_loop(carry, unused):
+    key, obs = carry
+    _, key = jax.random.split(key)
+    action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
+    obs = _step_fn(keys, obs, action)
+    return (key, obs), ()
+
+from time import time
+start = time.time()
+_, _ = jax.lax.scan(_step_env_loop, (key, obs), (), length=100)
+print(f"Took {time.time() - start} seconds")
+qqq
+
 print(f"clearing compile time...")
 for _ in range(3):
     _step_fn(keys, obs, action)
+    action = jax.random.uniform(key, shape=(obs.pixels.shape[0], env.action_size))
+    obs = _step_fn(keys, obs, action)
+
 
 for _ in tqdm(range(100)):
     _, key = jax.random.split(key)
