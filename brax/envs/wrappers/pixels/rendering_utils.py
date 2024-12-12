@@ -98,7 +98,8 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
         print(f"bool: {obj.instance.double_sided}")
         print(obj.instance.double_sided.shape)
         print(len(obj.instance.double_sided.shape) > 0)
-        jax_objs.append(jax.tree_map(lambda x: jnp.array(x if len(x.shape) > 0 else jnp.array(x.reshape(1,))), obj))
+        obj.instance = obj.instance.replace(double_sided = jnp.array(obj.instance.double_sided).reshape(1,))
+        jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
         print(f"bool: {obj.instance.double_sided}")
         print(obj.instance.double_sided.shape)
         qqq
