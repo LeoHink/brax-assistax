@@ -94,6 +94,7 @@ def _step_env_loop(carry, unused):
 
 from time import time
 start = time.time()
+print("Begin loop.")
 _, _ = jax.lax.scan(_step_env_loop, (key, obs), (), length=100)
 print(f"Took {time.time() - start} seconds")
 qqq
