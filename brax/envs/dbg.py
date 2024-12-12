@@ -70,7 +70,7 @@ env = envs.create(
         "hw": 512,
         "frame_stack": 1,
         "return_float32": False,
-        "cache_objects": False,
+        "cache_objects": True,
         "n_envs": 3,
     },
 )
