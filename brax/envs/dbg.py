@@ -67,7 +67,7 @@ env = envs.create(
     "scratchitch",
     batch_size=3,
     pixel_obs={
-        "hw": 512,
+        "hw": 84,
         "frame_stack": 1,
         "return_float32": False,
         "cache_objects": True,
