@@ -97,8 +97,10 @@ def build_objects_for_cache(sys: brax.System, n_envs: int):
     for obj in objs:
         print(f"bool: {obj.instance.double_sided}")
         print(obj.instance.double_sided.shape)
-        qqq
         jax_objs.append(jax.tree_map(lambda x: jnp.array(x), obj))
+        print(f"bool: {obj.instance.double_sided}")
+        print(obj.instance.double_sided.shape)
+        qqq
         # try:
         #    print(
         #        f"{jax_objs[-1].instance.model.verts.shape} // {jax_objs[-1].instance.model.faces.shape}"
