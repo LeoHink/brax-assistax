@@ -157,7 +157,7 @@ def dumps(sys: System, states: List[State]) -> Text:
         link_idx = sys.geom_bodyid[id_] - 1
 
         rgba = sys.geom_rgba[id_]
-        if (rgba == [0.5, 0.5, 0.5, 1.0]).all():
+        if (rgba == jp.array([0.5, 0.5, 0.5, 1.0])).all(): # changed for rendering
             # convert the default mjcf color to brax default color
             rgba = np.array([0.4, 0.33, 0.26, 1.0])
 
