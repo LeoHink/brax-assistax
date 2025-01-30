@@ -261,7 +261,7 @@ class BedBathing(PipelineEnv):
         r_dist = jp.exp(-closest_distance**2/self._dist_scale)
 
         n_contacts = jp.count_nonzero(new_contact_vector==0)
-        n_old_contacts = jp.count_nonzero(contact_vector==0)
+        n_old_contacts = jp.count_nonzero(old_contact_vector==0)
         new_contacts = (n_contacts - n_old_contacts).astype(jp.float32)
 
         # TODO: Add human preference rewards
