@@ -53,14 +53,14 @@ os.environ["WANDB_DATA_DIR"] = "./wandb"
 # print(f"dir: {os.listdir('../../')}")
 
 """LOGGING"""
-with open("../../wandb.txt", "r") as f:
-    API_KEY = json.load(f)["api_key"]
-
-wandb.init(
-    project="testing-assistax",
-    entity="trevor-mcinroe",
-    name="pls",
-)
+#with open("../../wandb.txt", "r") as f:
+#    API_KEY = json.load(f)["api_key"]
+#
+#wandb.init(
+#    project="testing-assistax",
+#    entity="trevor-mcinroe",
+#    name="pls",
+#)
 
 
 env = envs.create(
