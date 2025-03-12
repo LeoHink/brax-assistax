@@ -328,7 +328,7 @@ class PixelWrapper(PipelineEnv):
         # print(f"delta: {(before - after).sum()}")
         # qqq
         if self.cache_objects:
-            print(f"dbg: {raw_state.pipeline_state.qp.shape}")
+            print(f"dbg: {raw_state.pipeline_state.qpos.shape}")
             frames = ru.render_pixels_with_cached_objs(
                 raw_state.pipeline_state,
                 self.cached_objects,
