@@ -65,7 +65,7 @@ os.environ["WANDB_DATA_DIR"] = "./wandb"
 
 env = envs.create(
     "scratchitch",
-    batch_size=3,
+    #batch_size=3,
     pixel_obs={
         "hw": 84,
         "frame_stack": 1,
