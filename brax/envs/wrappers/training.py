@@ -328,7 +328,6 @@ class PixelWrapper(PipelineEnv):
         # print(f"delta: {(before - after).sum()}")
         # qqq
         if self.cache_objects:
-            print(f"dbg: {raw_state.pipeline_state.qpos.shape}")
             if raw_state.pipeline_state.qpos.ndim > 1:
                 frames = ru.render_pixels_with_cached_objs(
                     raw_state.pipeline_state,
@@ -337,7 +336,6 @@ class PixelWrapper(PipelineEnv):
                     self.hw,
                 )
             else:
-                print("We are where we should be")
                 frames = ru.render_pixels_with_cached_objs(
                     jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
                     self.cached_objects,
@@ -369,12 +367,21 @@ class PixelWrapper(PipelineEnv):
         raw_state = self.env.step(rng, states, actions)
 
         if self.cache_objects:
-            frames = ru.render_pixels_with_cached_objs(
-                raw_state.pipeline_state,
-                self.cached_objects,
-                self.vmappable_objects,
-                self.hw,
-            )
+            if raw_state.pipeline_state.qpos.ndim > 1:
+                frames = ru.render_pixels_with_cached_objs(
+                    raw_state.pipeline_state,
+                    self.cached_objects,
+                    self.vmappable_objects,
+                    self.hw,
+                )
+            else:
+                frames = ru.render_pixels_with_cached_objs(
+                    jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
+                    self.cached_objects,
+                    self.vmappable_objects,
+                    self.hw,
+                )
+
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
 
