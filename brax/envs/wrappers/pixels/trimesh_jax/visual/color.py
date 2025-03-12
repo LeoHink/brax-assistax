@@ -37,9 +37,9 @@ from .base import Visuals
 
 @flax.struct.dataclass
 class DefaultsHolder:
-    material_diffuse: np.ndarray = np.array([102, 102, 102, 255], dtype=np.uint8)
-    material_ambient: np.ndarray = np.array([64, 64, 64, 255], dtype=np.uint8)
-    material_specular: np.ndarray = np.array([197, 197, 197, 255], dtype=np.uint8)
+    material_diffuse: np.ndarray = flax.struct.field(default_factory=lambda: np.array([102, 102, 102, 255], dtype=np.uint8))
+    material_ambient: np.ndarray = flax.struct.field(default_factory=lambda: np.array([64, 64, 64, 255]), dtype=np.uint8)
+    material_specular: np.ndarray = flax.struct.field(default_factory=lambda: np.array([197, 197, 197, 255]), dtype=np.uint8)
     material_shine: float = 77.0
 
 
