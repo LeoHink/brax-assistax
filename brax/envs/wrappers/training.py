@@ -339,7 +339,7 @@ class PixelWrapper(PipelineEnv):
             else:
                 print("We are where we should be")
                 frames = ru.render_pixels_with_cached_objs(
-                    jax.tree_map(lambda x: jnp.expand_dims(x, 0), raw_state.pipeline_state),
+                    jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
                     self.cached_objects,
                     self.vmappable_objects,
                     self.hw,
