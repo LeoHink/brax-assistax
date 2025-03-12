@@ -16,7 +16,7 @@
 """Environments for training and evaluating policies."""
 
 import functools
-from typing import Optional, Type, Any
+from typing import Dict, Optional, Type, Any
 
 from brax.envs import ant
 from brax.envs import fast
@@ -89,6 +89,7 @@ def create(
     auto_reset: bool = True,
     batch_size: Optional[int] = None,
     disability: Optional[dict[str, Any]] = None,
+    pixel_obs: Optional[Dict[str, Any]] = None,
     **kwargs,
 ) -> Env:
     """Creates an environment from the registry.
@@ -99,6 +100,8 @@ def create(
       action_repeat: how many repeated actions to take per environment step
       auto_reset: whether to auto reset the environment after an episode is done
       batch_size: the number of environments to batch together
+      disability:
+      pixel_obs:
       **kwargs: keyword argments that get passed to the Env class constructor
 
     Returns:
@@ -114,5 +117,7 @@ def create(
         env = training.AutoResetWrapper(env)
     if disability:
         env = training.DisabilityWrapper(env, disability)
+    if pixel_obs:
+        env = training.PixelWrapper(env, **pixel_obs)
 
     return env
