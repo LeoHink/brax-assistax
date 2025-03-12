@@ -357,7 +357,7 @@ class PixelWrapper(PipelineEnv):
             frames,
             raw_state.reward,
             raw_state.done,
-            jax.random.split(rng, raw_state.obs.shape[0]),
+            #jax.random.split(rng, raw_state.obs.shape[0]),
             raw_state.metrics,
             raw_state.info,
         )
@@ -397,7 +397,7 @@ class PixelWrapper(PipelineEnv):
             frames,
             raw_state.reward,
             raw_state.done,
-            rng,
+            #rng,
             raw_state.metrics,
             raw_state.info,
         )
