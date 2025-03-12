@@ -342,6 +342,7 @@ class PixelWrapper(PipelineEnv):
                     self.vmappable_objects,
                     self.hw,
                 )
+                frames = frames[0]
 
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
@@ -381,6 +382,7 @@ class PixelWrapper(PipelineEnv):
                     self.vmappable_objects,
                     self.hw,
                 )
+                frames = frames[0]
 
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
