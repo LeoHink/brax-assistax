@@ -329,12 +329,21 @@ class PixelWrapper(PipelineEnv):
         # qqq
         if self.cache_objects:
             print(f"dbg: {raw_state.pipeline_state.qpos.shape}")
-            frames = ru.render_pixels_with_cached_objs(
-                raw_state.pipeline_state,
-                self.cached_objects,
-                self.vmappable_objects,
-                self.hw,
-            )
+            if len(raw_state.pipeline_state.qpos) > 1:
+                frames = ru.render_pixels_with_cached_objs(
+                    raw_state.pipeline_state,
+                    self.cached_objects,
+                    self.vmappable_objects,
+                    self.hw,
+                )
+            else:
+                frames = ru.render_pixels_with_cached_objs(
+                    jax.tree_map(lambda x: x[None], raw_state.pipeline_state),
+                    self.cached_objects,
+                    self.vmappable_objects,
+                    self.hw,
+                )
+
         else:
             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
 
