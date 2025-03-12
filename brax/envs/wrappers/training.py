@@ -24,7 +24,7 @@ import jax
 from jax import numpy as jp
 
 from .pixels.rendering_utils import PixelState, build_objects_for_cache
-import wrappers.pixels.rendering_utils as ru
+import pixels.rendering_utils as ru
 
 
 def wrap(
