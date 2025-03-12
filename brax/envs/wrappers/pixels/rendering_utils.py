@@ -56,7 +56,7 @@ class PixelState(base.Base):
     pixels: jnp.ndarray
     reward: jnp.ndarray
     done: jnp.ndarray
-    key: Optional[jnp.ndarray]
+    #key: Optional[jnp.ndarray]
     metrics: Dict[str, jnp.ndarray] = flax.struct.field(default_factory=dict)
     info: Dict[str, jnp.ndarray] = flax.struct.field(default_factory=dict)
 
