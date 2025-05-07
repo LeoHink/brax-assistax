@@ -35,6 +35,7 @@ from brax.envs import panda
 from brax.envs import scratchitch
 from brax.envs import bedbathing
 from brax.envs import armmanipulation
+from brax.envs import pushcoop
 from brax.envs.base import Env, PipelineEnv, State, Wrapper
 from brax.envs.wrappers import training
 
@@ -56,6 +57,7 @@ _envs = {
     "scratchitch": scratchitch.ScratchItch,
     "bedbathing": bedbathing.BedBathing,
     "armmanipulation": armmanipulation.ArmManipulation,
+    "pushcoop": pushcoop.PushCoop,
 }
 
 
