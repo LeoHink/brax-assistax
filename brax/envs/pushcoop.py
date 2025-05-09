@@ -25,9 +25,9 @@ class PushCoop(PipelineEnv):
 
     def __init__(
         self,
-        ctrl_cost: float = 1e-6,
+        ctrl_cost_weight: float = 1e-6,
         dist_reward_weight: float = 0.1,
-        dist_scale: float = 0.1,
+        dist_scale: float = 0.05,
         t_dist_weight: float = 0.1,
         t_contact_weight: float = 0.1,
         backend="mjx",
@@ -100,26 +100,27 @@ class PushCoop(PipelineEnv):
 
         self.table_top_idx = mj_name2id(mjmodel, GEOM_IDX, "table_top")
 
-        self.panda1_sensor_idx = mj_name2id(mjmodel, GEOM_IDX, "panda1_touch")
-        self.panda2_sensor_idx = mj_name2id(mjmodel, GEOM_IDX, "panda2_touch")
+        # self.panda1_sensor_idx = mj_name2id(mjmodel, GEOM_IDX, "panda1_touch")
+        # self.panda2_sensor_idx = mj_name2id(mjmodel, GEOM_IDX, "panda2_touch")
 
         # contact ids for T shape with floor
-        self.contact_id_tmain = [0, 1, 2, 3]
-        self.contact_id_tcross = [4, 5, 6, 7]
+        self.contact_id_tmain = [280, 281, 282, 283]
+        self.contact_id_tcross = [284, 285, 286, 287]
+
+        self.panda1_contact_id_t = [794, 795, 792, 793]
+
+        self.panda2_contact_id_t = [796, 797, 798, 799]
 
         n_frames = 4
         kwargs["n_frames"] = kwargs.get("n_frames", n_frames)
 
         super().__init__(sys=self.sys, backend=backend, **kwargs)
-        self._ctrl_cost = ctrl_cost
+        self._ctrl_cost = ctrl_cost_weight
         self._dist_reward_weight = dist_reward_weight
         self._dist_scale = dist_scale
         self._t_dist_weight = t_dist_weight
         self._t_contact_weight = t_contact_weight
         self._reset_noise_scale = reset_noise_scale
-
-        # TODO: implement this function
-        self.target_pos = self._initialize_target_pos(self.table_top_idx)
 
     def reset(self, rng: jax.Array) -> State:
         """Resets the environment.
@@ -130,28 +131,31 @@ class PushCoop(PipelineEnv):
         Returns:
             State: The initial state of the environment.
         """
-        rng_pos, rng_vel = jax.random.split(rng, 2)
+        rng_pos, rng_vel, target_loc_rng = jax.random.split(rng, 3)
         low, hi = -self._reset_noise_scale, self._reset_noise_scale
         init_q = self.sys.mj_model.keyframe("init").qpos
         qpos = init_q + jax.random.uniform(
-        rng_pos, (self.sys.q_size(),), minval=low, maxval=hi
+            rng_pos, (self.sys.q_size(),), minval=low, maxval=hi
         )
         qvel = jax.random.uniform(rng_vel, (self.sys.qd_size(),), minval=low, maxval=hi)
 
         pipeline_state = self.pipeline_init(qpos, qvel)
+
+        # Set the target position
+
+        target_pos = self._initialize_target_pos(pipeline_state, target_loc_rng, self.table_top_idx)
         
         robo1_obs = self._get_robo1_obs(pipeline_state)
         robo2_obs = self._get_robo2_obs(pipeline_state)
-        breakpoint()
         obs = jp.concatenate((
             robo1_obs["pusher_pos"],
             robo1_obs["pusher_rot"],
-            robo1_obs["pusher_forces"][None], # expnd_dims
+            robo1_obs["pusher_forces"], # expnd_dims
             robo1_obs["t_location"],
             robo1_obs["robo1_joint_angles"],
             robo2_obs["pusher_pos"],
             robo2_obs["pusher_rot"],
-            robo2_obs["pusher_forces"][None],
+            robo2_obs["pusher_forces"],
             robo2_obs["t_location"],
             robo2_obs["robo2_joint_angles"]
         ))
@@ -170,6 +174,7 @@ class PushCoop(PipelineEnv):
             "t_dist": zero,
             "t_contact_id": zero,
             "t_contact_force": zero,
+            "target_pos": target_pos,
         }
 
         return State(pipeline_state, obs, reward, done, metrics, info)
@@ -186,24 +191,31 @@ class PushCoop(PipelineEnv):
         obs = jp.concatenate((
             robo1_obs["pusher_pos"],
             robo1_obs["pusher_rot"],
-            robo1_obs["pusher_forces"][None],
+            robo1_obs["pusher_forces"],
             robo1_obs["t_location"],
             robo1_obs["robo1_joint_angles"],
             robo2_obs["pusher_pos"],
             robo2_obs["pusher_rot"],
-            robo2_obs["pusher_forces"][None],
+            robo2_obs["pusher_forces"], # .reshape((1,))
             robo2_obs["t_location"],
             robo2_obs["robo2_joint_angles"]
         ))
-        dist_target = self._get_dist_target(pipeline_state)
         
+        dist_target = self._get_dist_target(pipeline_state, state.info)
         target_dist_reward = jp.exp(-dist_target**2 / self._dist_scale) 
         dist1, dist2 = self._ee_dist_to_t(pipeline_state)
         dist1_reward = jp.exp(-dist1**2 / self._dist_scale)
         dist2_reward = jp.exp(-dist2**2 / self._dist_scale)
-        done = self._get_t_floor_contact(pipeline_state) # add termination condition
 
-        reward = self._dist_reward_weight * target_dist_reward + self._t_dist_weight * (dist1_reward + dist2_reward) + ctrl_cost
+        t_at_target_reward = (dist_target < self._dist_scale) * 100
+
+        # TODO: contact between the two robots should be penalized
+
+        done = self._get_t_floor_contact(pipeline_state) # add termination condition
+        
+        failed_reward = done * -100
+
+        reward = self._dist_reward_weight * target_dist_reward + self._t_dist_weight * (dist1_reward + dist2_reward) + ctrl_cost + failed_reward + t_at_target_reward
 
         return state.replace(
             pipeline_state=pipeline_state,
@@ -217,7 +229,9 @@ class PushCoop(PipelineEnv):
         pusher_pos = pipeline_state.site_xpos[self.panda1_pusher_geom_idx]
         pusher_rot = pipeline_state.xquat[self.panda1_pusher_body_idx]
 
-        pusher_forces = pipeline_state.sensordata[self.panda1_sensor_idx]
+        # pusher_forces = pipeline_state.sensordata[self.panda1_sensor_idx]
+
+        pusher_forces = self._get_pusher_forces(self.panda1_contact_id_t, pipeline_state)
 
         t_location = pipeline_state.geom_xpos[self.t_shape_geom_idx]
 
@@ -236,7 +250,9 @@ class PushCoop(PipelineEnv):
         pusher_pos = pipeline_state.site_xpos[self.panda2_pusher_geom_idx]
         pusher_rot = pipeline_state.xquat[self.panda2_pusher_body_idx]
         
-        pusher_forces = pipeline_state.sensordata[self.panda2_sensor_idx]
+        # pusher_forces = pipeline_state.sensordata[self.panda1_sensor_idx]
+
+        pusher_forces = self._get_pusher_forces(self.panda2_contact_id_t, pipeline_state)
 
         t_location = pipeline_state.geom_xpos[self.t_shape_geom_idx]
 
@@ -250,21 +266,22 @@ class PushCoop(PipelineEnv):
             "robo2_joint_angles": robo2_joint_angles
         }
     
-    # TODO do set random target position as self
-    def _initialize_target_pos(self, table_top_idx: int) -> jax.Array:
-        """Initialize the target position."""
-        table_top_pos = self.sys.mj_model.geom_pos[table_top_idx]
-        table_top_size = self.sys.mj_model.geom_size[table_top_idx]
-        table_top_height = table_top_pos[2] + table_top_size[2]
+    # # TODO do set random target position as self
+    # def _initialize_target_pos(self, table_top_idx: int) -> jax.Array:
+    #     """Initialize the target position."""
+    #     table_top_pos = self.sys.mj_model.geom_pos[table_top_idx]
+    #     table_top_size = self.sys.mj_model.geom_size[table_top_idx]
+    #     table_top_height = table_top_pos[2] + table_top_size[2]
 
-        # Set the target position to be above the table
-        target_pos = jp.array([0.0, 0.0, table_top_height + 0.1])
-        return target_pos
+    #     # Set the target position to be above the table
+    #     target_pos = jp.array([0.0, 0.0, table_top_height + 0.1])
+    #     return target_pos
     
-    def _get_dist_target(self, pipeline_state: base.State) -> jax.Array:
+    def _get_dist_target(self, pipeline_state: base.State, info) -> jax.Array:
         """Get the distance to the target."""
         t_location = pipeline_state.geom_xpos[self.t_shape_geom_idx]
-        dist = jp.linalg.norm(t_location - self.target_pos)
+        target_pos = info["target_pos"]
+        dist = jp.linalg.norm(target_pos - t_location)
         return dist
     
     def _ee_dist_to_t(self, pipeline_state: base.State) -> jax.Array:
@@ -291,7 +308,80 @@ class PushCoop(PipelineEnv):
         
         contact_forces = jp.array(contact_forces)
 
-        return (jp.sum(contact_forces) != 0).astype(bool)   
+        return (jp.sum(contact_forces) != 0).astype(float) 
+
+    def _initialize_target_pos(self, pipeline_state, rng: jax.Array, table_top_idx: int) -> jax.Array:
+        """Initialize a random target position on the far side of the table.
+        
+        Args:
+            table_top_idx: Index of the table top geom
+            
+        Returns:
+            jax.Array: A 3D position for the target
+        """
+        # Get table properties
+        table_top_pos = pipeline_state.geom_xpos[table_top_idx]
+        table_top_size = self.sys.geom_size[table_top_idx]
+        table_rotation = pipeline_state.geom_xmat[table_top_idx]
+
+        table_height = table_top_pos[2] + table_top_size[2]  # Z coordinate of table surface
+        
+        # Calculate target area bounds (far side of the table, from obstacles)
+        # The target area is on the negative x-side of the table (far from T-object's starting position)
+        min_x = - 0.9 * table_top_size[0]  # Left 40% of the table
+        max_x = - 0.5 * table_top_size[0]  # Up to 20% from the left edge
+        
+        # Y bounds - keep away from edges
+        min_y = - 0.9 * table_top_size[1]  # Bottom 70% of table
+        max_y = 0.9 * table_top_size[1]  # Top 70% of table
+        
+        # Function to generate random position
+        
+        x_key, y_key = jax.random.split(rng, 2)
+        x = jax.random.uniform(x_key, (), minval=min_x, maxval=max_x)
+        y = jax.random.uniform(y_key, (), minval=min_y, maxval=max_y)
+        # Z is fixed at table height plus a small offset
+        z = 0.01  # Slightly above table surface
+        local_pos = jp.array([x, y, z])
+        global_pos = table_top_pos + table_rotation @ local_pos
+        
+        return global_pos  
+    
+    def _get_pusher_forces(self, contact_ids, pipeline_state: base.State) -> jax.Array:
+        """Get the combined forces on the pusher from all contacts with the T-shape.
+        
+        Args:
+            contact_ids: List of contact IDs between pusher and T-shape
+            pipeline_state: Current physics state
+            
+        Returns:
+            jax.Array: Combined force vector [normal, shear_x, shear_y]
+        """
+        # Initialize with zeros in case there are no contacts
+        if not contact_ids:
+            return jp.zeros(3)
+        
+        # Collect forces from all contacts
+        all_forces = []
+        for i in contact_ids:
+            # Get 6D force vector for this contact (3D force, 3D torque)
+            # Shape: [6] - [force_x, force_y, force_z, torque_x, torque_y, torque_z]
+            force = contact_force(self.sys, pipeline_state, i, False)
+            all_forces.append(force)
+        
+        # Stack all force vectors
+        # Shape: [num_contacts, 6]
+        all_forces = jp.array(all_forces)
+        
+        # Sum along axis 0 (across all contacts) to get combined 6D force vector
+        # Shape: [6]
+        combined_forces = jp.sum(all_forces, axis=0)
+        
+        # Extract only the force components (first 3 values)
+        # Shape: [3] - [force_x, force_y, force_z]
+        force_components = combined_forces[:3]
+        
+        return force_components
     
     # TODO: implement termination condition 
     

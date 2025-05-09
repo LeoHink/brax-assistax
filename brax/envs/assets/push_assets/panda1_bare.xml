@@ -109,7 +109,7 @@
                       <geom mesh="finger_1" name = "panda1_finger_1_right" material="black" class="visual"/>
                       <geom name="panda1_right_finger_collision" class="c_robot_hand" type="box" mesh="finger_0" />
                     </body>
-                    <body name="panda1_pusher" childclass="c_robot_tool" pos="0 0 0.1" quat="0 0 0 1">
+                    <body name="panda1_pusher" childclass="panda1_c_robot_tool" pos="0 0 0.1" quat="0 0 0 1">
                       <geom name="panda1_pusher_base" type="box" pos="0 0 0" size="0.03 0.03 0.03"/> 
                       <geom name="panda1_pusher_stick" type="capsule" pos="0 0 0.025" size="0.01 0.05"/> 
                       <site name="panda1_pusher_point" type="sphere" pos="0 0 0.075" size="0.010" rgba="0 1 1 1"/> 

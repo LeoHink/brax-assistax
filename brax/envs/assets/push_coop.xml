@@ -1,6 +1,6 @@
 <mujoco model="cooperative_push">
     <!-- Compiler settings -->
-    <compiler angle="radian" meshdir="push_assets"/>
+    <compiler angle="radian" meshdir="push_assets" autolimits="true"/>
 
     
     <!-- Asset definitions -->
@@ -148,6 +148,9 @@
         <default class="object">
             <geom contype="1" conaffinity="1" condim="4" friction="0.4 0.1 0.1" solimp="0.99 0.99 0.01" solref="0.01 1"/>
         </default>
+        <default class="table">
+            <geom contype="2" conaffinity="3" friction="0.5 0.005 0.0001" condim="3"/>
+        </default>
     </default>
     
 
@@ -175,22 +178,22 @@
         <geom name="floor" type="plane" pos="0 0 0" size="5 5 .1" material="groundplane" conaffinity="1"/>
         <!-- Table -->
         <body name="table" pos="0 0 0.2">
-            <geom name="table_top" type="box" size="0.65 0.4 0.02" pos="0 0 0" material="table"/>
-            <geom name="table_leg1" type="cylinder" size="0.025 0.2" pos="0.6 0.35 -0.1" material="table"/>
-            <geom name="table_leg2" type="cylinder" size="0.025 0.2" pos="0.6 -0.35 -0.1" material="table"/>
-            <geom name="table_leg3" type="cylinder" size="0.025 0.2" pos="-0.6 0.35 -0.1" material="table"/>
-            <geom name="table_leg4" type="cylinder" size="0.025 0.2" pos="-0.6 -0.35 -0.1" material="table"/>
+            <geom name="table_top" type="box" size="0.55 0.4 0.02" pos="0 0 0" material="table" class="table"/>
+            <geom name="table_leg1" type="box" size="0.025 0.025 0.2" pos="0.5 0.35 -0.1" material="table" class="table"/>
+            <geom name="table_leg2" type="box" size="0.025 0.025 0.2" pos="0.5 -0.35 -0.1" material="table" class="table"/>
+            <geom name="table_leg3" type="box" size="0.025 0.025 0.2" pos="-0.5 0.35 -0.1" material="table" class="table"/>
+            <geom name="table_leg4" type="box" size="0.025 0.025 0.2" pos="-0.5 -0.35 -0.1" material="table" class="table"/>
         </body>
         
         <!-- T-shaped object to push (positioned on the right side of table) -->
-        <body name="t_object" pos="0.5 0 0.225">
+        <body name="t_object" pos="0.45 0 0.225">
             <joint type="free"/>
             <geom name="t_main" type="box" size="0.03 0.1 0.02" pos="0 0 0" material="t_object" class="object"/>
             <geom name="t_cross" type="box" size="0.08 0.03 0.02" pos="0 0.07 0" material="t_object" class="object"/>
         </body>
         
         <!-- Target area (on the left side of table) -->
-        <site name="target_area" pos="-0.5 0 0.225" size="0.12 0.12 0.001" rgba="0 1 0 0.3" type="box"/>
+        <!-- <site name="target_area" pos="-0.5 0 0.225" size="0.12 0.12 0.001" rgba="0 1 0 0.3" type="box"/> -->
         
         <!-- Obstacles in the middle of the table -->
         <body name="obstacles" pos="0 0 0.225">
@@ -204,46 +207,49 @@
         </body>
 
         <!-- First Panda Robot (positioned at -0.6, 0, 0) -->
-        <body name="panda1_base" pos="-0.8 0 0">
+        <body name="panda1_base" pos="-0.7 0 0">
             <include file="push_assets/panda1_bare.xml"/>
         </body>
         
         <!-- Second Panda Robot (positioned at 0.6, 0, 0) -->
-        <body name="panda2_base" pos="0.8 0 0" quat="0 0 0 1">
+        <body name="panda2_base" pos="0.7 0 0" quat="0 0 0 1">
             <include file="push_assets/panda2_bare.xml"/>
         </body>
     </worldbody>
     
     <!-- Actuator definitions -->
+    
+    
     <actuator>
         <!-- Actuators for Panda 1 -->
-        <motor name="panda1_actuator_joint1" joint="panda1_joint1" ctrlrange="-87 87"/>
-        <motor name="panda1_actuator_joint2" joint="panda1_joint2" ctrlrange="-87 87"/>
-        <motor name="panda1_actuator_joint3" joint="panda1_joint3" ctrlrange="-87 87"/>
-        <motor name="panda1_actuator_joint4" joint="panda1_joint4" ctrlrange="-87 87"/>
-        <motor name="panda1_actuator_joint5" joint="panda1_joint5" ctrlrange="-12 12"/>
-        <motor name="panda1_actuator_joint6" joint="panda1_joint6" ctrlrange="-12 12"/>
-        <motor name="panda1_actuator_joint7" joint="panda1_joint7" ctrlrange="-12 12"/>
+        <general class="panda1" name="panda1_actuator1" joint="panda1_joint1" gainprm="4500" biasprm="0 -1433 -450" ctrlrange="-0.9222 0.9222"/>
+        <general class="panda1" name="panda1_actuator2" joint="panda1_joint2" gainprm="4500" biasprm="0 -1433 -450" ctrlrange="-0.5611 0.5611"/>
+        <general class="panda1" name="panda1_actuator3" joint="panda1_joint3" gainprm="3500" biasprm="0 -1115 -350" ctrlrange="-0.9222 0.9222"/>
+        <general class="panda1" name="panda1_actuator4" joint="panda1_joint4" gainprm="3500" biasprm="0 -1115 -350" ctrlrange="-0.9778 -0.0222"/>
+        <general class="panda1" name="panda1_actuator5" joint="panda1_joint5" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.9222 0.9222" forcerange="-12 12"/>
+        <general class="panda1" name="panda1_actuator6" joint="panda1_joint6" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.0056 1.1945" forcerange="-12 12"/>
+        <general class="panda1" name="panda1_actuator7" joint="panda1_joint7" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.9222 0.9222" forcerange="-12 12"/>
         
         <!-- Actuators for Panda 2 -->
-        <motor name="panda2_actuator_joint1" joint="panda2_joint1" ctrlrange="-87 87"/>
-        <motor name="panda2_actuator_joint2" joint="panda2_joint2" ctrlrange="-87 87"/>
-        <motor name="panda2_actuator_joint3" joint="panda2_joint3" ctrlrange="-87 87"/>
-        <motor name="panda2_actuator_joint4" joint="panda2_joint4" ctrlrange="-87 87"/>
-        <motor name="panda2_actuator_joint5" joint="panda2_joint5" ctrlrange="-12 12"/>
-        <motor name="panda2_actuator_joint6" joint="panda2_joint6" ctrlrange="-12 12"/>
-        <motor name="panda2_actuator_joint7" joint="panda2_joint7" ctrlrange="-12 12"/>
+        <general class="panda2" name="panda2_actuator1" joint="panda2_joint1" gainprm="4500" biasprm="0 -1433 -450" ctrlrange="-0.9222 0.9222"/>
+        <general class="panda2" name="panda2_actuator2" joint="panda2_joint2" gainprm="4500" biasprm="0 -1433 -450" ctrlrange="-0.5611 0.5611"/>
+        <general class="panda2" name="panda2_actuator3" joint="panda2_joint3" gainprm="3500" biasprm="0 -1115 -350" ctrlrange="-0.9222 0.9222"/>
+        <general class="panda2" name="panda2_actuator4" joint="panda2_joint4" gainprm="3500" biasprm="0 -1115 -350" ctrlrange="-0.9778 -0.0222"/>
+        <general class="panda2" name="panda2_actuator5" joint="panda2_joint5" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.9222 0.9222" forcerange="-12 12"/>
+        <general class="panda2" name="panda2_actuator6" joint="panda2_joint6" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.0056 1.1945" forcerange="-12 12"/>
+        <general class="panda2" name="panda2_actuator7" joint="panda2_joint7" gainprm="2000" biasprm="0 -637 -200" ctrlrange="-0.9222 0.9222" forcerange="-12 12"/>
     </actuator>
     
     <!-- Sensor definitions -->
-    <sensor>
+    <!-- <sensor>
         <touch name="panda1_touch" site="panda1_pusher_point"/>
         <touch name="panda2_touch" site="panda2_pusher_point"/>
-    </sensor>
+    </sensor> -->
     <!-- Additional elements like sensors, contacts, etc. can be added here -->
     
     <keyframe>
-        <key name="init" qpos='0.5 0 0.225 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'/>
+        <key name="init" qpos='0.45 -3.23091e-08 0.239997 1 9.70312e-07 -1.42542e-16 2.30564e-17 -0.0467299 0.00403968 -0.0827432 -0.0695283 -0.0211034 -0.00720786 -0.00528961 -0.0467291 0.0040386 -0.0827428 -0.0695284 -0.0211197 -0.00719077 -0.00529029'/>
     </keyframe>
 
 </mujoco>
+
