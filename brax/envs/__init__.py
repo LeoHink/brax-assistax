@@ -92,6 +92,7 @@ def create(
     batch_size: Optional[int] = None,
     disability: Optional[dict[str, Any]] = None,
     pixel_obs: Optional[Dict[str, Any]] = None,
+    het_reward: Optional[bool] = False,
     **kwargs,
 ) -> Env:
     """Creates an environment from the registry.

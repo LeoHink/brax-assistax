@@ -186,10 +186,17 @@
         </body>
         
         <!-- T-shaped object to push (positioned on the right side of table) -->
-        <body name="t_object" pos="0.45 0 0.225">
+        <!-- <body name="t_object" pos="0.45 0 0.225">
             <joint type="free"/>
             <geom name="t_main" type="box" size="0.03 0.1 0.02" pos="0 0 0" material="t_object" class="object"/>
             <geom name="t_cross" type="box" size="0.08 0.03 0.02" pos="0 0.07 0" material="t_object" class="object"/>
+        </body> -->
+        <!-- T-shaped object to push (positioned on the right side of table) -->
+        <body name="t_object" pos="0.45 0 0.225">
+            <freejoint name="t_object_joint"/>
+            <geom name="t_main" type="box" size="0.03 0.1 0.02" pos="0 0 0" material="t_object" class="object" mass="0.2" friction="1.0 0.005 0.0001"/>
+            <geom name="t_cross" type="box" size="0.08 0.03 0.02" pos="0 0.07 0" material="t_object" class="object" mass="0.4" friction="1.0 0.005 0.0001"/>
+            <site name="t_object_site" pos="0 0 0" size="0.01"/>
         </body>
         
         <!-- Target area (on the left side of table) -->
@@ -207,12 +214,12 @@
         </body>
 
         <!-- First Panda Robot (positioned at -0.6, 0, 0) -->
-        <body name="panda1_base" pos="-0.7 0 0">
+        <body name="panda1_base" pos="-0.75 0 0">
             <include file="push_assets/panda1_bare.xml"/>
         </body>
         
         <!-- Second Panda Robot (positioned at 0.6, 0, 0) -->
-        <body name="panda2_base" pos="0.7 0 0" quat="0 0 0 1">
+        <body name="panda2_base" pos="0.75 0 0" quat="0 0 0 1">
             <include file="push_assets/panda2_bare.xml"/>
         </body>
     </worldbody>
@@ -247,8 +254,11 @@
     </sensor> -->
     <!-- Additional elements like sensors, contacts, etc. can be added here -->
     
-    <keyframe>
+    <!-- <keyframe>
         <key name="init" qpos='0.45 -3.23091e-08 0.239997 1 9.70312e-07 -1.42542e-16 2.30564e-17 -0.0467299 0.00403968 -0.0827432 -0.0695283 -0.0211034 -0.00720786 -0.00528961 -0.0467291 0.0040386 -0.0827428 -0.0695284 -0.0211197 -0.00719077 -0.00529029'/>
+    </keyframe> -->
+    <keyframe>
+        <key name="init" qpos='0.45 0 0.225 1 0 0 0 0 0 0 0 0 0 0 0 -0.91676 0 -2.65169 0 1.28298 0'/>
     </keyframe>
 
 </mujoco>

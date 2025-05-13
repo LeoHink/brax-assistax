@@ -26,10 +26,11 @@ class PushCoop(PipelineEnv):
     def __init__(
         self,
         ctrl_cost_weight: float = 1e-6,
-        dist_reward_weight: float = 0.1,
-        dist_scale: float = 0.05,
-        t_dist_weight: float = 0.1,
-        t_contact_weight: float = 0.1,
+        dist_reward_weight: float = 1.0,
+        ee_dist_scale: float = 0.1,
+        t_dist_scale: float = 0.3,
+        t_dist_weight: float = 1.0,
+        t_contact_weight: float = 1.0,
         backend="mjx",
         reset_noise_scale=5e-3,
         **kwargs
@@ -65,10 +66,10 @@ class PushCoop(PipelineEnv):
         self.panda1_actuator_ids = []
         self.panda2_actuator_ids = []   
 
-        self.panda1_joint_id_start = 1
-        self.panda2_joint_id_start = 8
-        self.panda1_joint_id_end = 8   
-        self.panda2_joint_id_end = 15
+        self.panda1_joint_id_start = 7
+        self.panda2_joint_id_start = 14
+        self.panda1_joint_id_end = 14   
+        self.panda2_joint_id_end = 21
 
         for i in range(mjmodel.nu):
             actuator_name = mj_id2name(mjmodel, ACTUATOR_IDX, i)
@@ -117,7 +118,8 @@ class PushCoop(PipelineEnv):
         super().__init__(sys=self.sys, backend=backend, **kwargs)
         self._ctrl_cost = ctrl_cost_weight
         self._dist_reward_weight = dist_reward_weight
-        self._dist_scale = dist_scale
+        self._ee_dist_scale = ee_dist_scale
+        self._t_dist_scale = t_dist_scale
         self._t_dist_weight = t_dist_weight
         self._t_contact_weight = t_contact_weight
         self._reset_noise_scale = reset_noise_scale
@@ -153,20 +155,45 @@ class PushCoop(PipelineEnv):
             robo1_obs["pusher_forces"], # expnd_dims
             robo1_obs["t_location"],
             robo1_obs["robo1_joint_angles"],
+            robo1_obs["robot1_ee_dist"].reshape((1,)),
             robo2_obs["pusher_pos"],
             robo2_obs["pusher_rot"],
             robo2_obs["pusher_forces"],
             robo2_obs["t_location"],
-            robo2_obs["robo2_joint_angles"]
+            robo2_obs["robo2_joint_angles"],
+            robo2_obs["robot2_ee_dist"].reshape((1,)),
         ))
 
-        reward, done, zero = jp.zeros(3)
+        reward = jp.zeros(2) # for heterogenous rewards
+        done, zero = jp.zeros(2)
 
         metrics = {
-            "reward_dist": zero,
-            "reward_ctrl": zero,
+            "robo1_reward_dist": zero,
+            "robo2_reward_dist": zero,
+            "robo1_reward_ctrl": zero,
+            "robo2_reward_ctrl": zero,
+            "robo1_reward_t_contact": zero,
+            "robo2_reward_t_contact": zero,
             "reward_t_dist": zero,
         }
+
+        # info = {
+        #     "robo1_dist_to_target": zero,
+        #     "robo2_dist_to_target": zero,
+        #     "robo1_t_contact": zero,
+        #     "robo2_t_contact": zero,
+        #     "t_dist": zero,
+        #     "t_contact_id": zero,
+        #     "t_contact_force": zero,
+        #     "robo1_reward_dist": zero,
+        #     "robo2_reward_dist": zero,
+        #     "robo1_reward_ctrl": zero,
+        #     "robo2_reward_ctrl": zero,
+        #     "robo1_reward_t_contact": zero,
+        #     "robo2_reward_t_contact": zero,
+        #     "reward_t_dist": zero,
+        #     "target_pos": target_pos,
+        # }
 
         info = {
             "dist_to_target": zero,
@@ -194,29 +221,53 @@ class PushCoop(PipelineEnv):
             robo1_obs["pusher_forces"],
             robo1_obs["t_location"],
             robo1_obs["robo1_joint_angles"],
+            robo1_obs["robot1_ee_dist"].reshape((1,)),
             robo2_obs["pusher_pos"],
             robo2_obs["pusher_rot"],
             robo2_obs["pusher_forces"], # .reshape((1,))
             robo2_obs["t_location"],
-            robo2_obs["robo2_joint_angles"]
+            robo2_obs["robo2_joint_angles"],
+            robo2_obs["robot2_ee_dist"].reshape((1,)),
         ))
         
-        dist_target = self._get_dist_target(pipeline_state, state.info)
-        target_dist_reward = jp.exp(-dist_target**2 / self._dist_scale) 
-        dist1, dist2 = self._ee_dist_to_t(pipeline_state)
-        dist1_reward = jp.exp(-dist1**2 / self._dist_scale)
-        dist2_reward = jp.exp(-dist2**2 / self._dist_scale)
+        dist_target = - self._get_dist_target(pipeline_state, state.info)
+        target_dist_reward = jp.exp(-dist_target**2 / self._t_dist_scale) 
+        # dist1, dist2 = self._ee_dist_to_t(pipeline_state)
+        dist1 = - robo1_obs["robot1_ee_dist"]
+        dist2 = - robo2_obs["robot2_ee_dist"]
+        dist1_reward = jp.exp(-dist1**2 / self._ee_dist_scale)
+        dist2_reward = jp.exp(-dist2**2 / self._ee_dist_scale)
 
-        t_at_target_reward = (dist_target < self._dist_scale) * 100
+        robo1_contact = jp.sum(robo1_obs["pusher_forces"]) > 0
+        robo2_contact = jp.sum(robo2_obs["pusher_forces"]) > 0
+
+        # print(f"dist1: {dist1}, dist2: {dist2}, dist_target: {dist_target} \n target_dist_reward: {target_dist_reward}, dist1_reward: {dist1_reward}, dist2_reward: {dist2_reward}")
+
+        # jax.debug.breakpoint()
+        t_at_target_reward = (self._get_dist_target(pipeline_state, state.info) < 0.05) * 100
+
+        # print(f"t_at_target_reward: {t_at_target_reward}")
 
         # TODO: contact between the two robots should be penalized
 
         done = self._get_t_floor_contact(pipeline_state) # add termination condition
         
-        failed_reward = done * -100
+        failed_reward = done * -1
 
-        reward = self._dist_reward_weight * target_dist_reward + self._t_dist_weight * (dist1_reward + dist2_reward) + ctrl_cost + failed_reward + t_at_target_reward
-
+        reward_robo1 = self._dist_reward_weight * target_dist_reward + self._t_dist_weight * dist1_reward + 1.0 * robo1_contact + self._ctrl_cost * ctrl_cost + failed_reward + t_at_target_reward
+        reward_robo2 = self._dist_reward_weight * target_dist_reward + self._t_dist_weight * dist2_reward + 1.0 * robo2_contact + self._ctrl_cost * ctrl_cost + failed_reward + t_at_target_reward
+        reward = jp.array([reward_robo1, reward_robo2])
+        
+        # metrics = {
+        #     "robo1_reward_dist": dist1_reward,
+        #     "robo2_reward_dist": dist2_reward,
+        #     "robo1_reward_ctrl": ctrl_cost,
+        #     "robo2_reward_ctrl": ctrl_cost,
+        #     "robo1_reward_t_contact": robo1_contact,
+        #     "robo2_reward_t_contact": robo2_contact,
+        #     "reward_t_dist": target_dist_reward,
+        # }
+        
         return state.replace(
             pipeline_state=pipeline_state,
             obs=obs,
@@ -226,7 +277,7 @@ class PushCoop(PipelineEnv):
 
     def _get_robo1_obs(self, pipeline_state: base.State) -> jax.Array:
         """Get the observation for robot 1."""
-        pusher_pos = pipeline_state.site_xpos[self.panda1_pusher_geom_idx]
+        pusher_pos = pipeline_state.site_xpos[self.panda1_pusher_point_idx]
         pusher_rot = pipeline_state.xquat[self.panda1_pusher_body_idx]
 
         # pusher_forces = pipeline_state.sensordata[self.panda1_sensor_idx]
@@ -237,17 +288,20 @@ class PushCoop(PipelineEnv):
 
         robo1_joint_angles = pipeline_state.qpos[self.panda1_joint_id_start:self.panda1_joint_id_end]
 
+        ee_dist = jp.linalg.norm(pusher_pos - t_location)
+
         return {
             "pusher_pos": pusher_pos,
             "pusher_rot": pusher_rot,
             "pusher_forces": pusher_forces,
             "t_location": t_location,
-            "robo1_joint_angles": robo1_joint_angles
+            "robo1_joint_angles": robo1_joint_angles,
+            "robot1_ee_dist": ee_dist
         }
     
     def _get_robo2_obs(self, pipeline_state: base.State) -> jax.Array:
         """Get the observation for robot 2."""
-        pusher_pos = pipeline_state.site_xpos[self.panda2_pusher_geom_idx]
+        pusher_pos = pipeline_state.site_xpos[self.panda2_pusher_point_idx]
         pusher_rot = pipeline_state.xquat[self.panda2_pusher_body_idx]
         
         # pusher_forces = pipeline_state.sensordata[self.panda1_sensor_idx]
@@ -258,12 +312,15 @@ class PushCoop(PipelineEnv):
 
         robo2_joint_angles = pipeline_state.qpos[self.panda2_joint_id_start:self.panda2_joint_id_end]
 
+        ee_dist = jp.linalg.norm(pusher_pos - t_location)
+        
         return {
             "pusher_pos": pusher_pos,
             "pusher_rot": pusher_rot,
             "pusher_forces": pusher_forces,
             "t_location": t_location,
-            "robo2_joint_angles": robo2_joint_angles
+            "robo2_joint_angles": robo2_joint_angles,
+            "robot2_ee_dist": ee_dist
         }
     
     # # TODO do set random target position as self
@@ -284,14 +341,14 @@ class PushCoop(PipelineEnv):
         dist = jp.linalg.norm(target_pos - t_location)
         return dist
     
-    def _ee_dist_to_t(self, pipeline_state: base.State) -> jax.Array:
-        """Get the distance from the end effector to the target."""
-        t_location = pipeline_state.geom_xpos[self.t_shape_geom_idx]
-        panda1_pusher_pos = pipeline_state.site_xpos[self.panda1_pusher_geom_idx]
-        panda2_pusher_pos = pipeline_state.site_xpos[self.panda2_pusher_geom_idx]
-        dist1 = jp.linalg.norm(t_location - panda1_pusher_pos)
-        dist2 = jp.linalg.norm(t_location - panda1_pusher_pos)
-        return dist1, dist2
+    # def _ee_dist_to_t(self, pipeline_state: base.State) -> jax.Array:
+    #     """Get the distance from the end effector to the target."""
+    #     t_location = pipeline_state.geom_xpos[self.t_shape_geom_idx]
+    #     panda1_pusher_pos = pipeline_state.site_xpos[self.panda1_pusher_point_idx]
+    #     panda2_pusher_pos = pipeline_state.site_xpos[self.panda2_pusher_point_idx]
+    #     dist1 = jp.linalg.norm(t_location - panda1_pusher_pos)
+    #     dist2 = jp.linalg.norm(t_location - panda2_pusher_pos)
+    #     return dist1, dist2
     
     
     def _get_t_floor_contact(self, pipeline_state: base.State) -> jax.Array:
@@ -324,7 +381,7 @@ class PushCoop(PipelineEnv):
         table_top_size = self.sys.geom_size[table_top_idx]
         table_rotation = pipeline_state.geom_xmat[table_top_idx]
 
-        table_height = table_top_pos[2] + table_top_size[2]  # Z coordinate of table surface
+        # table_height = table_top_pos[2] + table_top_size[2]  # Z coordinate of table surface
         
         # Calculate target area bounds (far side of the table, from obstacles)
         # The target area is on the negative x-side of the table (far from T-object's starting position)
