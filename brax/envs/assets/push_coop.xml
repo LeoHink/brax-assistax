@@ -207,10 +207,10 @@
             <!-- Fixed obstacles creating multiple paths -->
             <geom name="obs1" type="box" size="0.05 0.03 0.03" pos="0 0.17 0" material="obstacle" class="object"/>
             <geom name="obs2" type="box" size="0.05 0.03 0.03" pos="0 -0.19 0" material="obstacle" class="object"/>
-            <geom name="obs3" type="box" size="0.05 0.05 0.03" pos="0.22 0.04 0" material="obstacle" class="object"/>
+            <!-- <geom name="obs3" type="box" size="0.05 0.05 0.03" pos="0.22 0.04 0" material="obstacle" class="object"/> -->
             <geom name="obs4" type="box" size="0.05 0.05 0.03" pos="-0.17 -0.19 0" material="obstacle" class="object"/>
             <geom name="obs5" type="box" size="0.04 0.03 0.03" pos="0.12 0.17 0" material="obstacle" class="object"/>
-            <geom name="obs6" type="box" size="0.04 0.03 0.03" pos="-0.22 -0.08 0" material="obstacle" class="object"/>
+            <!-- <geom name="obs6" type="box" size="0.04 0.03 0.03" pos="-0.22 -0.08 0" material="obstacle" class="object"/> -->
         </body>
 
         <!-- First Panda Robot (positioned at -0.6, 0, 0) -->
