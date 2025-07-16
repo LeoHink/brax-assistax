@@ -32,7 +32,8 @@ from brax.envs import swimmer
 from brax.envs import walker2d
 from brax.envs import lite_up
 from brax.envs import panda
-from brax.envs import scratchitch
+from assistax.envs import scratchitch
+# from brax.envs import scratchitch
 from brax.envs import bedbathing
 from brax.envs import armmanipulation
 from brax.envs import pushcoop
@@ -91,7 +92,7 @@ def create(
     auto_reset: bool = True,
     batch_size: Optional[int] = None,
     disability: Optional[dict[str, Any]] = None,
-    pixel_obs: Optional[Dict[str, Any]] = None,
+    # pixel_obs: Optional[Dict[str, Any]] = None,
     het_reward: Optional[bool] = False,
     **kwargs,
 ) -> Env:
@@ -120,7 +121,7 @@ def create(
         env = training.AutoResetWrapper(env)
     if disability:
         env = training.DisabilityWrapper(env, disability)
-    if pixel_obs:
-        env = training.PixelWrapper(env, **pixel_obs)
+    # if pixel_obs:
+    #     env = training.PixelWrapper(env, **pixel_obs)
 
     return env
