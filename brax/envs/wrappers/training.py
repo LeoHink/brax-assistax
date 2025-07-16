@@ -23,8 +23,8 @@ from flax import struct
 import jax
 from jax import numpy as jp
 
-from .pixels.rendering_utils import PixelState, build_objects_for_cache
-from .pixels import rendering_utils as ru
+# from .pixels.rendering_utils import PixelState, build_objects_for_cache
+# from .pixels import rendering_utils as ru
 
 def wrap(
     env: Env,
@@ -265,139 +265,139 @@ class DisabilityWrapper(Wrapper):
         return tremor_action
 
 
-class PixelWrapper(PipelineEnv):
-    def __init__(
-        self,
-        env: Env,
-        hw: int,
-        frame_stack: int,
-        return_float32: bool,
-        cache_objects: bool,
-        n_envs: int,
-    ):
-        super().__init__(sys=env.sys, backend=env.backend)
-        self.env = env
-        self.seed = None  # TODO: does the env hold a seed?
-        self.hw = hw
-        self.frame_stack = frame_stack
-        self.return_float32 = return_float32
-        self.cache_objects = cache_objects
+# class PixelWrapper(PipelineEnv):
+#     def __init__(
+#         self,
+#         env: Env,
+#         hw: int,
+#         frame_stack: int,
+#         return_float32: bool,
+#         cache_objects: bool,
+#         n_envs: int,
+#     ):
+#         super().__init__(sys=env.sys, backend=env.backend)
+#         self.env = env
+#         self.seed = None  # TODO: does the env hold a seed?
+#         self.hw = hw
+#         self.frame_stack = frame_stack
+#         self.return_float32 = return_float32
+#         self.cache_objects = cache_objects
 
-        if cache_objects:
-            self.cached_objects, self.vmappable_objects = build_objects_for_cache(
-                self.env.sys, n_envs
-            )
-        else:
-            self.cached_objects, self.vmappable_objects = None, None
+#         if cache_objects:
+#             self.cached_objects, self.vmappable_objects = build_objects_for_cache(
+#                 self.env.sys, n_envs
+#             )
+#         else:
+#             self.cached_objects, self.vmappable_objects = None, None
 
-        # print(f"cache:  {self.cached_objects}")
-        # print(
-        #    f"test: {self.cached_objects[0].instance.model.specular_map.shape} // {type(self.cached_objects[0].instance.model.specular_map)}"
-        # )
+#         # print(f"cache:  {self.cached_objects}")
+#         # print(
+#         #    f"test: {self.cached_objects[0].instance.model.specular_map.shape} // {type(self.cached_objects[0].instance.model.specular_map)}"
+#         # )
 
-        # print(
-        #    f"test 2: {self.cached_objects[0].rot}  // {type(self.cached_objects[0].rot)}"
-        # )
-        # qqq
-        # The VmapWrapper is already handling this. Will likely need to remove
-        # self._reset_fn = jax.vmap(env.reset)
-        # self._step_fn = jax.vmap(env.step)
+#         # print(
+#         #    f"test 2: {self.cached_objects[0].rot}  // {type(self.cached_objects[0].rot)}"
+#         # )
+#         # qqq
+#         # The VmapWrapper is already handling this. Will likely need to remove
+#         # self._reset_fn = jax.vmap(env.reset)
+#         # self._step_fn = jax.vmap(env.step)
 
-        # TODO: implement mesh caching. I'm pretty sure we can literally just compute
-        # the mesh attributes a single time and cache them. We don't even need a pipeline_state
-        # from the environment to do this. This is the most expensive part. Then we can
-        # just pass the cached mesh to the rendering function!!!
+#         # TODO: implement mesh caching. I'm pretty sure we can literally just compute
+#         # the mesh attributes a single time and cache them. We don't even need a pipeline_state
+#         # from the environment to do this. This is the most expensive part. Then we can
+#         # just pass the cached mesh to the rendering function!!!
 
-    @property
-    def action_size(self) -> int:
-        return self.env.action_size
+#     @property
+#     def action_size(self) -> int:
+#         return self.env.action_size
 
-    @property
-    def observation_size(self) -> Tuple[int]:
-        return (self.hw, self.hw, 3 * self.frame_stack)
+#     @property
+#     def observation_size(self) -> Tuple[int]:
+#         return (self.hw, self.hw, 3 * self.frame_stack)
 
-    def reset(self, rng: jp.ndarray) -> PixelState:
-        raw_state = self.env.reset(rng)
-        # before = self.env.sys.mj_model.geom_pos
-        # self.env.step(
-        #    jax.random.split(rng, raw_state.obs.shape[0]),
-        #    raw_state,
-        #    jax.random.uniform(rng, (raw_state.obs.shape[0], self.env.action_size)),
-        # )
-        # after = self.env.sys.mj_model.geom_pos
-        # print(f"delta: {(before - after).sum()}")
-        # qqq
-        if self.cache_objects:
-            if raw_state.pipeline_state.qpos.ndim > 1:
-                frames = ru.render_pixels_with_cached_objs(
-                    raw_state.pipeline_state,
-                    self.cached_objects,
-                    self.vmappable_objects,
-                    self.hw,
-                )
-            else:
-                frames = ru.render_pixels_with_cached_objs(
-                    jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
-                    self.cached_objects,
-                    self.vmappable_objects,
-                    self.hw,
-                )
-                frames = frames[0]
+#     def reset(self, rng: jp.ndarray) -> PixelState:
+#         raw_state = self.env.reset(rng)
+#         # before = self.env.sys.mj_model.geom_pos
+#         # self.env.step(
+#         #    jax.random.split(rng, raw_state.obs.shape[0]),
+#         #    raw_state,
+#         #    jax.random.uniform(rng, (raw_state.obs.shape[0], self.env.action_size)),
+#         # )
+#         # after = self.env.sys.mj_model.geom_pos
+#         # print(f"delta: {(before - after).sum()}")
+#         # qqq
+#         if self.cache_objects:
+#             if raw_state.pipeline_state.qpos.ndim > 1:
+#                 frames = ru.render_pixels_with_cached_objs(
+#                     raw_state.pipeline_state,
+#                     self.cached_objects,
+#                     self.vmappable_objects,
+#                     self.hw,
+#                 )
+#             else:
+#                 frames = ru.render_pixels_with_cached_objs(
+#                     jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
+#                     self.cached_objects,
+#                     self.vmappable_objects,
+#                     self.hw,
+#                 )
+#                 frames = frames[0]
 
-        else:
-            frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+#         else:
+#             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
 
-        if not self.return_float32:
-            frames = (frames * 255).astype(jp.uint8)
+#         if not self.return_float32:
+#             frames = (frames * 255).astype(jp.uint8)
 
-        # TODO: add frame stacking here
-        return PixelState(
-            raw_state.pipeline_state,
-            raw_state.obs,
-            frames,
-            raw_state.reward,
-            raw_state.done,
-            #jax.random.split(rng, raw_state.obs.shape[0]),
-            raw_state.metrics,
-            raw_state.info,
-        )
+#         # TODO: add frame stacking here
+#         return PixelState(
+#             raw_state.pipeline_state,
+#             raw_state.obs,
+#             frames,
+#             raw_state.reward,
+#             raw_state.done,
+#             #jax.random.split(rng, raw_state.obs.shape[0]),
+#             raw_state.metrics,
+#             raw_state.info,
+#         )
 
-    def step(
-        self, rng: jp.ndarray, states: jp.ndarray, actions: jp.ndarray
-    ) -> PixelState:
-        raw_state = self.env.step(rng, states, actions)
+#     def step(
+#         self, rng: jp.ndarray, states: jp.ndarray, actions: jp.ndarray
+#     ) -> PixelState:
+#         raw_state = self.env.step(rng, states, actions)
 
-        if self.cache_objects:
-            if raw_state.pipeline_state.qpos.ndim > 1:
-                frames = ru.render_pixels_with_cached_objs(
-                    raw_state.pipeline_state,
-                    self.cached_objects,
-                    self.vmappable_objects,
-                    self.hw,
-                )
-            else:
-                frames = ru.render_pixels_with_cached_objs(
-                    jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
-                    self.cached_objects,
-                    self.vmappable_objects,
-                    self.hw,
-                )
-                frames = frames[0]
+#         if self.cache_objects:
+#             if raw_state.pipeline_state.qpos.ndim > 1:
+#                 frames = ru.render_pixels_with_cached_objs(
+#                     raw_state.pipeline_state,
+#                     self.cached_objects,
+#                     self.vmappable_objects,
+#                     self.hw,
+#                 )
+#             else:
+#                 frames = ru.render_pixels_with_cached_objs(
+#                     jax.tree_map(lambda x: jp.expand_dims(x, 0), raw_state.pipeline_state),
+#                     self.cached_objects,
+#                     self.vmappable_objects,
+#                     self.hw,
+#                 )
+#                 frames = frames[0]
 
-        else:
-            frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
+#         else:
+#             frames = ru.render_pixels(self.env.sys, raw_state.pipeline_state, self.hw)
 
-        if not self.return_float32:
-            frames = (frames * 255).astype(jp.uint8)
+#         if not self.return_float32:
+#             frames = (frames * 255).astype(jp.uint8)
 
-        # TODO: add frame stacking here
-        return PixelState(
-            raw_state.pipeline_state,
-            raw_state.obs,
-            frames,
-            raw_state.reward,
-            raw_state.done,
-            #rng,
-            raw_state.metrics,
-            raw_state.info,
-        )
+#         # TODO: add frame stacking here
+#         return PixelState(
+#             raw_state.pipeline_state,
+#             raw_state.obs,
+#             frames,
+#             raw_state.reward,
+#             raw_state.done,
+#             #rng,
+#             raw_state.metrics,
+#             raw_state.info,
+#         )
